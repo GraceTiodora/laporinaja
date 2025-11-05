@@ -6,17 +6,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Laporin Aja')</title>
 
-    <!-- Tailwind CDN (quick) -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.5.4/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Font Awesome (CDN) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Local homepage CSS (public/css/homepage.css) -->
+    <!-- Custom Tailwind Configuration & Additional Styles -->
     <link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
-
-    <!-- optional app css -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     @stack('styles')
 </head>

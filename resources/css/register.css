@@ -1,0 +1,169 @@
+/* Reset & Basics */
+* {
+  margin: 0; padding: 0; box-sizing: border-box; 
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  background-color: #f9fafb;
+}
+
+/* Container styling */
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  background-color: #f9fafb;
+}
+
+/* White card modal */
+.register-card {
+  background-color: white;
+  max-width: 400px;
+  width: 100%;
+  padding: 2rem 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+/* Cancel link */
+.register-card .cancel-link {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  text-decoration: none;
+}
+.register-card .cancel-link:hover {
+  text-decoration: underline;
+}
+
+/* Title styles */
+.register-card h1 {
+  font-weight: 800;
+  font-size: 2.25rem;
+  color: #000000;
+  margin-bottom: 0.25rem;
+  text-align: left;
+}
+.register-card h2 {
+  color: #2563eb; /* Tailwind blue-600 */
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.75rem;
+  text-align: left;
+}
+
+/* Form inputs */
+.register-card form input[type="text"],
+.register-card form input[type="email"],
+.register-card form select {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px;
+  background-color: #e5e7eb;
+  border: none;
+  font-size: 1rem;
+  color: #374151;
+  margin-bottom: 1rem;
+  outline-offset: 2px;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.register-card form input[type="text"]::placeholder,
+.register-card form input[type="email"]::placeholder {
+  color: #9ca3af;
+}
+
+.register-card form input[type="text"]:focus,
+.register-card form input[type="email"]:focus,
+.register-card form select:focus {
+  background-color: white;
+  box-shadow: 0 0 0 3px #3b82f6;
+  outline: none;
+}
+
+/* Selects flex container */
+.register-card form .dob-selects {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.register-card form .dob-selects select {
+  flex: 1;
+}
+
+/* Submit button */
+.register-card form button[type="submit"] {
+  width: 100%;
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 1.125rem;
+  border-radius: 9999px;
+  padding: 0.75rem 0;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 0.5rem;
+}
+.register-card form button[type="submit"]:hover {
+  background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%);
+}
+
+/* OR separator */
+.register-card .or-separator {
+  text-align: center;
+  color: #9ca3af;
+  font-weight: 700;
+  margin: 1.5rem 0 1rem;
+  font-size: 0.875rem;
+}
+
+/* Google login button */
+.register-card .google-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 0;
+  background: white;
+  border: 1px solid #000;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  color: black;
+  margin-bottom: 1rem;
+}
+.register-card .google-login:hover {
+  background-color: #f3f4f6;
+}
+.register-card .google-login img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Bottom link */
+.register-card .bottom-link {
+  text-align: center;
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+.register-card .bottom-link a {
+  color: #2563eb;
+  text-decoration: none;
+}
+.register-card .bottom-link a:hover {
+  text-decoration: underline;
+}
