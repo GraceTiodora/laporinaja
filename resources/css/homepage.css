@@ -1,0 +1,74 @@
+/* Custom styles for homepage - complementing Tailwind */
+
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+/* Active navigation item */
+.nav-item.active {
+    background-color: #eff6ff;
+    color: #3b82f6;
+}
+
+/* Custom Scrollbar Styling */
+.sidebar-scroll::-webkit-scrollbar,
+.feed-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track,
+.feed-scroll::-webkit-scrollbar-track {
+    background: #f3f4f6;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb,
+.feed-scroll::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .sidebar-right {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    aside.sidebar-scroll {
+        width: 80px;
+    }
+    
+    .nav-text {
+        display: none;
+    }
+    
+    aside.sidebar-scroll h2 {
+        font-size: 18px;
+    }
+    
+    .user-info {
+        display: none;
+    }
+    
+    .btn-new-report {
+        padding: 12px;
+        font-size: 20px;
+    }
+    
+    .btn-text {
+        display: none;
+    }
+    
+    .btn-new-report::before {
+        content: '+';
+        font-size: 24px;
+    }
+}

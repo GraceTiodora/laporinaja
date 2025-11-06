@@ -1,0 +1,163 @@
+/* Reset & Basics */
+* {
+  margin: 0; padding: 0; box-sizing: border-box; 
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  background-color: #f9fafb; /* matches bg-gray-50 */
+}
+
+/* Container styling */
+.login-container {
+  min-height: 100vh; /* full screen height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  background-color: #f9fafb;
+}
+
+/* White card modal */
+.login-card {
+  background-color: white;
+  max-width: 400px;
+  width: 100%;
+  padding: 2rem 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+/* Cancel link (top-left) */
+.login-card .cancel-link {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  text-decoration: none;
+}
+.login-card .cancel-link:hover {
+  text-decoration: underline;
+}
+
+/* Title styles */
+.login-card h1 {
+  font-weight: 800;
+  font-size: 2.25rem;
+  color: #2563eb; /* Tailwind blue-600 */
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.login-card p.subtitle {
+  color: #60a5fa; /* Tailwind blue-400 */
+  font-size: 0.875rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.login-card p.description {
+  font-size: 0.875rem;
+  color: #6b7280; /* text-gray-500 */
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Form inputs */
+.login-card form input[type="text"],
+.login-card form input[type="password"] {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px; /* full round */
+  background-color: #e5e7eb; /* bg-gray-200 */
+  border: none;
+  font-size: 1rem;
+  color: #374151;
+  outline-offset: 2px;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 1.25rem;
+}
+
+.login-card form input[type="text"]::placeholder,
+.login-card form input[type="password"]::placeholder {
+  color: #9ca3af; /* placeholder-gray-400 */
+}
+
+.login-card form input[type="text"]:focus,
+.login-card form input[type="password"]:focus {
+  background-color: white;
+  box-shadow: 0 0 0 3px #3b82f6;
+  outline: none;
+}
+
+/* Submit button */
+.login-card form button[type="submit"] {
+  width: 100%;
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 1.125rem;
+  border-radius: 9999px;
+  padding: 0.75rem 0;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 0.5rem;
+}
+.login-card form button[type="submit"]:hover {
+  background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%);
+}
+
+/* OR separator */
+.login-card .or-separator {
+  text-align: center;
+  color: #9ca3af;
+  font-weight: 700;
+  margin: 1.5rem 0 1rem;
+  font-size: 0.875rem;
+}
+
+/* Google login button */
+.login-card .google-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 0;
+  background: white;
+  border: 1px solid #000;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  color: black;
+}
+.login-card .google-login:hover {
+  background-color: #f3f4f6; /* bg-gray-100 */
+}
+.login-card .google-login img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Bottom link */
+.login-card .bottom-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #3b82f6;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+.login-card .bottom-link a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+.login-card .bottom-link a:hover {
+  text-decoration: underline;
+}
