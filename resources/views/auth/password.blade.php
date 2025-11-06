@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Login - Laporin Aja')
+@section('title', 'Buat Kata Sandi - Laporin Aja')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/login.css') }}">
+<link rel="stylesheet" href="{{ asset('css/password.css') }}">
 @endpush
 
 @section('content')
@@ -12,16 +12,12 @@
         <!-- Cancel Link -->
         <a href="{{ route('home') }}" class="absolute top-5 left-6 text-gray-600 hover:underline text-sm font-medium">Cancel</a>
 
-        <div class="text-center mb-8 mt-8">
-            <h1 class="text-4xl font-extrabold text-blue-600">LaporinAja</h1>
-            <p class="mt-1 text-sm text-blue-400">Sekali Klik, Masalah Tersampaikan</p>
+        <div class="text-left mb-8 mt-8">
+            <h1 class="text-3xl font-extrabold text-black">Buat Akun Anda</h1>
+            <h2 class="text-blue-600 text-xl font-semibold mt-1">LaporinAja</h2>
         </div>
 
-        <div class="text-center mb-6">
-            <p class="text-gray-500 text-base">Masuk untuk Melaporkan Masalah Anda</p>
-        </div>
-
-        <form action="{{ route('login') }}" method="POST" class="space-y-5">
+        <form action="{{ route('register.password') }}" method="POST" class="space-y-5">
             @csrf
             
             @if(session('error'))
@@ -31,17 +27,8 @@
             @endif
 
             <div>
-                <label for="username" class="block text-gray-800 font-semibold mb-2 text-sm">Username</label>
-                <input id="username" name="username" type="text" required placeholder="Masukkan Nama Lengkap Anda"
-                    class="w-full rounded-full bg-gray-100 placeholder-gray-400 px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition border-0" value="{{ old('username') }}">
-                @error('username')
-                    <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div>
-                <label for="password" class="block text-gray-800 font-semibold mb-2 text-sm">Kata sandi</label>
-                <input id="password" name="password" type="password" required placeholder="Masukkan Nomor HP atau Email Anda"
+                <label for="password" class="block text-gray-800 font-semibold mb-2 text-sm">Kata Sandi</label>
+                <input id="password" name="password" type="password" required placeholder="Kata Sandi"
                     class="w-full rounded-full bg-gray-100 placeholder-gray-400 px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition border-0">
                 @error('password')
                     <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
@@ -50,7 +37,7 @@
 
             <button type="submit"
                 class="w-full mt-6 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full py-3.5 transition text-base">
-                Masuk dan Laporkan
+                Daftar
             </button>
         </form>
 
@@ -61,13 +48,13 @@
         <!-- Google Login Button -->
         <a href="{{ route('login.google') }}" 
            class="w-full flex items-center justify-center border-2 border-black rounded-full py-3.5 gap-3 hover:bg-gray-50 transition">
-            <img src="images/logo-google.png" alt="Google Icon" class="w-10 h-10" />
+            <img src="{{ asset('images/google-icon.svg') }}" alt="Google Icon" class="w-5 h-5" />
             <span class="font-bold text-black text-sm">Masuk dengan Google</span>
         </a>
 
         <p class="mt-6 text-center text-sm">
-            <a href="{{ route('register') }}" class="text-blue-500 hover:text-blue-600 font-medium hover:underline">
-                Belum punya akun? Daftar disini
+            <a href="{{ route('login') }}" class="text-blue-500 hover:text-blue-600 font-medium hover:underline">
+                Sudah punya akun? Login disini
             </a>
         </p>
     </div>

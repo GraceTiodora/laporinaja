@@ -44,7 +44,7 @@
             </a>
         </nav>
         
-        <button class="mt-5 bg-blue-500 text-white border-none px-6 py-3.5 rounded-3xl text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-blue-600 btn-new-report">
+        <button onclick="window.location.href='{{ route('login') }}'" class="mt-5 bg-blue-500 text-white border-none px-6 py-3.5 rounded-3xl text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-blue-600 btn-new-report">
             <span class="btn-text">+ New Report</span>
         </button>
         
