@@ -185,5 +185,5 @@
             </ul>
         </section>
     </aside>
-</div>
-@endsection
+</div> 
+@endsection 

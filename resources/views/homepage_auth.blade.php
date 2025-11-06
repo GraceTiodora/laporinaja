@@ -83,7 +83,7 @@
         <header class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
             <h1 class="text-xl font-semibold text-gray-800">Home</h1>
         </header>
-
+ 
         <div class="flex-1 overflow-y-auto p-5 feed-scroll">
             @if(session('success'))
                 <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4">
