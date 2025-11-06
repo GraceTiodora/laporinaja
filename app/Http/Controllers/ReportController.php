@@ -9,26 +9,34 @@ class ReportController extends Controller
     public function create()
     {
         if (! session()->has('user')) {
-            return redirect()->route('login');
+            // simpan intended URL lalu redirect ke login
+            session(['intended_url' => route('reports.create')]);
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
         }
-        return view('reports.create');
+
+        // tampilkan form create jika ada
+        if (view()->exists('reports.create')) {
+            return view('reports.create');
+        }
+
+        // fallback: simple page jika belum ada view
+        return redirect()->route('home')->with('error', 'Halaman buat laporan belum tersedia.');
     }
 
     public function store(Request $request)
     {
         if (! session()->has('user')) {
-            return redirect()->route('login');
+            session(['intended_url' => route('reports.create')]);
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
         $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'body'  => 'required|string',
+            'body' => 'required|string',
         ]);
 
         $reports = session('reports', []);
         $reports[] = [
             'user' => session('user'),
-            'title' => $data['title'],
             'body' => $data['body'],
             'created_at' => now()->toDateTimeString(),
         ];

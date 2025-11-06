@@ -3,7 +3,7 @@
 @section('title', 'Home - Laporin Aja')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
+<link rel="stylesheet" href="{{ asset('css/home-auth.css') }}">
 @endpush
 
 @section('content')
@@ -49,16 +49,32 @@
             </a>
         </nav>
         
-        <button onclick="window.location.href='{{ route('login') }}'" class="mt-5 bg-blue-500 text-white border-none px-6 py-3.5 rounded-3xl text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-blue-600 btn-new-report">
+        <button onclick="window.location.href='{{ route('reports.create') }}'" class="mt-5 bg-blue-500 text-white border-none px-6 py-3.5 rounded-3xl text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-blue-600 btn-new-report">
             <span class="btn-text">+ New Report</span>
         </button>
         
-        <div class="mt-auto pt-5 border-t border-gray-200 flex items-center gap-3">
-            <img src="{{ asset('images/profile-user.jpg') }}" alt="User" class="w-10 h-10 rounded-full object-cover">
-            <div class="flex-1 user-info">
-                <p class="font-semibold text-sm text-gray-800">User</p>
-                <p class="text-[13px] text-gray-500">username</p>
+        <div class="mt-auto pt-5 border-t border-gray-200">
+            <div class="flex items-center gap-3 mb-3">
+                <img src="{{ asset('images/profile-user.jpg') }}" alt="{{ session('user.name') }}" class="w-10 h-10 rounded-full object-cover">
+                <form action="{{ route('profile.update') }}" method="POST" class="flex-1">
+                    @csrf
+                    <div class="flex flex-col gap-1">
+                        <input name="username" value="{{ old('username', session('user.username')) }}"
+                               class="w-full text-[13px] text-gray-500 bg-transparent border border-transparent focus:border-gray-200 rounded px-2 py-1"
+                               placeholder="Username" />
+
+                        <input name="email" value="{{ old('email', session('user.email', '')) }}"
+                               class="w-full text-[13px] text-gray-500 bg-transparent border border-transparent focus:border-gray-200 rounded px-2 py-1"
+                               placeholder="Email (optional)" />
+                    </div>
+                </form>
             </div>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="w-full text-left text-xs text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
+                    Logout
+                </button>
+            </form>
         </div>
     </aside>
 
@@ -69,6 +85,27 @@
         </header>
 
         <div class="flex-1 overflow-y-auto p-5 feed-scroll">
+            @if(session('success'))
+                <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <!-- Post Input -->
+            <div class="bg-white border border-gray-200 rounded-xl p-4 mb-3 flex items-center gap-3">
+                <img src="{{ asset('images/profile-user.jpg') }}" alt="{{ session('user.name') }}" class="w-10 h-10 rounded-full object-cover">
+                <input type="text" placeholder="Laporkan masalah di lingkunganmu..." class="flex-1 border-none outline-none text-sm text-gray-400 cursor-pointer" onclick="window.location.href='{{ route('reports.create') }}'">
+            </div>
+            
+            <div class="bg-white border border-gray-200 border-t-0 rounded-b-xl px-4 py-3 flex gap-2 items-center mb-5 -mt-3">
+                <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">📷</button>
+                <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">🖼️</button>
+                <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">📍</button>
+                <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">🏷️</button>
+                <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">✏️</button>
+                <button onclick="window.location.href='{{ route('reports.create') }}'" class="ml-auto bg-blue-500 text-white border-none px-5 py-2 rounded-2xl text-sm font-semibold cursor-pointer transition-colors duration-200 hover:bg-blue-600">Post</button>
+            </div>
+
             <!-- Recent Report 1 -->
             <article class="bg-white border border-gray-200 rounded-xl p-4 mb-5 shadow-sm">
                 <div class="flex items-center gap-3 mb-3">
@@ -92,8 +129,8 @@
                 
                 <div class="flex justify-between items-center pt-3 border-t border-gray-100">
                     <div class="flex gap-4 text-sm text-gray-500">
-                        <span>💬 3</span>
-                        <span>❤️ 10</span>
+                        <button class="hover:text-blue-500 transition">💬 3</button>
+                        <button class="hover:text-red-500 transition">❤️ 10</button>
                     </div>
                 </div>
             </article>
@@ -121,8 +158,8 @@
                 
                 <div class="flex justify-between items-center pt-3 border-t border-gray-100">
                     <div class="flex gap-4 text-sm text-gray-500">
-                        <span>💬 1</span>
-                        <span>❤️ 5</span>
+                        <button class="hover:text-blue-500 transition">💬 1</button>
+                        <button class="hover:text-red-500 transition">❤️ 5</button>
                     </div>
                 </div>
             </article>
