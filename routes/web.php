@@ -3,13 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportController;
-
+use App\Http\Controllers\ExploreController;  // ← TAMBAH INI
 
 Route::get('/', function () {
-    return session()->has('user') ? view('homepage_auth') : view('homepage');
+    return session()->has('user') ? view('home-auth') : view('homepage');
 })->name('home');
 
-// Auth
+// Auth Routes
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login'])->name('login.post');
 
@@ -21,11 +21,14 @@ Route::post('register/password', [AuthController::class, 'storePassword'])->name
 
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-// Reports
+
+Route::get('explore', [ExploreController::class, 'index'])->name('explore');
+
+// Reports Routes
 Route::get('reports/create', [ReportController::class, 'create'])->name('reports.create');
 Route::post('reports', [ReportController::class, 'store'])->name('reports.store');
 
-// Fallback for Google login button in views (prevents RouteNotFoundException)
+// Fallback for Google login
 Route::get('login/google', function () {
     return redirect()->route('login')->with('error', 'Login dengan Google belum dikonfigurasi.');
 })->name('login.google');
