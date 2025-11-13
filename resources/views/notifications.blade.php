@@ -1,124 +1,102 @@
 @extends('layouts.app')
 
-@section('title', 'Notifications - Laporin Aja')
+@section('title', 'Notifications - LaporinAja')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/notifications.css') }}">
 @endpush
 
 @section('content')
-<div class="flex h-screen max-w-[1920px] mx-auto">
-    <!-- Left Sidebar -->
-    <aside class="w-[280px] bg-white border-r border-gray-200 p-5 flex flex-col overflow-y-auto sidebar-scroll">
-        <div class="mb-7">
-            <h2 class="text-2xl font-bold text-blue-500">LaporinAja</h2>
+<div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">
+    <!-- 🧭 Left Sidebar -->
+    <aside class="w-[270px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between">
+        <div>
+            <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">Laporin<span class="text-gray-900">Aja</span></h2>
+
+            <nav class="space-y-2">
+                @php
+                    $menu = [
+                        ['Home', 'home', 'fa-solid fa-house'],
+                        ['Explore', 'explore', 'fa-solid fa-hashtag'],
+                        ['Notification', 'notifications', 'fa-regular fa-bell'],
+                        ['Messages', '#', 'fa-regular fa-envelope'],
+                        ['My Reports', '#', 'fa-solid fa-clipboard-list'],
+                        ['Communities', '#', 'fa-solid fa-users'],
+                        ['Profile', '#', 'fa-regular fa-user'],
+                        ['More', '#', 'fa-solid fa-ellipsis-h'],
+                    ];
+                @endphp
+
+                @foreach ($menu as [$name, $route, $icon])
+                    <a href="{{ $route == '#' ? '#' : route($route) }}"
+                       class="group flex items-center gap-4 px-4 py-3 rounded-xl text-gray-600 font-medium transition-all hover:bg-blue-50 hover:text-blue-600 {{ $route == 'notifications' ? 'bg-blue-50 text-blue-600' : '' }}">
+                        <i class="{{ $icon }} text-lg group-hover:scale-110 transition-transform"></i>
+                        <span>{{ $name }}</span>
+                    </a>
+                @endforeach
+            </nav>
+
+            <button onclick="window.location.href='{{ route('reports.create') }}'"
+                    class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full shadow-md transition-all font-semibold">
+                <i class="fa-solid fa-plus-circle"></i> New Report
+            </button>
         </div>
-        
-        <nav class="flex flex-col gap-2">
-            <a href="{{ route('home') }}" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">🏠</span>
-                <span class="nav-text leading-none">Home</span>
-            </a>
-            <a href="{{ route('explore') }}" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">#</span>
-                <span class="nav-text leading-none">Explore</span>
-            </a>
-            <a href="{{ route('notifications') }}" class="nav-item active flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">🔔</span>
-                <span class="nav-text leading-none">Notification</span>
-            </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">💬</span>
-                <span class="nav-text leading-none">Messages</span>
-            </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">📋</span>
-                <span class="nav-text leading-none">My Reports</span>
-            </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">👥</span>
-                <span class="nav-text leading-none">Communities</span>
-            </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">👤</span>
-                <span class="nav-text leading-none">Profile</span>
-            </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">⚙️</span>
-                <span class="nav-text leading-none">More</span>
-            </a>
-        </nav>
-        
-        <button onclick="window.location.href='{{ route('reports.create') }}'" class="mt-5 bg-blue-500 text-white border-none px-6 py-3.5 rounded-3xl text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-blue-600 btn-new-report">
-            <span class="btn-text">+ New Report</span>
-        </button>
-        
-        <div class="mt-auto pt-5 border-t border-gray-200 flex items-center gap-3">
+
+        <!-- Profile Section -->
+        <div class="flex items-center gap-3 border-t border-gray-200 pt-4">
             <img src="{{ asset('images/profile-user.jpg') }}" alt="{{ session('user.name') }}" class="w-10 h-10 rounded-full object-cover">
-            <div class="flex-1 user-info">
-                <p class="font-semibold text-sm text-gray-800">{{ session('user.name') }}</p>
-                <p class="text-[13px] text-gray-500">@{{ session('user.username') }}</p>
+            <div class="flex flex-col leading-tight">
+                <span class="text-sm font-medium text-gray-800">{{ session('user.name') }}</span>
+                <span class="text-xs text-gray-500">@{{ session('user.username') }}</span>
             </div>
         </div>
     </aside>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col overflow-hidden border-r border-gray-200">
-        <!-- Header -->
-        <header class="bg-white border-b border-gray-200 px-6 py-4">
-            <h1 class="text-2xl font-bold text-gray-900">Notifications</h1>
+    <!-- 📰 Main Content Area -->
+    <main class="flex-1 flex flex-col border-r border-gray-200 bg-white">
+        <header class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center z-10">
+            <h1 class="text-xl font-bold text-gray-800">Notifications</h1>
+            <button class="text-gray-400 hover:text-blue-600 transition">
+                <i class="fa-solid fa-gear text-xl"></i>
+            </button>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-6 bg-gray-50 feed-scroll">
+        <div class="flex-1 overflow-y-auto p-6 space-y-4">
             @if(isset($notifications) && count($notifications) > 0)
-                <div class="space-y-3">
-                    @foreach($notifications as $notification)
-                        <div class="notification-card {{ $notification['read'] ? '' : 'unread' }}" data-id="{{ $notification['id'] }}">
-                            <!-- Notification Icon -->
-                            <div class="notification-icon {{ $notification['type'] }}">
-                                @if($notification['type'] === 'vote')
-                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                                    </svg>
-                                @elseif($notification['type'] === 'comment')
-                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
-                                    </svg>
-                                @elseif($notification['type'] === 'status')
-                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z"/>
-                                    </svg>
-                                @elseif($notification['type'] === 'trending')
-                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
-                                    </svg>
-                                @else
-                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                                    </svg>
-                                @endif
-                            </div>
-
-                            <!-- Notification Content -->
-                            <div class="notification-content">
-                                <h3 class="notification-title">{{ $notification['title'] }}</h3>
-                                <p class="notification-message">{{ $notification['message'] }}</p>
-                                <span class="notification-time">{{ $notification['time'] }}</span>
-                            </div>
-
-                            <!-- Unread Badge -->
-                            @if(!$notification['read'])
-                                <div class="unread-badge"></div>
+                @foreach($notifications as $notification)
+                    <div class="notification-card {{ $notification['read'] ? '' : 'unread' }}" data-id="{{ $notification['id'] }}">
+                        <!-- Left Badge Icon -->
+                        <div class="notification-badge {{ $notification['type'] }}">
+                            @if($notification['type'] === 'vote')
+                                <i class="fa-solid fa-heart"></i>
+                            @elseif($notification['type'] === 'comment')
+                                <i class="fa-regular fa-comment"></i>
+                            @elseif($notification['type'] === 'status')
+                                <i class="fa-solid fa-circle-check"></i>
+                            @elseif($notification['type'] === 'trending')
+                                <i class="fa-solid fa-fire"></i>
+                            @else
+                                <i class="fa-solid fa-bell"></i>
                             @endif
                         </div>
-                    @endforeach
-                </div>
+
+                        <!-- Notification Content -->
+                        <div class="notification-content">
+                            <h3 class="notification-title">{{ $notification['title'] }}</h3>
+                            <p class="notification-message">{{ $notification['message'] }}</p>
+                            <span class="notification-time">{{ $notification['time'] }}</span>
+                        </div>
+
+                        <!-- Unread Dot Badge -->
+                        @if(!$notification['read'])
+                            <div class="unread-dot"></div>
+                        @endif
+                    </div>
+                @endforeach
             @else
                 <!-- Empty State -->
                 <div class="empty-state">
-                    <svg class="w-24 h-24 mx-auto mb-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
-                    </svg>
+                    <i class="fa-regular fa-bell-slash text-gray-300 text-8xl mb-4"></i>
                     <h3 class="text-xl font-semibold text-gray-600 mb-2">Belum Ada Notifikasi</h3>
                     <p class="text-gray-500">Notifikasi Anda akan muncul di sini</p>
                 </div>
@@ -126,58 +104,62 @@
         </div>
     </main>
 
-    <!-- Right Sidebar -->
-    <aside class="w-80 bg-white p-6 overflow-y-auto sidebar-scroll sidebar-right">
+    <!-- 📊 Right Sidebar -->
+    <aside class="w-[340px] bg-white p-6 overflow-y-auto">
         <section class="mb-8">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Masalah Urgent</h2>
-            <ul class="list-none">
-                <li class="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-fire text-red-500"></i> Masalah Urgent
+            </h2>
+            <ul class="space-y-3">
+                <li class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium text-gray-800 mb-0.5">Jalan Rusak</p>
-                        <p class="text-[13px] text-gray-500">Jl. Melati</p>
+                        <p class="font-medium text-gray-800">Jalan Rusak</p>
+                        <p class="text-xs text-gray-500">Jl. Melati</p>
                     </div>
                     <span class="text-sm font-semibold text-red-600">128 Votes</span>
                 </li>
-                <li class="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+                <li class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium text-gray-800 mb-0.5">Sampah Menumpuk</p>
-                        <p class="text-[13px] text-gray-500">Pasar Baru</p>
+                        <p class="font-medium text-gray-800">Sampah Menumpuk</p>
+                        <p class="text-xs text-gray-500">Pasar Baru</p>
                     </div>
                     <span class="text-sm font-semibold text-red-600">96 Votes</span>
                 </li>
-                <li class="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+                <li class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium text-gray-800 mb-0.5">Lampu Jalan Mati</p>
-                        <p class="text-[13px] text-gray-500">RT 05</p>
+                        <p class="font-medium text-gray-800">Lampu Jalan Mati</p>
+                        <p class="text-xs text-gray-500">RT 05</p>
                     </div>
                     <span class="text-sm font-semibold text-red-600">54 Votes</span>
                 </li>
             </ul>
         </section>
 
-        <section class="mb-8">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Masalah Trending</h2>
-            <ul class="list-none">
-                <li class="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+        <section>
+            <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-chart-line text-blue-500"></i> Masalah Trending
+            </h2>
+            <ul class="space-y-3">
+                <li class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium text-gray-800 mb-0.5">Infrastruktur Jalan</p>
+                        <p class="font-medium text-gray-800">Infrastruktur Jalan</p>
                         <p class="text-xs text-gray-500">5 laporan hari ini</p>
                     </div>
-                    <span class="px-3 py-1 rounded-xl text-xs font-medium bg-pink-100 text-pink-700">Urgent</span>
+                    <span class="px-3 py-1 rounded-xl text-xs bg-pink-100 text-pink-700 font-medium">Urgent</span>
                 </li>
-                <li class="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+                <li class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium text-gray-800 mb-0.5">Sampah Menumpuk</p>
+                        <p class="font-medium text-gray-800">Sampah Menumpuk</p>
                         <p class="text-xs text-gray-500">Pasar Baru</p>
                     </div>
-                    <span class="px-3 py-1 rounded-xl text-xs font-medium bg-amber-100 text-amber-800">Medium</span>
+                    <span class="px-3 py-1 rounded-xl text-xs bg-yellow-100 text-yellow-700 font-medium">Medium</span>
                 </li>
-                <li class="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+                <li class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm font-medium text-gray-800 mb-0.5">Lampu Jalan Mati</p>
+                        <p class="font-medium text-gray-800">Lampu Jalan Mati</p>
                         <p class="text-xs text-gray-500">RT 05</p>
                     </div>
-                    <span class="px-3 py-1 rounded-xl text-xs font-medium bg-blue-100 text-blue-800">Low</span>
+                    <span class="px-3 py-1 rounded-xl text-xs bg-blue-100 text-blue-800 font-medium">Low</span>
                 </li>
             </ul>
         </section>
@@ -208,4 +190,7 @@ document.querySelectorAll('.notification-card').forEach(card => {
     });
 });
 </script>
+
+<!-- FontAwesome -->
+<script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
 @endsection
