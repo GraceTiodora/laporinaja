@@ -74,7 +74,7 @@
                     Logout
                 </button>
             </form>
-        </div>
+        </div> 
     </aside>
 
     <!-- Main Content Area -->
