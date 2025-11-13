@@ -43,7 +43,7 @@
                 <span class="nav-text leading-none">Profile</span>
             </a>
             <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">⚙️</span>
+                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">⚙</span>
                 <span class="nav-text leading-none">More</span>
             </a>
         </nav>
@@ -98,10 +98,10 @@
             
             <div class="bg-white border border-gray-200 border-t-0 rounded-b-xl px-4 py-3 flex gap-2 items-center mb-5 -mt-3">
                 <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">📷</button>
-                <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">🖼️</button>
+                <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">🖼</button>
                 <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">📍</button>
-                <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">🏷️</button>
-                <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">✏️</button>
+                <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">🏷</button>
+                <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">✏</button>
                 <button onclick="window.location.href='{{ route('reports.create') }}'" class="ml-auto bg-blue-500 text-white border-none px-5 py-2 rounded-2xl text-sm font-semibold cursor-pointer transition-colors duration-200 hover:bg-blue-600">Post</button>
             </div>
 
@@ -129,7 +129,7 @@
                 <div class="flex justify-between items-center pt-3 border-t border-gray-100">
                     <div class="flex gap-4 text-sm text-gray-500">
                         <button class="hover:text-blue-500 transition">💬 3</button>
-                        <button class="hover:text-red-500 transition">❤️ 10</button>
+                        <button class="hover:text-red-500 transition">❤ 10</button>
                     </div>
                 </div>
             </article>
@@ -158,7 +158,7 @@
                 <div class="flex justify-between items-center pt-3 border-t border-gray-100">
                     <div class="flex gap-4 text-sm text-gray-500">
                         <button class="hover:text-blue-500 transition">💬 1</button>
-                        <button class="hover:text-red-500 transition">❤️ 5</button>
+                        <button class="hover:text-red-500 transition">❤ 5</button>
                     </div>
                 </div>
             </article>
