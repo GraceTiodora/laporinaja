@@ -6,7 +6,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\NotificationController;
 
-Route::get('/', function () {
+Route::get('/', function () { 
     if (session()->has('user')) {
         if (view()->exists('home-auth')) {
             return view('home-auth');
