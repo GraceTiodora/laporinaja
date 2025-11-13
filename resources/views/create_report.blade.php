@@ -23,9 +23,24 @@
                 <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">#</span>
                 <span class="nav-text leading-none">Explore</span>
             </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
+            <a href="{{ route('notifications') }}" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800 relative">
                 <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">🔔</span>
                 <span class="nav-text leading-none">Notification</span>
+                
+                @php
+                    $unreadCount = 0;
+                    if (session()->has('notifications')) {
+                        $unreadCount = count(array_filter(session('notifications', []), function($n) {
+                            return !$n['read'];
+                        }));
+                    }
+                @endphp
+                
+                @if($unreadCount > 0)
+                    <span class="absolute top-2 left-8 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        {{ $unreadCount }}
+                    </span>
+                @endif
             </a>
             <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
                 <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">💬</span>
