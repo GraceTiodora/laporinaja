@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Home - Laporin Aja')
+@section('title', 'Notifications - Laporin Aja')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
+<link rel="stylesheet" href="{{ asset('css/notifications.css') }}">
 @endpush
 
 @section('content')
@@ -15,7 +15,7 @@
         </div>
         
         <nav class="flex flex-col gap-2">
-            <a href="{{ route('home') }}" class="nav-item active flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
+            <a href="{{ route('home') }}" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
                 <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">🏠</span>
                 <span class="nav-text leading-none">Home</span>
             </a>
@@ -23,24 +23,9 @@
                 <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">#</span>
                 <span class="nav-text leading-none">Explore</span>
             </a>
-            <a href="{{ route('notifications') }}" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800 relative">
+            <a href="{{ route('notifications') }}" class="nav-item active flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
                 <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">🔔</span>
                 <span class="nav-text leading-none">Notification</span>
-                
-                @php
-                    $unreadCount = 0;
-                    if (session()->has('notifications')) {
-                        $unreadCount = count(array_filter(session('notifications', []), function($n) {
-                            return !$n['read'];
-                        }));
-                    }
-                @endphp
-                
-                @if($unreadCount > 0)
-                    <span class="absolute top-2 left-8 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                        {{ $unreadCount }}
-                    </span>
-                @endif
             </a>
             <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
                 <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">💬</span>
@@ -64,83 +49,80 @@
             </a>
         </nav>
         
-        <button onclick="window.location.href='{{ route('login') }}'" class="mt-5 bg-blue-500 text-white border-none px-6 py-3.5 rounded-3xl text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-blue-600 btn-new-report">
+        <button onclick="window.location.href='{{ route('reports.create') }}'" class="mt-5 bg-blue-500 text-white border-none px-6 py-3.5 rounded-3xl text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-blue-600 btn-new-report">
             <span class="btn-text">+ New Report</span>
         </button>
         
         <div class="mt-auto pt-5 border-t border-gray-200 flex items-center gap-3">
-            <img src="{{ asset('images/profile-user.jpg') }}" alt="User" class="w-10 h-10 rounded-full object-cover">
+            <img src="{{ asset('images/profile-user.jpg') }}" alt="{{ session('user.name') }}" class="w-10 h-10 rounded-full object-cover">
             <div class="flex-1 user-info">
-                <p class="font-semibold text-sm text-gray-800">User</p>
-                <p class="text-[13px] text-gray-500">username</p>
+                <p class="font-semibold text-sm text-gray-800">{{ session('user.name') }}</p>
+                <p class="text-[13px] text-gray-500">@{{ session('user.username') }}</p>
             </div>
         </div>
     </aside>
 
     <!-- Main Content Area -->
     <main class="flex-1 flex flex-col overflow-hidden border-r border-gray-200">
-        <header class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-semibold text-gray-800">Home</h1>
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 px-6 py-4">
+            <h1 class="text-2xl font-bold text-gray-900">Notifications</h1>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-5 feed-scroll">
-            <!-- Recent Report 1 -->
-            <article class="bg-white border border-gray-200 rounded-xl p-4 mb-5 shadow-sm">
-                <div class="flex items-center gap-3 mb-3">
-                    <img src="{{ asset('images/profile-audrey.jpg') }}" alt="Audrey Stark" class="w-10 h-10 rounded-full object-cover">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2">
-                            <span class="font-semibold text-[15px] text-gray-800">Audrey Stark</span>
-                            <span class="text-[13px] text-gray-500">2 jam • Jl. Melati</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <p class="text-sm text-gray-700 mb-3 leading-relaxed">Jalan berlubang besar dekat sekolah sangat berbahaya untuk dilewati</p>
-                
-                <img src="{{ asset('images/jalan_berlubang.jpg') }}" alt="Jalan Berlubang" class="w-full rounded-lg mb-3 object-cover max-h-[400px]">
-                
-                <div class="flex gap-2 mb-3">
-                    <span class="px-3 py-1 rounded-2xl text-xs font-medium bg-pink-100 text-pink-700">Baru</span>
-                    <span class="px-3 py-1 rounded-2xl text-xs font-medium bg-indigo-100 text-indigo-700">Infrastruktur</span>
-                </div>
-                
-                <div class="flex justify-between items-center pt-3 border-t border-gray-100">
-                    <div class="flex gap-4 text-sm text-gray-500">
-                        <span>💬 3</span>
-                        <span>❤️ 10</span>
-                    </div>
-                </div>
-            </article>
+        <div class="flex-1 overflow-y-auto p-6 bg-gray-50 feed-scroll">
+            @if(isset($notifications) && count($notifications) > 0)
+                <div class="space-y-3">
+                    @foreach($notifications as $notification)
+                        <div class="notification-card {{ $notification['read'] ? '' : 'unread' }}" data-id="{{ $notification['id'] }}">
+                            <!-- Notification Icon -->
+                            <div class="notification-icon {{ $notification['type'] }}">
+                                @if($notification['type'] === 'vote')
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                    </svg>
+                                @elseif($notification['type'] === 'comment')
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+                                    </svg>
+                                @elseif($notification['type'] === 'status')
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z"/>
+                                    </svg>
+                                @elseif($notification['type'] === 'trending')
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                                    </svg>
+                                @else
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                    </svg>
+                                @endif
+                            </div>
 
-            <!-- Recent Report 2 -->
-            <article class="bg-white border border-gray-200 rounded-xl p-4 mb-5 shadow-sm">
-                <div class="flex items-center gap-3 mb-3">
-                    <img src="{{ asset('images/profile-david.jpg') }}" alt="David Blend" class="w-10 h-10 rounded-full object-cover">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2">
-                            <span class="font-semibold text-[15px] text-gray-800">David Blend</span>
-                            <span class="text-[13px] text-gray-500">12 menit • Jl. Ahmad Yani</span>
+                            <!-- Notification Content -->
+                            <div class="notification-content">
+                                <h3 class="notification-title">{{ $notification['title'] }}</h3>
+                                <p class="notification-message">{{ $notification['message'] }}</p>
+                                <span class="notification-time">{{ $notification['time'] }}</span>
+                            </div>
+
+                            <!-- Unread Badge -->
+                            @if(!$notification['read'])
+                                <div class="unread-badge"></div>
+                            @endif
                         </div>
-                    </div>
+                    @endforeach
                 </div>
-                
-                <p class="text-sm text-gray-700 mb-3 leading-relaxed">Sebuah pohon besar tumbang menutupi jalan raya, menyebabkan kemacetan parah. Mohon segera ditangani agar jalan bisa dilewati kembali.</p>
-                
-                <img src="{{ asset('images/pohon-tumbang.jpg') }}" alt="Pohon Tumbang" class="w-full rounded-lg mb-3 object-cover max-h-[400px]">
-                
-                <div class="flex gap-2 mb-3">
-                    <span class="px-3 py-1 rounded-2xl text-xs font-medium bg-pink-100 text-pink-700">Baru</span>
-                    <span class="px-3 py-1 rounded-2xl text-xs font-medium bg-indigo-100 text-indigo-700">Bencana Alam</span>
+            @else
+                <!-- Empty State -->
+                <div class="empty-state">
+                    <svg class="w-24 h-24 mx-auto mb-4 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                    </svg>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Belum Ada Notifikasi</h3>
+                    <p class="text-gray-500">Notifikasi Anda akan muncul di sini</p>
                 </div>
-                
-                <div class="flex justify-between items-center pt-3 border-t border-gray-100">
-                    <div class="flex gap-4 text-sm text-gray-500">
-                        <span>💬 1</span>
-                        <span>❤️ 5</span>
-                    </div>
-                </div>
-            </article>
+            @endif
         </div>
     </main>
 
@@ -200,5 +182,30 @@
             </ul>
         </section>
     </aside>
-</div> 
-@endsection 
+</div>
+
+<script>
+document.querySelectorAll('.notification-card').forEach(card => {
+    card.addEventListener('click', function() {
+        if (this.classList.contains('unread')) {
+            const id = this.dataset.id;
+            fetch("{{ route('notifications.read', ['id' => '__ID__']) }}".replace('__ID__', id), {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            }).then(r => {
+                if (r.ok) {
+                    this.classList.remove('unread');
+                    const badge = this.querySelector('.unread-badge');
+                    if (badge) badge.style.display = 'none';
+                }
+            }).catch(()=>{ /* ignore */ });
+        }
+    });
+});
+</script>
+@endsection
