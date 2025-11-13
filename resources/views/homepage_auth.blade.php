@@ -222,5 +222,4 @@
         </section>
     </aside>
 </div>
-
 @endsection
