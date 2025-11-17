@@ -1,5 +1,56 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Laporan Masyarakat</title>
+    <link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-hashtag"></i>
+                    <span>Explore</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="far fa-bell"></i>
+                    <span>Notification</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="far fa-comment"></i>
+                    <span>Messages</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="far fa-flag"></i>
+                    <span>My Reports</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Communities</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="far fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-ellipsis-h"></i>
+                    <span>More</span>
+                </a>
+            </nav>
+            <button class="new-report-btn">
+                <i class="fas fa-plus"></i>
+                <span>New Report</span>
+            </button>
 
+<<<<<<< Updated upstream
 @section('title', 'Home - LaporinAja')
 
 @push('styles')
@@ -50,10 +101,18 @@
                     <span class="text-sm font-semibold text-gray-800">{{ session('user.name', 'User') }}</span>
                     <span class="text-xs text-gray-400">{{ session('user.email', 'username') }}</span>
                 </div>
+=======
+            <!-- User Profile at Bottom -->
+            <div class="sidebar-user">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span class="user-name">User</span>
+>>>>>>> Stashed changes
             </div>
-        </div>
-    </aside>
+        </aside>
 
+<<<<<<< Updated upstream
     <!-- 📰 Main Feed -->
     <main class="flex-1 flex flex-col bg-white">
         <header class="sticky top-0 bg-white px-6 py-4 flex justify-between items-center z-10">
@@ -173,3 +232,148 @@
 <!-- FontAwesome -->
 <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
 @endsection
+=======
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1>Home</h1>
+            </header>
+
+            <!-- Post Input Box -->
+            <div class="post-input-container">
+                <div class="post-input-wrapper">
+                    <div class="user-avatar-small">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <input type="text" class="post-input" placeholder="Laporkan masalah di lingkunganmu...">
+                </div>
+                <div class="post-actions">
+                    <div class="post-icons">
+                        <button class="icon-btn"><i class="far fa-image"></i></button>
+                        <button class="icon-btn"><i class="far fa-calendar"></i></button>
+                        <button class="icon-btn"><i class="fas fa-map-marker-alt"></i></button>
+                        <button class="icon-btn"><i class="fas fa-tag"></i></button>
+                        <button class="icon-btn"><i class="fas fa-pen"></i></button>
+                    </div>
+                    <button class="post-btn">Post</button>
+                </div>
+            </div>
+
+            <!-- Feed Posts -->
+            <div class="feed">
+                <!-- Post 1 -->
+                <article class="post-card">
+                    <div class="post-header">
+                        <div class="post-avatar">
+                            <img src="https://via.placeholder.com/48" alt="Audrey Stark">
+                        </div>
+                        <div class="post-info">
+                            <h3 class="post-author">Audrey Stark</h3>
+                            <p class="post-meta">2 jam • Jl. Melati</p>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p class="post-text">Jalan berlubang besar dekat sekolah...</p>
+                        <div class="post-image">
+                            <img src="https://via.placeholder.com/450x280" alt="Jalan berlubang">
+                        </div>
+                        <div class="post-tags">
+                            <span class="tag tag-baru">Baru</span>
+                            <span class="tag tag-infrastruktur">Infrastruktur</span>
+                        </div>
+                    </div>
+                    <div class="post-footer">
+                        <button class="post-action">
+                            <i class="far fa-comment"></i>
+                            <span>3</span>
+                        </button>
+                        <button class="post-action">
+                            <i class="far fa-heart"></i>
+                            <span>10</span>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Post 2 -->
+                <article class="post-card">
+                    <div class="post-header">
+                        <div class="post-avatar">
+                            <img src="https://via.placeholder.com/48" alt="David Blend">
+                        </div>
+                        <div class="post-info">
+                            <h3 class="post-author">David Blend</h3>
+                            <p class="post-meta">12 jam • Jl. Ahmad Yani</p>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p class="post-text">Sebuah pohon besar tumbang menutupi jalan raya, menyebabkan kemacetan parah. Mohon segera ditangani oleh pihak terkait agar jalan bisa dilewati kembali.</p>
+                        <div class="post-image">
+                            <img src="https://via.placeholder.com/450x280" alt="Pohon tumbang">
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+            <!-- Masalah Urgent -->
+            <section class="sidebar-section">
+                <h2 class="section-title">Masalah Urgent</h2>
+                <div class="urgent-list">
+                    <div class="urgent-item">
+                        <div class="urgent-info">
+                            <h4>Jalan Rusak</h4>
+                            <p>Jl. Melati</p>
+                        </div>
+                        <span class="urgent-votes">128 Votes</span>
+                    </div>
+                    <div class="urgent-item">
+                        <div class="urgent-info">
+                            <h4>Sampah Menumpuk</h4>
+                            <p>Pasar Baru</p>
+                        </div>
+                        <span class="urgent-votes">96 Votes</span>
+                    </div>
+                    <div class="urgent-item">
+                        <div class="urgent-info">
+                            <h4>Lampu Jalan Mati</h4>
+                            <p>RT 05</p>
+                        </div>
+                        <span class="urgent-votes">54 Votes</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Masalah Trending -->
+            <section class="sidebar-section">
+                <h2 class="section-title">Masalah Trending</h2>
+                <div class="trending-list">
+                    <div class="trending-item">
+                        <div class="trending-info">
+                            <h4>Infrastruktur Jalan</h4>
+                            <p>5 laporan hari ini</p>
+                        </div>
+                        <span class="badge badge-urgent">Urgent</span>
+                    </div>
+                    <div class="trending-item">
+                        <div class="trending-info">
+                            <h4>Sampah Menumpuk</h4>
+                            <p>Pasar Baru</p>
+                        </div>
+                        <span class="badge badge-medium">Medium</span>
+                    </div>
+                    <div class="trending-item">
+                        <div class="trending-info">
+                            <h4>Lampu Jalan Mati</h4>
+                            <p>RT 05</p>
+                        </div>
+                        <span class="badge badge-low">Low</span>
+                    </div>
+                </div>
+            </section>
+        </aside>
+    </div>
+</body>
+</html>
+>>>>>>> Stashed changes
