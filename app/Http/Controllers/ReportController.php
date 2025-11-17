@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 class ReportController extends Controller
 {
 
+<<<<<<< HEAD
     /**
      * ================================
      * SHOW CREATE REPORT PAGE
@@ -15,10 +16,18 @@ class ReportController extends Controller
     public function create()
     {
         if (!session()->has('user')) {
+=======
+    public function create()
+    {
+        // Cek apakah user sudah login
+        if (!session()->has('user')) {
+            // Simpan intended URL lalu redirect ke login
+>>>>>>> ef3212d4aa787342e59da5fedbeeb6896ed30c0c
             session(['intended_url' => route('reports.create')]);
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu untuk membuat laporan.');
         }
 
+<<<<<<< HEAD
         // Cari view yang tersedia
         foreach (['reports.create', 'create_report', 'reports.create_report'] as $view) {
             if (view()->exists($view)) {
@@ -38,6 +47,31 @@ class ReportController extends Controller
      */
     public function store(Request $request)
     {
+=======
+        // Pilih view yang tersedia (support beberapa nama file)
+        if (view()->exists('reports.create')) {
+            return view('reports.create');
+        }
+
+        if (view()->exists('create_report')) {
+            return view('create_report');
+        }
+
+        if (view()->exists('reports.create_report')) {
+            return view('reports.create_report');
+        }
+
+        // Fallback: redirect ke home jika view belum ada
+        return redirect()->route('home')->with('error', 'Halaman buat laporan belum tersedia.');
+    }
+
+    /**
+     * Store new report
+     */
+    public function store(Request $request)
+    {
+        // Cek apakah user sudah login
+>>>>>>> ef3212d4aa787342e59da5fedbeeb6896ed30c0c
         if (!session()->has('user')) {
             session(['intended_url' => route('reports.create')]);
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
@@ -45,6 +79,7 @@ class ReportController extends Controller
 
         // Validasi input
         $data = $request->validate([
+<<<<<<< HEAD
             'title'       => 'required|string|max:255',
             'description' => 'required|string',
             'location'    => 'nullable|string|max:255',
@@ -100,12 +135,64 @@ class ReportController extends Controller
      * ================================
      * SHOW ALL REPORTS (OPTIONAL)
      * ================================
+=======
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Handle file upload
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            
+            // Buat folder jika belum ada
+            if (!file_exists(public_path('images/reports'))) {
+                mkdir(public_path('images/reports'), 0777, true);
+            }
+            
+            $image->move(public_path('images/reports'), $imageName);
+            $imagePath = 'images/reports/' . $imageName;
+        }
+
+        // Ambil reports dari session
+        $reports = session('reports', []);
+        
+        // Tambah report baru
+        $newReport = [
+            'id' => count($reports) + 1,
+            'user' => session('user'),
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'image' => $imagePath,
+            'likes' => 0,
+            'comments' => 0,
+            'created_at' => now()->toDateTimeString(),
+        ];
+        
+        array_unshift($reports, $newReport); // Tambah di awal array
+        
+        // Simpan kembali ke session
+        session(['reports' => $reports]);
+
+        // Hapus intended URL jika ada
+        session()->forget('intended_url');
+
+        // Redirect ke home dengan pesan sukses
+        return redirect()->route('home')->with('success', 'Postinganmu telah dikirim!');
+    }
+
+    /**
+     * Display all reports (optional)
+>>>>>>> ef3212d4aa787342e59da5fedbeeb6896ed30c0c
      */
     public function index()
     {
         $reports = session('reports', []);
         return view('reports.index', compact('reports'));
     }
+<<<<<<< HEAD
 
 
 
@@ -135,3 +222,7 @@ class ReportController extends Controller
         ]);
     }
 }
+=======
+    
+}
+>>>>>>> ef3212d4aa787342e59da5fedbeeb6896ed30c0c
