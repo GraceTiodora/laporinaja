@@ -9,41 +9,42 @@
 @section('content')
 <div class="flex h-screen max-w-[1920px] mx-auto">
     <!-- Left Sidebar -->
-    <aside class="w-[280px] bg-white border-r border-gray-200 p-5 flex flex-col overflow-y-auto sidebar-scroll">
+    <aside class="w-[280px] bg-white p-5 flex flex-col overflow-y-auto sidebar-scroll">
         <div class="mb-7">
             <h2 class="text-2xl font-bold text-blue-500">LaporinAja</h2>
         </div>
         
-        <nav class="flex flex-col gap-2">
-            <a href="{{ route('home') }}" class="nav-item active flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">🏠</span>
+        <nav class="flex flex-col gap-1">
+            <a href="{{ route('home') }}" class="nav-item active flex items-center gap-4 px-4 py-2.5 rounded-lg text-[19px] font-normal text-gray-800 transition-all duration-200 hover:bg-gray-100">
+                <i class="fa-solid fa-house w-5 h-5 flex items-center justify-center flex-shrink-0 text-[20px]"></i>
                 <span class="nav-text leading-none">Home</span>
             </a>
-            <a href="{{ route('explore') }}" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">#</span>
+            <a href="{{ route('explore') }}" class="nav-item flex items-center gap-4 px-4 py-2.5 rounded-lg text-[19px] font-normal text-gray-800 transition-all duration-200 hover:bg-gray-100">
+                <i class="fa-solid fa-hashtag w-5 h-5 flex items-center justify-center flex-shrink-0 text-[20px]"></i>
                 <span class="nav-text leading-none">Explore</span>
-            <a href="{{ route('notifications') }}" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">🔔</span>
+            </a>
+            <a href="{{ route('notifications') }}" class="nav-item flex items-center gap-4 px-4 py-2.5 rounded-lg text-[19px] font-normal text-gray-800 transition-all duration-200 hover:bg-gray-100">
+                <i class="fa-regular fa-bell w-5 h-5 flex items-center justify-center flex-shrink-0 text-[20px]"></i>
                 <span class="nav-text leading-none">Notification</span>
             </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">💬</span>
+            <a href="#" class="nav-item flex items-center gap-4 px-4 py-2.5 rounded-lg text-[19px] font-normal text-gray-800 transition-all duration-200 hover:bg-gray-100">
+                <i class="fa-regular fa-comment-dots w-5 h-5 flex items-center justify-center flex-shrink-0 text-[20px]"></i>
                 <span class="nav-text leading-none">Messages</span>
             </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">📋</span>
+            <a href="#" class="nav-item flex items-center gap-4 px-4 py-2.5 rounded-lg text-[19px] font-normal text-gray-800 transition-all duration-200 hover:bg-gray-100">
+                <i class="fa-regular fa-flag w-5 h-5 flex items-center justify-center flex-shrink-0 text-[20px]"></i>
                 <span class="nav-text leading-none">My Reports</span>
             </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">👥</span>
+            <a href="#" class="nav-item flex items-center gap-4 px-4 py-2.5 rounded-lg text-[19px] font-normal text-gray-800 transition-all duration-200 hover:bg-gray-100">
+                <i class="fa-solid fa-user-group w-5 h-5 flex items-center justify-center flex-shrink-0 text-[20px]"></i>
                 <span class="nav-text leading-none">Communities</span>
             </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">👤</span>
+            <a href="#" class="nav-item flex items-center gap-4 px-4 py-2.5 rounded-lg text-[19px] font-normal text-gray-800 transition-all duration-200 hover:bg-gray-100">
+                <i class="fa-regular fa-user w-5 h-5 flex items-center justify-center flex-shrink-0 text-[20px]"></i>
                 <span class="nav-text leading-none">Profile</span>
             </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">⚙</span>
+            <a href="#" class="nav-item flex items-center gap-4 px-4 py-2.5 rounded-lg text-[19px] font-normal text-gray-800 transition-all duration-200 hover:bg-gray-100">
+                <i class="fa-solid fa-ellipsis w-5 h-5 flex items-center justify-center flex-shrink-0 text-[20px]"></i>
                 <span class="nav-text leading-none">More</span>
             </a>
         </nav>
@@ -52,9 +53,15 @@
             <span class="btn-text">+ New Report</span>
         </button>
         
-        <div class="mt-auto pt-5 border-t border-gray-200">
-            <div class="flex items-center gap-3 mb-3">
+        <div class="mt-auto pt-5">
+            <div class="flex items-center gap-3 p-3 rounded-[20px] hover:bg-gray-50 transition-all cursor-pointer shadow-sm border border-gray-100 mb-3">
                 <img src="{{ asset('images/profile-user.jpg') }}" alt="{{ session('user.name') }}" class="w-10 h-10 rounded-full object-cover">
+                <div class="flex flex-col leading-tight">
+                    <span class="text-sm font-semibold text-gray-800">{{ session('user.name', 'User') }}</span>
+                    <span class="text-xs text-gray-400">{{ session('user.username', 'username') }}</span>
+                </div>
+            </div>
+            <div class="hidden">
                 <form action="{{ route('profile.update') }}" method="POST" class="flex-1">
                     @csrf
                     <div class="flex flex-col gap-1">
@@ -78,8 +85,8 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col overflow-hidden border-r border-gray-200">
-        <header class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+    <main class="flex-1 flex flex-col overflow-hidden">
+        <header class="bg-white px-6 py-4 flex justify-between items-center">
             <h1 class="text-xl font-semibold text-gray-800">Home</h1>
         </header>
  
@@ -91,12 +98,14 @@
             @endif
 
             <!-- Post Input -->
-            <div class="bg-white border border-gray-200 rounded-xl p-4 mb-3 flex items-center gap-3">
-                <img src="{{ asset('images/profile-user.jpg') }}" alt="{{ session('user.name') }}" class="w-10 h-10 rounded-full object-cover">
-                <input type="text" placeholder="Laporkan masalah di lingkunganmu..." class="flex-1 border-none outline-none text-sm text-gray-400 cursor-pointer" onclick="window.location.href='{{ route('reports.create') }}'">
+            <div class="bg-white rounded-[20px] shadow-sm p-4 mb-3 hover:shadow-md transition-all">
+                <div class="flex items-center gap-3 mb-3">
+                    <img src="{{ asset('images/profile-user.jpg') }}" alt="{{ session('user.name') }}" class="w-10 h-10 rounded-full object-cover">
+                    <input type="text" placeholder="Laporkan masalah di lingkunganmu..." class="flex-1 border-none outline-none text-sm text-gray-400 cursor-pointer bg-gray-50 px-3 py-2 rounded-full" onclick="window.location.href='{{ route('reports.create') }}'">
+                </div>
             </div>
             
-            <div class="bg-white border border-gray-200 border-t-0 rounded-b-xl px-4 py-3 flex gap-2 items-center mb-5 -mt-3">
+            <div class="bg-white rounded-[20px] shadow-sm px-4 py-3 flex gap-2 items-center mb-5 hover:shadow-md transition-all">
                 <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">📷</button>
                 <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">🖼</button>
                 <button class="bg-transparent border-none text-lg cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-gray-100">📍</button>
@@ -106,7 +115,7 @@
             </div>
 
             <!-- Recent Report 1 -->
-            <article class="bg-white border border-gray-200 rounded-xl p-4 mb-5 shadow-sm">
+            <article class="bg-white rounded-[20px] shadow-sm p-4 mb-5 hover:shadow-md transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <img src="{{ asset('images/profile-audrey.jpg') }}" alt="Audrey Stark" class="w-10 h-10 rounded-full object-cover">
                     <div class="flex-1">
@@ -126,7 +135,7 @@
                     <span class="px-3 py-1 rounded-2xl text-xs font-medium bg-indigo-100 text-indigo-700">Infrastruktur</span>
                 </div>
                 
-                <div class="flex justify-between items-center pt-3 border-t border-gray-100">
+                <div class="flex justify-between items-center pt-3">
                     <div class="flex gap-4 text-sm text-gray-500">
                         <button class="hover:text-blue-500 transition">💬 3</button>
                         <button class="hover:text-red-500 transition">❤ 10</button>
@@ -135,7 +144,7 @@
             </article>
 
             <!-- Recent Report 2 -->
-            <article class="bg-white border border-gray-200 rounded-xl p-4 mb-5 shadow-sm">
+            <article class="bg-white rounded-[20px] shadow-sm p-4 mb-5 hover:shadow-md transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <img src="{{ asset('images/profile-david.jpg') }}" alt="David Blend" class="w-10 h-10 rounded-full object-cover">
                     <div class="flex-1">
@@ -155,7 +164,7 @@
                     <span class="px-3 py-1 rounded-2xl text-xs font-medium bg-indigo-100 text-indigo-700">Bencana Alam</span>
                 </div>
                 
-                <div class="flex justify-between items-center pt-3 border-t border-gray-100">
+                <div class="flex justify-between items-center pt-3">
                     <div class="flex gap-4 text-sm text-gray-500">
                         <button class="hover:text-blue-500 transition">💬 1</button>
                         <button class="hover:text-red-500 transition">❤ 5</button>

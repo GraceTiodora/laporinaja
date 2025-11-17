@@ -9,7 +9,7 @@
 @section('content')
 <div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">
     <!-- 🧭 Left Sidebar -->
-    <aside class="w-[270px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between">
+    <aside class="w-[270px] bg-white p-6 flex flex-col justify-between">
         <div>
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">Laporin<span class="text-gray-900">Aja</span></h2>
 
@@ -43,18 +43,20 @@
         </div>
 
         <!-- Profile Section -->
-        <div class="flex items-center gap-3 border-t border-gray-200 pt-4">
-            <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full object-cover">
-            <div class="flex flex-col leading-tight">
-                <span class="text-sm font-medium text-gray-800">{{ session('user.name', 'Guest') }}</span>
-                <span class="text-xs text-gray-500">{{ session('user.email', 'user@mail.com') }}</span>
+        <div class="flex items-center gap-3 mt-4">
+            <div class="flex items-center gap-3 p-3 rounded-[50px] hover:bg-gray-50 transition-all cursor-pointer w-full shadow-sm border border-gray-100">
+                <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full object-cover">
+                <div class="flex flex-col leading-tight">
+                    <span class="text-sm font-semibold text-gray-800">{{ session('user.name', 'User') }}</span>
+                    <span class="text-xs text-gray-400">{{ session('user.email', 'username') }}</span>
+                </div>
             </div>
         </div>
     </aside>
 
     <!-- 📰 Main Feed -->
-    <main class="flex-1 flex flex-col border-r border-gray-200 bg-white">
-        <header class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center z-10">
+    <main class="flex-1 flex flex-col bg-white">
+        <header class="sticky top-0 bg-white px-6 py-4 flex justify-between items-center z-10">
             <h1 class="text-xl font-bold text-gray-800">Beranda</h1>
             <button class="text-gray-400 hover:text-blue-600 transition">
                 <i class="fa-solid fa-gear text-xl"></i>
@@ -63,12 +65,12 @@
 
         <div class="overflow-y-auto p-6 space-y-5">
             <!-- Post Input -->
-            <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 hover:shadow-md transition">
+            <div class="bg-white rounded-[20px] shadow-sm p-4 hover:shadow-md transition">
                 <div class="flex items-center gap-3 mb-3">
                     <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full">
                     <input type="text" placeholder="Laporkan masalah di lingkunganmu..."
                            onclick="window.location.href='{{ route('reports.create') }}'"
-                           class="flex-1 bg-gray-50 px-3 py-2 rounded-full border border-transparent focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition">
+                           class="flex-1 bg-gray-50 px-3 py-2 rounded-full border border-transparent focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition cursor-pointer">
                 </div>
                 <div class="flex justify-between px-2">
                     <div class="flex gap-3 text-gray-400">
@@ -92,7 +94,7 @@
                 'text'=>'Pohon besar tumbang menutupi jalan raya, menyebabkan kemacetan parah.',
                 'img'=>'images/pohon-tumbang.jpg', 'kategori'=>'Bencana Alam', 'votes'=>54, 'komen'=>1
             ]] as $report)
-                <article class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 hover:shadow-md transition-all duration-300">
+                <article class="bg-white rounded-[20px] shadow-sm p-4 hover:shadow-md transition-all duration-300">
                     <div class="flex items-center gap-3 mb-3">
                         <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full">
                         <div>
@@ -108,7 +110,7 @@
                         <span class="px-3 py-1 text-xs rounded-full bg-pink-100 text-pink-700">Baru</span>
                         <span class="px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700">{{ $report['kategori'] }}</span>
                     </div>
-                    <div class="flex justify-between items-center text-sm text-gray-500 border-t border-gray-100 pt-3">
+                    <div class="flex justify-between items-center text-sm text-gray-500 pt-3">
                         <div class="flex gap-4">
                             <button class="hover:text-blue-600 transition"><i class="fa-regular fa-comment"></i> {{ $report['komen'] }}</button>
                             <button class="hover:text-red-500 transition"><i class="fa-solid fa-heart"></i> {{ $report['votes'] }}</button>
