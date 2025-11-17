@@ -1,9 +1,5 @@
 /* Explore Page Styles */
 
-<<<<<<< HEAD
-=======
-/* Reset & Base */
->>>>>>> ef3212d4aa787342e59da5fedbeeb6896ed30c0c
 * {
     margin: 0;
     padding: 0;
@@ -12,7 +8,6 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-<<<<<<< HEAD
 }
 
 /* Active navigation item */
@@ -22,12 +17,6 @@ body {
 }
 
 /* Custom Scrollbar Styling */
-=======
-    background-color: #f9fafb;
-}
-
-/* Sidebar Styles */
->>>>>>> ef3212d4aa787342e59da5fedbeeb6896ed30c0c
 .sidebar-scroll::-webkit-scrollbar,
 .feed-scroll::-webkit-scrollbar {
     width: 6px;
@@ -44,7 +33,6 @@ body {
     border-radius: 3px;
 }
 
-<<<<<<< HEAD
 /* Dropdown Animations */
 .dropdown-menu {
     animation: fadeIn 0.2s ease-in-out;
@@ -82,224 +70,6 @@ button:hover i {
 }
 
 /* Responsive Design */
-=======
-/* Navigation Active State */
-.nav-item.active {
-    background-color: #eff6ff;
-    color: #3b82f6;
-    font-weight: 600;
-}
-
-/* Search Bar */
-.search-bar {
-    width: 100%;
-    padding: 1rem 1.5rem;
-    background-color: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    font-size: 1rem;
-    color: #374151;
-    transition: all 0.2s;
-}
-
-.search-bar:focus {
-    outline: none;
-    ring: 2px;
-    ring-color: #3b82f6;
-    border-color: transparent;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.search-bar::placeholder {
-    color: #9ca3af;
-}
-
-/* Filter Buttons */
-.filter-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
-    background-color: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    font-size: 1rem;
-    color: #374151;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.filter-btn:hover {
-    background-color: #f9fafb;
-    border-color: #d1d5db;
-}
-
-.filter-btn svg {
-    width: 1rem;
-    height: 1rem;
-}
-
-/* Dropdown Menu */
-.dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    margin-top: 0.5rem;
-    width: 14rem;
-    background-color: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-}
-
-.dropdown-menu.hidden {
-    display: none;
-}
-
-.dropdown-menu button {
-    width: 100%;
-    text-align: left;
-    padding: 0.625rem 1rem;
-    font-size: 0.875rem;
-    color: #374151;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.15s;
-    border-radius: 0.5rem;
-}
-
-.dropdown-menu button:hover {
-    background-color: #f3f4f6;
-}
-
-/* Trending Reports Section */
-.trending-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #111827;
-    margin-bottom: 1rem;
-}
-
-.trending-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-    color: #f97316;
-}
-
-/* Report Card */
-.report-card {
-    background-color: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    padding: 1.25rem;
-    transition: all 0.2s;
-    cursor: pointer;
-}
-
-.report-card:hover {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-}
-
-.report-card h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 0.5rem;
-}
-
-.report-meta {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: #6b7280;
-    margin-bottom: 0.75rem;
-}
-
-.report-meta svg {
-    width: 1rem;
-    height: 1rem;
-}
-
-/* Tags */
-.tag {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    border-radius: 9999px;
-}
-
-.tag-new {
-    background-color: #fce7f3;
-    color: #be185d;
-}
-
-.tag-category {
-    background-color: #f3f4f6;
-    color: #374151;
-    border: 1px solid #d1d5db;
-}
-
-.tag-urgent {
-    background-color: #fee2e2;
-    color: #dc2626;
-}
-
-.tag-medium {
-    background-color: #fef3c7;
-    color: #d97706;
-}
-
-.tag-low {
-    background-color: #dbeafe;
-    color: #2563eb;
-}
-
-/* Sidebar Right */
-.sidebar-right {
-    background-color: white;
-    padding: 1.5rem;
-    overflow-y: auto;
-    border-left: 1px solid #e5e7eb;
-}
-
-.sidebar-right section {
-    margin-bottom: 2rem;
-}
-
-.sidebar-right h2 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 1rem;
-}
-
-.sidebar-right ul {
-    list-style: none;
-}
-
-.sidebar-right li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #f3f4f6;
-}
-
-.sidebar-right li:last-child {
-    border-bottom: none;
-}
-
-/* Responsive */
->>>>>>> ef3212d4aa787342e59da5fedbeeb6896ed30c0c
 @media (max-width: 1200px) {
     .sidebar-right {
         display: none;
@@ -337,7 +107,6 @@ button:hover i {
         font-size: 24px;
     }
 
-<<<<<<< HEAD
     /* Hide filter text on mobile */
     button span {
         display: none;
@@ -349,19 +118,6 @@ button:hover i {
 }
 
 @media (max-width: 640px) {
-=======
-    .filter-btn span {
-        display: none;
-    }
-}
-
-@media (max-width: 640px) {
-    .search-bar {
-        font-size: 0.875rem;
-        padding: 0.75rem 1rem;
-    }
-
->>>>>>> ef3212d4aa787342e59da5fedbeeb6896ed30c0c
     .filter-btn {
         padding: 0.625rem 1rem;
         font-size: 0.875rem;
@@ -372,25 +128,6 @@ button:hover i {
     }
 }
 
-<<<<<<< HEAD
-=======
-/* Animation */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.report-card {
-    animation: fadeIn 0.3s ease-in-out;
-}
-
->>>>>>> ef3212d4aa787342e59da5fedbeeb6896ed30c0c
 /* Loading State */
 .loading {
     text-align: center;
@@ -398,26 +135,16 @@ button:hover i {
     color: #6b7280;
 }
 
-<<<<<<< HEAD
 /* No Results State */
-=======
->>>>>>> ef3212d4aa787342e59da5fedbeeb6896ed30c0c
 .no-results {
     text-align: center;
     padding: 3rem 1rem;
     color: #9ca3af;
 }
 
-<<<<<<< HEAD
 .no-results i {
     font-size: 4rem;
     margin-bottom: 1rem;
-=======
-.no-results svg {
-    width: 4rem;
-    height: 4rem;
-    margin: 0 auto 1rem;
->>>>>>> ef3212d4aa787342e59da5fedbeeb6896ed30c0c
     color: #d1d5db;
 }
 
@@ -431,7 +158,6 @@ button:hover i {
 .no-results p {
     font-size: 0.875rem;
     color: #9ca3af;
-<<<<<<< HEAD
 }
 
 /* Smooth Transitions */
@@ -439,8 +165,7 @@ button:hover i {
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+
 button, a, input {
     transition: all 0.2s ease;
-=======
->>>>>>> ef3212d4aa787342e59da5fedbeeb6896ed30c0c
 }

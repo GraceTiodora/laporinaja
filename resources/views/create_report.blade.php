@@ -14,6 +14,7 @@
             <h2 class="text-2xl font-bold text-blue-500">LaporinAja</h2>
         </div>
         
+        
         <nav class="flex flex-col gap-2">
             <a href="{{ route('home') }}" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
                 <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">🏠</span>

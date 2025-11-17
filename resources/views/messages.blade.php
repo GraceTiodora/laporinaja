@@ -150,6 +150,7 @@
                         Aku juga pernah hampir kepeleset pas hujan 😅. Emang harus cepat diperbaiki.
                     </div>
                 </div>
+                
 
                 <div class="flex justify-end">
                     <div class="bg-blue-600 text-white px-4 py-2 rounded-2xl max-w-[60%]">

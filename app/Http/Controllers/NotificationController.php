@@ -15,6 +15,7 @@ class NotificationController extends Controller
         if (!session()->has('user')) {
             return redirect()->route('login')->with('error', 'Silakan login untuk melihat notifikasi.');
         }
+        
 
         // Ambil notifications dari session
         $notifications = session('notifications', []);
