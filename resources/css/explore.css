@@ -1,0 +1,170 @@
+/* Explore Page Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+/* Active navigation item */
+.nav-item.active {
+    background-color: #eff6ff;
+    color: #3b82f6;
+}
+
+/* Custom Scrollbar Styling */
+.sidebar-scroll::-webkit-scrollbar,
+.feed-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track,
+.feed-scroll::-webkit-scrollbar-track {
+    background: #f3f4f6;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb,
+.feed-scroll::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+/* Dropdown Animations */
+.dropdown-menu {
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Report Card Hover Effect */
+.report-card {
+    transition: all 0.3s ease;
+}
+
+.report-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Filter Button Hover */
+button:hover i {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+}
+
+/* Search Input Focus */
+#searchInput:focus {
+    outline: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .sidebar-right {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    aside.sidebar-scroll {
+        width: 80px;
+    }
+    
+    .nav-text {
+        display: none;
+    }
+    
+    aside.sidebar-scroll h2 {
+        font-size: 18px;
+    }
+    
+    .user-info {
+        display: none;
+    }
+    
+    .btn-new-report {
+        padding: 12px;
+        font-size: 20px;
+    }
+    
+    .btn-text {
+        display: none;
+    }
+    
+    .btn-new-report::before {
+        content: '+';
+        font-size: 24px;
+    }
+
+    /* Hide filter text on mobile */
+    button span {
+        display: none;
+    }
+
+    button i {
+        margin: 0 !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .filter-btn {
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .report-card {
+        padding: 1rem;
+    }
+}
+
+/* Loading State */
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+}
+
+/* No Results State */
+.no-results {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #9ca3af;
+}
+
+.no-results i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: #d1d5db;
+}
+
+.no-results h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.no-results p {
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+/* Smooth Transitions */
+* {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+button, a, input {
+    transition: all 0.2s ease;
+}

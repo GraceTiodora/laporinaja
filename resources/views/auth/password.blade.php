@@ -26,6 +26,17 @@
                 </div>
             @endif
 
+            <!-- Username field -->
+            <div>
+                <label for="username" class="block text-gray-800 font-semibold mb-2 text-sm">Username</label>
+                <input id="username" name="username" type="text" required placeholder="username"
+                    value="{{ old('username', session('temp_register.email') ? strtok(session('temp_register.email'), '@') : '') }}"
+                    class="w-full rounded-full bg-gray-100 placeholder-gray-400 px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition border-0">
+                @error('username')
+                    <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
             <div>
                 <label for="password" class="block text-gray-800 font-semibold mb-2 text-sm">Kata Sandi</label>
                 <input id="password" name="password" type="password" required placeholder="Kata Sandi"
@@ -40,23 +51,6 @@
                 Daftar
             </button>
         </form>
-
-        <div class="flex items-center justify-center my-6">
-            <span class="text-gray-400 font-semibold text-sm">ATAU</span>
-        </div>
-
-        <!-- Google Login Button -->
-        <a href="{{ route('login.google') }}" 
-           class="w-full flex items-center justify-center border-2 border-black rounded-full py-3.5 gap-3 hover:bg-gray-50 transition">
-            <img src="{{ asset('images/google-icon.svg') }}" alt="Google Icon" class="w-5 h-5" />
-            <span class="font-bold text-black text-sm">Masuk dengan Google</span>
-        </a>
-
-        <p class="mt-6 text-center text-sm">
-            <a href="{{ route('login') }}" class="text-blue-500 hover:text-blue-600 font-medium hover:underline">
-                Sudah punya akun? Login disini
-            </a>
-        </p>
     </div>
 </div>
 @endsection
