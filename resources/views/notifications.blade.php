@@ -23,14 +23,14 @@
                     ['Explore', 'explore', 'fa-solid fa-hashtag'],
                     ['Notification', 'notifications', 'fa-regular fa-bell'],
                     ['Messages', 'messages', 'fa-regular fa-envelope'],
-                    ['My Reports', 'my.reports', 'fa-solid fa-clipboard-list'],
-                    ['Communities', '#', 'fa-solid fa-users'],
-                    ['Profile', '#', 'fa-regular fa-user'],
+                    ['My Reports', 'my-reports', 'fa-solid fa-clipboard-list'],
+                    ['Communities', 'communities', 'fa-solid fa-users'],
+                    ['Profile', 'profile', 'fa-regular fa-user'],
                     ['More', '#', 'fa-solid fa-ellipsis-h'],
                 ];
             @endphp
 
-            
+
             <nav class="space-y-2">
                 @foreach ($menu as [$name, $route, $icon])
                     <a href="{{ $route == '#' ? '#' : route($route) }}"

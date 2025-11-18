@@ -20,9 +20,9 @@
         ['Explore', 'explore', 'fa-solid fa-hashtag'],
         ['Notification', 'notifications', 'fa-regular fa-bell'],   // <-- FIX !!!
         ['Messages', '#', 'fa-regular fa-envelope'],
-        ['My Reports', '#', 'fa-solid fa-clipboard-list'],
-        ['Communities', '#', 'fa-solid fa-users'],
-        ['Profile', '#', 'fa-regular fa-user'],
+        ['My Reports', 'my-reports', 'fa-solid fa-clipboard-list'],
+        ['Communities', 'communities', 'fa-solid fa-users'],
+        ['Profile', 'profile', 'fa-regular fa-user'],
         ['More', '#', 'fa-solid fa-ellipsis-h'],
     ];
 @endphp

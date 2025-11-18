@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ExploreController;  // ← TAMBAH INI
 
+
 Route::get('/', function () {
     return session()->has('user')
         ? view('homepage_auth') 
@@ -48,12 +49,15 @@ Route::get('/messages', function () {
     return view('messages');
 })->name('messages');
 
-Route::get('/my-reports', [ReportController::class, 'myReports'])->name('my.reports');
 
-use App\Http\Controllers\CommunityController;
+Route::get('my-reports', [ReportController::class, 'myReports'])->name('my-reports');
+
 
 Route::get('/communities', function () {
-    
     return view('communities');
 })->name('communities');
+
+Route::get('/profile', function () {
+    return view('profile');
+})->name('profile');
 
