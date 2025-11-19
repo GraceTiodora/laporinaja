@@ -12,6 +12,13 @@ Route::get('/', function () {
         : view('homepage');
 })->name('home');
 
+Route::get('/profile', function () {
+    if (!session()->has('user')) {
+        return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+    }
+
+    return view('profile', ['user' => session('user')]);
+})->name('profile');
 
 // Auth Routes
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -31,7 +38,7 @@ Route::get('explore', [ExploreController::class, 'index'])->name('explore');
 // Reports Routes
 Route::get('reports/create', [ReportController::class, 'create'])->name('reports.create');
 Route::post('reports', [ReportController::class, 'store'])->name('reports.store');
-
+Route::get('/reports', [ReportController::class, 'index'])->name('reports');
 // Fallback for Google login
 Route::get('login/google', function () {
     return redirect()->route('login')->with('error', 'Login dengan Google belum dikonfigurasi.');
@@ -57,7 +64,4 @@ Route::get('/communities', function () {
     return view('communities');
 })->name('communities');
 
-Route::get('/profile', function () {
-    return view('profile');
-})->name('profile');
 

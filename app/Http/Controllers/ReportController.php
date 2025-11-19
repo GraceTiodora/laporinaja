@@ -6,12 +6,6 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-
-    /**
-     * ================================
-     * SHOW CREATE REPORT PAGE
-     * ================================
-     */
     public function create()
     {
         if (!session()->has('user')) {
@@ -30,12 +24,6 @@ class ReportController extends Controller
     }
 
 
-
-    /**
-     * ================================
-     * STORE NEW REPORT
-     * ================================
-     */
     public function store(Request $request)
     {
         if (!session()->has('user')) {
@@ -94,26 +82,12 @@ class ReportController extends Controller
         return redirect()->route('home')->with('success', 'Laporan berhasil dikirim!');
     }
 
-
-
-    /**
-     * ================================
-     * SHOW ALL REPORTS (OPTIONAL)
-     * ================================
-     */
     public function index()
     {
         $reports = session('reports', []);
         return view('reports.index', compact('reports'));
     }
 
-
-
-    /**
-     * ================================
-     * MY REPORTS (KHUSUS USER LOGIN)
-     * ================================
-     */
     public function myReports()
     {
         if (!session()->has('user')) {
