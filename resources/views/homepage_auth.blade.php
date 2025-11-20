@@ -16,13 +16,14 @@
             <nav class="space-y-2">
 @php
     $menu = [
-        ['Beranda', 'home', 'fa-solid fa-house'],
-        ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
-        ['Notifikasi', 'notifications', 'fa-regular fa-bell'],   // <-- FIX !!!
-        ['Pesan', '#', 'fa-regular fa-envelope'],
-        ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
-        ['Komunitas', 'communities', 'fa-solid fa-users'],
-        ['Profil', 'profile', 'fa-regular fa-user'],
+        ['Home', 'home', 'fa-solid fa-house'],
+        ['Explore', 'explore', 'fa-solid fa-hashtag'],
+        ['Notification', 'notifications', 'fa-regular fa-bell'],   // <-- FIX !!!
+        ['Messages', '#', 'fa-regular fa-envelope'],
+        ['My Reports', 'my-reports', 'fa-solid fa-clipboard-list'],
+        ['Communities', 'communities', 'fa-solid fa-users'],
+        ['Profile', 'profile', 'fa-regular fa-user'],
+        ['More', '#', 'fa-solid fa-ellipsis-h'],
     ];
 @endphp
 
@@ -82,37 +83,69 @@
             </div>
 
             <!-- Feed Example -->
-            @foreach ([[
-                'name'=>'Audrey Stark', 'time'=>'2 jam', 'lokasi'=>'Jl. Melati',
-                'text'=>'Jalan berlubang besar dekat sekolah sangat berbahaya untuk dilewati',
-                'img'=>'images/jalan_berlubang.jpg', 'kategori'=>'Infrastruktur', 'votes'=>128, 'komen'=>3
-            ],[
-                'name'=>'David Blend', 'time'=>'12 menit', 'lokasi'=>'Jl. Ahmad Yani',
-                'text'=>'Pohon besar tumbang menutupi jalan raya, menyebabkan kemacetan parah.',
-                'img'=>'images/pohon-tumbang.jpg', 'kategori'=>'Bencana Alam', 'votes'=>54, 'komen'=>1
-            ]] as $report)
+            @php
+                $sessionReports = session('reports', []);
+                $dummyReports = [
+                    [
+                        'id' => 1,
+                        'title' => 'Jalan Berlubang Besar Dekat Sekolah...',
+                        'description' => 'Jalan berlubang besar dekat sekolah sangat berbahaya untuk dilewati',
+                        'location' => 'Jl. Melati',
+                        'category' => 'Infrastruktur',
+                        'status' => 'Baru',
+                        'votes' => 45,
+                        'comments' => 3,
+                        'created_at' => '2 jam',
+                        'image' => 'images/jalan_berlubang.jpg',
+                        'user' => [
+                            'name' => 'Audrey Stark',
+                            'username' => 'audreystark',
+                        ]
+                    ],
+                    [
+                        'id' => 2,
+                        'title' => 'Pohon Besar Tumbang di Jl. Ahmad Yani',
+                        'description' => 'Pohon besar tumbang menutupi jalan raya, menyebabkan kemacetan parah.',
+                        'location' => 'Jl. Ahmad Yani',
+                        'category' => 'Bencana Alam',
+                        'status' => 'Baru',
+                        'votes' => 54,
+                        'comments' => 1,
+                        'created_at' => '12 menit',
+                        'image' => 'images/pohon-tumbang.jpg',
+                        'user' => [
+                            'name' => 'David Blend',
+                            'username' => 'davidblend',
+                        ]
+                    ],
+                ];
+                $allReports = array_merge($sessionReports, $dummyReports);
+            @endphp
+            @foreach ($allReports as $report)
                 <article class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 hover:shadow-md transition-all duration-300">
                     <div class="flex items-center gap-3 mb-3">
                         <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full">
                         <div>
                             <div class="flex gap-2 items-center">
-                                <span class="font-semibold text-gray-800">{{ $report['name'] }}</span>
-                                <span class="text-xs text-gray-500">{{ $report['time'] }} • {{ $report['lokasi'] }}</span>
+                                <span class="font-semibold text-gray-800">{{ $report['user']['name'] ?? 'Anonymous' }}</span>
+                                <span class="text-xs text-gray-500">{{ $report['created_at'] ?? 'Baru saja' }} • {{ $report['location'] ?? 'Tidak diketahui' }}</span>
                             </div>
                         </div>
                     </div>
-                    <p class="text-gray-700 text-sm mb-3">{{ $report['text'] }}</p>
-                    <img src="{{ asset($report['img']) }}" class="rounded-lg mb-3 object-cover max-h-[400px] w-full">
+                    <p class="text-gray-700 text-sm mb-3">{{ $report['description'] ?? $report['text'] ?? '' }}</p>
+                    @if(!empty($report['image']))
+                        <img src="{{ asset($report['image']) }}" class="rounded-lg mb-3 object-cover max-h-[400px] w-full">
+                    @endif
                     <div class="flex gap-2 mb-3">
-                        <span class="px-3 py-1 text-xs rounded-full bg-pink-100 text-pink-700">Baru</span>
-                        <span class="px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700">{{ $report['kategori'] }}</span>
+                        <span class="px-3 py-1 text-xs rounded-full bg-pink-100 text-pink-700">{{ $report['status'] ?? 'Baru' }}</span>
+                        <span class="px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700">{{ $report['category'] ?? 'Umum' }}</span>
                     </div>
                     <div class="flex justify-between items-center text-sm text-gray-500 border-t border-gray-100 pt-3">
                         <div class="flex gap-4">
-                            <button class="hover:text-blue-600 transition"><i class="fa-regular fa-comment"></i> {{ $report['komen'] }}</button>
-                            <button class="hover:text-red-500 transition"><i class="fa-solid fa-heart"></i> {{ $report['votes'] }}</button>
+                            <button class="hover:text-blue-600 transition"><i class="fa-regular fa-comment"></i> {{ $report['comments'] ?? 0 }}</button>
+                            <button class="hover:text-red-500 transition"><i class="fa-solid fa-heart"></i> {{ $report['votes'] ?? 0 }}</button>
                         </div>
-                        <button class="text-xs text-blue-600 hover:underline">Lihat detail</button>
+                        <a href="{{ route('reports.show', $report['id']) }}" class="text-xs text-blue-600 hover:underline">Lihat detail</a>
                     </div>
                 </article>
             @endforeach
@@ -123,7 +156,7 @@
     <aside class="w-[340px] bg-white p-6 overflow-y-auto">
         <section class="mb-8">
             <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-fire text-red-500"></i> Masalah Penting
+                <i class="fa-solid fa-fire text-red-500"></i> Masalah Urgent
             </h2>
             <ul class="space-y-3">
                 <li class="flex justify-between items-center">
@@ -153,14 +186,14 @@
                         <p class="font-medium text-gray-800">Infrastruktur Jalan</p>
                         <p class="text-xs text-gray-500">5 laporan hari ini</p>
                     </div>
-                    <span class="px-3 py-1 rounded-xl text-xs bg-pink-100 text-pink-700 font-medium">Penting</span>
+                    <span class="px-3 py-1 rounded-xl text-xs bg-pink-100 text-pink-700 font-medium">Urgent</span>
                 </li>
                 <li class="flex justify-between items-center">
                     <div>
                         <p class="font-medium text-gray-800">Sampah Menumpuk</p>
                         <p class="text-xs text-gray-500">Pasar Baru</p>
                     </div>
-                    <span class="px-3 py-1 rounded-xl text-xs bg-yellow-100 text-yellow-700 font-medium">Sedang</span>
+                    <span class="px-3 py-1 rounded-xl text-xs bg-yellow-100 text-yellow-700 font-medium">Medium</span>
                 </li>
             </ul>
         </section>

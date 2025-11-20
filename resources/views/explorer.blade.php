@@ -74,7 +74,7 @@
     <!-- 📰 Main Content -->
     <main class="flex-1 flex flex-col border-r border-gray-200 bg-white">
         <header class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center z-10">
-            <h1 class="text-xl font-bold text-gray-800">Explore</h1>
+            <h1 class="text-xl font-bold text-gray-800">Pencarian</h1>
             <button class="text-gray-400 hover:text-blue-600 transition">
                 <i class="fa-solid fa-gear text-xl"></i>
             </button>
@@ -184,7 +184,7 @@
                                     <button class="hover:text-blue-600 transition"><i class="fa-regular fa-comment"></i> {{ $report['comments'] ?? 0 }}</button>
                                     <button class="hover:text-red-500 transition"><i class="fa-solid fa-heart"></i> {{ $report['votes'] ?? 0 }}</button>
                                 </div>
-                                <button class="text-xs text-blue-600 hover:underline">Lihat detail</button>
+                                <a href="{{ route('reports.show', $report['id']) }}" class="text-xs text-blue-600 hover:underline">Lihat detail</a>
                             </div>
                         </article>
                     @empty

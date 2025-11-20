@@ -39,6 +39,7 @@ Route::get('explore', [ExploreController::class, 'index'])->name('explore');
 Route::get('reports/create', [ReportController::class, 'create'])->name('reports.create');
 Route::post('reports', [ReportController::class, 'store'])->name('reports.store');
 Route::get('/reports', [ReportController::class, 'index'])->name('reports');
+Route::get('/reports/{id}', [ReportController::class, 'show'])->name('reports.show');
 // Fallback for Google login
 Route::get('login/google', function () {
     return redirect()->route('login')->with('error', 'Login dengan Google belum dikonfigurasi.');

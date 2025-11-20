@@ -88,6 +88,66 @@ class ReportController extends Controller
         return view('my_reports', compact('reports'));
     }
 
+    public function show($id)
+    {
+        // Ambil reports dari session
+        $sessionReports = session('reports', []);
+        
+        // Ambil dummy reports dari explore controller
+        $dummyReports = [
+            [
+                'id' => 1,
+                'title' => 'Jalan Berlubang Besar Dekat Sekolah...',
+                'description' => 'Jalan berlubang besar dekat sekolah sangat berbahaya untuk dilewati',
+                'location' => 'Jl. Melati',
+                'category' => 'Infrastruktur',
+                'status' => 'Baru',
+                'votes' => 45,
+                'comments' => 3,
+                'created_at' => '2 jam',
+                'image' => 'images/jalan_berlubang.jpg',
+                'user' => [
+                    'name' => 'Audrey Stark',
+                    'username' => 'audreystark',
+                ]
+            ],
+            [
+                'id' => 2,
+                'title' => 'Pohon Besar Tumbang di Jl. Ahmad Yani',
+                'description' => 'Pohon besar tumbang menutupi jalan raya, menyebabkan kemacetan parah.',
+                'location' => 'Jl. Ahmad Yani',
+                'category' => 'Bencana Alam',
+                'status' => 'Baru',
+                'votes' => 54,
+                'comments' => 1,
+                'created_at' => '12 menit',
+                'image' => 'images/pohon-tumbang.jpg',
+                'user' => [
+                    'name' => 'David Blend',
+                    'username' => 'davidblend',
+                ]
+            ],
+        ];
+        
+        // Gabungkan session reports dan dummy reports
+        $allReports = array_merge($sessionReports, $dummyReports);
+        
+        // Cari report berdasarkan ID
+        $report = null;
+        foreach ($allReports as $r) {
+            if ($r['id'] == $id) {
+                $report = $r;
+                break;
+            }
+        }
+        
+        if (!$report) {
+            return redirect()->route('explore')->with('error', 'Laporan tidak ditemukan.');
+        }
+        
+        return view('detail_reports', compact('report'));
+    }
+
     public function myReports()
     {
         if (!session()->has('user')) {
