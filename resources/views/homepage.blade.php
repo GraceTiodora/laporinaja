@@ -18,7 +18,7 @@
     $menu = [
         ['Beranda', 'home', 'fa-solid fa-house'],
         ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
-        ['Notifikasi', 'notifications', 'fa-regular fa-bell'],   // <-- FIX !!!
+        ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
         ['Pesan', '#', 'fa-regular fa-envelope'],
         ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
         ['Komunitas', 'communities', 'fa-solid fa-users'],
@@ -37,7 +37,7 @@
 
             <button onclick="window.location.href='{{ route('reports.create') }}'"
                     class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full shadow-md transition-all font-semibold">
-                <i class="fa-solid fa-plus-circle"></i> New Report
+                <i class="fa-solid fa-plus-circle"></i> Laporan Baru
             </button>
         </div>
 

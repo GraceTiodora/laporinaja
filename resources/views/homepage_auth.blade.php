@@ -18,7 +18,7 @@
     $menu = [
         ['Home', 'home', 'fa-solid fa-house'],
         ['Explore', 'explore', 'fa-solid fa-hashtag'],
-        ['Notification', 'notifications', 'fa-regular fa-bell'],   // <-- FIX !!!
+        ['Notification', 'notifications', 'fa-regular fa-bell'],
         ['Messages', '#', 'fa-regular fa-envelope'],
         ['My Reports', 'my-reports', 'fa-solid fa-clipboard-list'],
         ['Communities', 'communities', 'fa-solid fa-users'],
@@ -38,7 +38,7 @@
 
             <button onclick="window.location.href='{{ route('reports.create') }}'"
                     class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full shadow-md transition-all font-semibold">
-                <i class="fa-solid fa-plus-circle"></i> New Report
+                <i class="fa-solid fa-plus-circle"></i> Laporan Baru    
             </button>
         </div>
 
@@ -50,6 +50,15 @@
                 <span class="text-xs text-gray-500">{{ session('user.email', 'user@mail.com') }}</span>
             </div>
         </div>
+
+        <form action="{{ route('logout') }}" method="POST" class="w-full mt-3">
+            @csrf
+            <button type="submit"
+                class="w-full text-left flex items-center gap-2 text-red-600 hover:text-red-700 text-sm font-medium mt-2">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </form>
+
     </aside>
 
     <!-- 📰 Main Feed -->
