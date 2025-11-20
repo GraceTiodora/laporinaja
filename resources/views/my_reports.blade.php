@@ -18,14 +18,13 @@
 
             @php
                 $menu = [
-                    ['Home', 'home', 'fa-solid fa-house'],
-                    ['Explore', 'explore', 'fa-solid fa-hashtag'],
-                    ['Notification', 'notifications', 'fa-regular fa-bell'],
-                    ['Messages', 'messages', 'fa-regular fa-envelope'],
-                    ['My Reports', 'my-reports', 'fa-solid fa-clipboard-list'],
-                    ['Communities', 'communities', 'fa-solid fa-users'],
-                    ['Profile', 'profile', 'fa-regular fa-user'],
-                    ['More', '#', 'fa-solid fa-ellipsis-h'],
+                    ['Beranda', 'home', 'fa-solid fa-house'],
+                    ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
+                    ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
+                    ['Pesan', 'messages', 'fa-regular fa-envelope'],
+                    ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
+                    ['Komunitas', 'communities', 'fa-solid fa-users'],
+                    ['Profil', 'profile', 'fa-regular fa-user'],
                 ];
             @endphp
 
