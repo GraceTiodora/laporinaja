@@ -85,7 +85,7 @@ class ReportController extends Controller
     public function index()
     {
         $reports = session('reports', []);
-        return view('reports.index', compact('reports'));
+        return view('my_reports', compact('reports'));
     }
 
     public function myReports()

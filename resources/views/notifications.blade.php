@@ -19,14 +19,13 @@
 
             @php
                 $menu = [
-                    ['Home', 'home', 'fa-solid fa-house'],
-                    ['Explore', 'explore', 'fa-solid fa-hashtag'],
-                    ['Notification', 'notifications', 'fa-regular fa-bell'],
-                    ['Messages', 'messages', 'fa-regular fa-envelope'],
-                    ['My Reports', 'my-reports', 'fa-solid fa-clipboard-list'],
-                    ['Communities', 'communities', 'fa-solid fa-users'],
-                    ['Profile', 'profile', 'fa-regular fa-user'],
-                    ['More', '#', 'fa-solid fa-ellipsis-h'],
+                    ['Beranda', 'home', 'fa-solid fa-house'],
+                    ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
+                    ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
+                    ['Pesan', 'messages', 'fa-regular fa-envelope'],
+                    ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
+                    ['Komunitas', 'communities', 'fa-solid fa-users'],
+                    ['Profil', 'profile', 'fa-regular fa-user'],
                 ];
             @endphp
 
@@ -129,7 +128,9 @@
     <aside class="w-[340px] bg-white p-6 overflow-y-auto">
 
         <section class="mb-8">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Masalah Urgent</h2>
+            <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-fire text-red-500"></i> Masalah Penting
+            </h2>
             <ul class="space-y-3">
                 <li class="flex justify-between">
                     <div>
@@ -150,22 +151,23 @@
         </section>
 
         <section>
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Masalah Trending</h2>
+            <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-chart-line text-blue-500"></i> Masalah Trending
+            </h2>
             <ul class="space-y-3">
-                <li class="flex justify-between">
+                <li class="flex justify-between items-center">
                     <div>
                         <p class="font-medium text-gray-800">Infrastruktur Jalan</p>
                         <p class="text-xs text-gray-500">5 laporan hari ini</p>
                     </div>
-                    <span class="px-3 py-1 rounded-xl text-xs bg-pink-100 text-pink-700">Urgent</span>
+                    <span class="px-3 py-1 rounded-xl text-xs bg-pink-100 text-pink-700 font-medium">Penting</span>
                 </li>
-
-                <li class="flex justify-between">
+                <li class="flex justify-between items-center">
                     <div>
                         <p class="font-medium text-gray-800">Sampah Menumpuk</p>
                         <p class="text-xs text-gray-500">Pasar Baru</p>
                     </div>
-                    <span class="px-3 py-1 rounded-xl text-xs bg-yellow-100 text-yellow-700">Medium</span>
+                    <span class="px-3 py-1 rounded-xl text-xs bg-yellow-100 text-yellow-700 font-medium">Sedang</span>
                 </li>
             </ul>
         </section>

@@ -16,14 +16,13 @@
             <nav class="space-y-2">
                 @php
                     $menu = [
-                        ['Home', 'home', 'fa-solid fa-house'],
-                        ['Explore', 'explore', 'fa-solid fa-hashtag'],
-                        ['Notification', 'notifications', 'fa-regular fa-bell'],
-                        ['Messages', 'messages', 'fa-regular fa-envelope'],
-                        ['My Reports', 'reports', 'fa-solid fa-clipboard-list'],
-                        ['Communities', 'communities', 'fa-solid fa-users'],
-                        ['Profile', 'profile', 'fa-regular fa-user'],
-                        ['More', '#', 'fa-solid fa-ellipsis-h'],
+                        ['Beranda', 'home', 'fa-solid fa-house'],
+                        ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
+                        ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
+                        ['Pesan', 'messages', 'fa-regular fa-envelope'],
+                        ['Laporan Saya', 'reports', 'fa-solid fa-clipboard-list'],
+                        ['Komunitas', 'communities', 'fa-solid fa-users'],
+                        ['Profil', 'profile', 'fa-regular fa-user'],
                     ];
                 @endphp
 
@@ -163,13 +162,12 @@
         <!-- Urgent Issues -->
         <section class="mb-8">
             <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-fire text-red-500"></i> Masalah Urgent
+                <i class="fa-solid fa-fire text-red-500"></i> Masalah Penting
             </h2>
             <ul class="space-y-4">
                 @foreach($urgentIssues ?? [
                     (object)['title' => 'Jalan Rusak', 'location' => 'Jl. Melati', 'votes' => 128],
                     (object)['title' => 'Sampah Menumpuk', 'location' => 'Pasar Baru', 'votes' => 96],
-                    (object)['title' => 'Lampu Jalan Mati', 'location' => 'RT 05', 'votes' => 54]
                 ] as $issue)
                 <li class="flex justify-between items-center pb-3 border-b border-gray-100 last:border-0">
                     <div>
@@ -189,9 +187,8 @@
             </h2>
             <ul class="space-y-4">
                 @foreach($trendingIssues ?? [
-                    (object)['title' => 'Infrastruktur Jalan', 'subtitle' => '5 laporan hari ini', 'priority' => 'Urgent'],
-                    (object)['title' => 'Sampah Menumpuk', 'subtitle' => 'Pasar Baru', 'priority' => 'Medium'],
-                    (object)['title' => 'Lampu Jalan Mati', 'subtitle' => 'RT 05', 'priority' => 'Low']
+                    (object)['title' => 'Infrastruktur Jalan', 'subtitle' => '5 laporan hari ini', 'priority' => 'Penting'],
+                    (object)['title' => 'Sampah Menumpuk', 'subtitle' => 'Pasar Baru', 'priority' => 'Sedang'],
                 ] as $issue)
                 <li class="flex justify-between items-center pb-3 border-b border-gray-100 last:border-0">
                     <div>
@@ -199,11 +196,12 @@
                         <p class="text-xs text-gray-500">{{ $issue->subtitle }}</p>
                     </div>
                     <span class="px-3 py-1 rounded-xl text-xs font-medium
-                        {{ $issue->priority === 'Urgent' ? 'bg-pink-100 text-pink-700' : '' }}
-                        {{ $issue->priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' : '' }}
-                        {{ $issue->priority === 'Low' ? 'bg-blue-100 text-blue-700' : '' }}">
+                        {{ $issue->priority === 'Penting' ? 'bg-pink-100 text-pink-700' : '' }}
+                        {{ $issue->priority === 'Sedang' ? 'bg-yellow-100 text-yellow-700' : '' }}
+                    ">
                         {{ $issue->priority }}
                     </span>
+
                 </li>
                 @endforeach
             </ul>
