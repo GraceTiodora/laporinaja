@@ -145,7 +145,7 @@ class ReportController extends Controller
             return redirect()->route('explore')->with('error', 'Laporan tidak ditemukan.');
         }
         
-        return view('detail_reports', compact('report'));
+        return view('warga.detail_reports', compact('report'));
     }
 
     public function myReports()
@@ -164,7 +164,7 @@ class ReportController extends Controller
         });
         
 
-        return view('my_reports', [
+        return view('warga.my_reports', [
             'user'    => $user,
             'reports' => array_reverse($myReports) // tampilkan terbaru dulu
         ]);

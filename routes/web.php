@@ -3,13 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\ExploreController;  // ← TAMBAH INI
+use App\Http\Controllers\ExploreController;
 
 
 Route::get('/', function () {
     return session()->has('user')
-        ? view('homepage_auth') 
-        : view('homepage');
+        ? view('warga.homepage_auth') 
+        : view('warga.homepage');
 })->name('home');
 
 Route::get('/profile', function () {
@@ -17,7 +17,7 @@ Route::get('/profile', function () {
         return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
     }
 
-    return view('profile', ['user' => session('user')]);
+    return view('warga.profile', ['user' => session('user')]);
 })->name('profile');
 
 // Auth Routes
@@ -54,7 +54,7 @@ Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsR
 Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
 
 Route::get('/messages', function () {
-    return view('messages');
+    return view('warga.messages');
 })->name('messages');
 
 
@@ -62,7 +62,33 @@ Route::get('my-reports', [ReportController::class, 'myReports'])->name('my-repor
 
 
 Route::get('/communities', function () {
-    return view('communities');
+    return view('warga.communities');
 })->name('communities');
 
+Route::prefix('admin')->group(function () {
 
+    // Dashboard utama admin
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    // Verifikasi & Penanganan
+    Route::get('/verifikasi', function () {
+        return view('admin.verifikasi');
+    })->name('admin.verifikasi');
+
+    // Monitoring & Statistik
+    Route::get('/monitoring', function () {
+        return view('admin.monitoring');
+    })->name('admin.monitoring');
+
+    // Voting Publik
+    Route::get('/voting', function () {
+        return view('admin.voting');
+    })->name('admin.voting');
+
+    // Pengaturan Akun
+    Route::get('/pengaturan', function () {
+        return view('admin.pengaturan');
+    })->name('admin.pengaturan');
+});

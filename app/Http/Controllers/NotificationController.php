@@ -26,7 +26,7 @@ class NotificationController extends Controller
             session(['notifications' => $notifications]);
         }
 
-        return view('notifications', [
+        return view('warga.notifications', [
             'notifications' => $notifications,
             'unreadCount' => count(array_filter($notifications, function($n) {
                 return !$n['read'];
