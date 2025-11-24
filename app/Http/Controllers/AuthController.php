@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -9,7 +10,6 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         return view('auth.login');
-        
     }
 
     public function login(Request $request)
@@ -19,25 +19,25 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $users = session('users', []);
+        // Cari user berdasarkan username
+        $user = User::findByUsername($data['username']);
 
-        foreach ($users as $u) {
-            if (($u['username'] ?? null) === $data['username'] && password_verify($data['password'], $u['password_hash'] ?? '')) {
-                $request->session()->regenerate();
-                session(['user' => [
-                    'name' => $u['name'] ?? '',
-                    'username' => $u['username'],
-                    'email' => $u['email'] ?? '',
-                ]]);
+        if ($user && $user->checkPassword($data['password'])) {
+            $request->session()->regenerate();
+            session(['user' => [
+                'id_user' => $user->id_user,
+                'name' => $user->name,
+                'username' => $user->username,
+                'email' => $user->email,
+            ]]);
 
-                if (session()->has('intended_url')) {
-                    $intended = session('intended_url');
-                    session()->forget('intended_url');
-                    return redirect($intended)->with('success', 'Berhasil login!');
-                }
-
-                return redirect()->route('home')->with('success', 'Berhasil login!');
+            if (session()->has('intended_url')) {
+                $intended = session('intended_url');
+                session()->forget('intended_url');
+                return redirect($intended)->with('success', 'Berhasil login!');
             }
+
+            return redirect()->route('home')->with('success', 'Berhasil login!');
         }
 
         return back()->withInput()->with('error', 'Username atau password salah.');
@@ -52,13 +52,13 @@ class AuthController extends Controller
     {
         $data = $request->validate([
             'name'  => 'required|string|max:255',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'bulan' => 'required|string',
             'hari'  => 'required|integer|min:1|max:31',
             'tahun' => 'required|integer|min:1900',
         ]);
 
-        // simpan sementara data registrasi (flow 2-step)
+        // Simpan sementara di session
         session(['temp_register' => [
             'name' => $data['name'],
             'email' => $data['email'],
@@ -70,7 +70,7 @@ class AuthController extends Controller
 
     public function showPasswordForm()
     {
-        if (! session()->has('temp_register')) {
+        if (!session()->has('temp_register')) {
             return redirect()->route('register');
         }
         return view('auth.password');
@@ -78,44 +78,35 @@ class AuthController extends Controller
 
     public function storePassword(Request $request)
     {
-        if (! session()->has('temp_register')) {
+        if (!session()->has('temp_register')) {
             return redirect()->route('register');
         }
 
         $data = $request->validate([
-            'username' => 'required|alpha_num|min:3|max:30',
+            'username' => 'required|alpha_num|min:3|max:30|unique:users,username',
             'password' => 'required|string|min:6',
         ]);
 
         $temp = session('temp_register');
-        $users = session('users', []);
 
-        // cek unik username/email
-        foreach ($users as $u) {
-            if (!empty($u['username']) && $u['username'] === $data['username']) {
-                return back()->withInput()->with('error', 'Username sudah dipakai.');
-            }
-            if (!empty($u['email']) && $u['email'] === $temp['email']) {
-                return back()->withInput()->with('error', 'Email sudah terdaftar.');
-            }
-        }
-
-        $users[] = [
+        // Create user di database
+        $user = User::create([
             'name' => $temp['name'],
             'email' => $temp['email'],
             'username' => $data['username'],
-            'password_hash' => password_hash($data['password'], PASSWORD_DEFAULT),
-            'dob' => $temp['dob'],
-        ];
+            'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+            'date_of_birth' => $temp['dob'],
+            'role' => 'user',
+        ]);
 
-        session(['users' => $users]);
         session()->forget('temp_register');
 
-        // auto-login
+        // Auto-login
         session(['user' => [
-            'name' => $temp['name'],
-            'username' => $data['username'],
-            'email' => $temp['email'],
+            'id_user' => $user->id_user,
+            'name' => $user->name,
+            'username' => $user->username,
+            'email' => $user->email,
         ]]);
 
         $request->session()->regenerate();
@@ -135,26 +126,29 @@ class AuthController extends Controller
         $request->session()->regenerate();
         return redirect()->route('home')->with('success', 'Berhasil logout!');
     }
-    public function updateProfile(\Illuminate\Http\Request $request)
-{
-    $data = $request->validate([
-        'name' => 'required|string|max:255',
-        'username' => 'required|alpha_num|max:50',
-        'email' => 'nullable|email|max:255',
-    ]);
 
-    if (! session()->has('user')) {
-        return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+    public function updateProfile(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|alpha_num|max:50|unique:users,username,' . session('user.id_user') . ',id_user',
+            'email' => 'nullable|email|max:255|unique:users,email,' . session('user.id_user') . ',id_user',
+        ]);
+
+        if (!session()->has('user')) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+        $user = User::find(session('user.id_user'));
+        $user->update($data);
+
+        session(['user' => [
+            'id_user' => $user->id_user,
+            'name' => $user->name,
+            'username' => $user->username,
+            'email' => $user->email,
+        ]]);
+
+        return redirect()->back()->with('success', 'Profil diperbarui.');
     }
-
-    $user = session('user');
-    $user['name'] = $data['name'];
-    $user['username'] = $data['username'];
-    $user['email'] = $data['email'] ?? ($user['email'] ?? null);
-
-    session(['user' => $user]);
-
-    return redirect()->back()->with('success', 'Profil diperbarui.');
-}
-
 }
