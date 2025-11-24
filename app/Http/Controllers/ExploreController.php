@@ -58,7 +58,7 @@ class ExploreController extends Controller
         // Sort by votes (trending) and reset keys
         $filteredReports = $filteredReports->sortByDesc('votes')->values();
 
-        return view('explore', [
+        return view('explorer', [
             'reports' => $filteredReports,
             'totalReports' => count($reports),
         ]);

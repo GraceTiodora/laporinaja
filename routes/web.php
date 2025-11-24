@@ -66,3 +66,30 @@ Route::get('/communities', function () {
 })->name('communities');
 
 
+Route::prefix('admin')->group(function () {
+
+    // Dashboard utama admin
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    // Verifikasi & Penanganan
+    Route::get('/verifikasi', function () {
+        return view('admin.verifikasi');
+    })->name('admin.verifikasi');
+
+    // Monitoring & Statistik
+    Route::get('/monitoring', function () {
+        return view('admin.monitoring');
+    })->name('admin.monitoring');
+
+    // Voting Publik
+    Route::get('/voting', function () {
+        return view('admin.voting');
+    })->name('admin.voting');
+
+    // Pengaturan Akun
+    Route::get('/pengaturan', function () {
+        return view('admin.pengaturan');
+    })->name('admin.pengaturan');
+});

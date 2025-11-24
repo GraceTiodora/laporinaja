@@ -54,7 +54,7 @@
     <!-- 📰 Main Content -->
     <main class="flex-1 flex flex-col border-r border-gray-200 bg-white feed-scroll overflow-y-auto">
         <header class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 z-10">
-            <h1 class="text-xl font-bold text-gray-800">Profile</h1>
+            <h1 class="text-xl font-bold text-gray-800">Profil</h1>
         </header>
 
         <div class="p-6">

@@ -199,7 +199,7 @@
     <aside class="w-[340px] bg-white p-6 overflow-y-auto sidebar-scroll">
         <section class="mb-8">
             <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-fire text-red-500"></i> Masalah Urgent
+                <i class="fa-solid fa-fire text-red-500"></i> Masalah Penting
             </h2>
             <ul class="space-y-4">
                 <li class="flex justify-between items-center pb-3 border-b border-gray-100 last:border-0">
@@ -216,13 +216,6 @@
                     </div>
                     <span class="text-sm font-bold text-red-600">96 Votes</span>
                 </li>
-                <li class="flex justify-between items-center pb-3 border-b border-gray-100 last:border-0">
-                    <div>
-                        <p class="font-semibold text-gray-800">Lampu Jalan Mati</p>
-                        <p class="text-xs text-gray-500">RT 05</p>
-                    </div>
-                    <span class="text-sm font-bold text-red-600">54 Votes</span>
-                </li>
             </ul>
         </section>
 
@@ -236,21 +229,14 @@
                         <p class="font-semibold text-gray-800">Infrastruktur Jalan</p>
                         <p class="text-xs text-gray-500">5 laporan hari ini</p>
                     </div>
-                    <span class="px-3 py-1 rounded-xl text-xs font-medium bg-pink-100 text-pink-700">Urgent</span>
+                    <span class="px-3 py-1 rounded-xl text-xs font-medium bg-pink-100 text-pink-700">Pentinng</span>
                 </li>
                 <li class="flex justify-between items-center pb-3 border-b border-gray-100 last:border-0">
                     <div>
                         <p class="font-semibold text-gray-800">Sampah Menumpuk</p>
                         <p class="text-xs text-gray-500">Pasar Baru</p>
                     </div>
-                    <span class="px-3 py-1 rounded-xl text-xs font-medium bg-yellow-100 text-yellow-700">Medium</span>
-                </li>
-                <li class="flex justify-between items-center pb-3 border-b border-gray-100 last:border-0">
-                    <div>
-                        <p class="font-semibold text-gray-800">Lampu Jalan Mati</p>
-                        <p class="text-xs text-gray-500">RT 05</p>
-                    </div>
-                    <span class="px-3 py-1 rounded-xl text-xs font-medium bg-blue-100 text-blue-700">Low</span>
+                    <span class="px-3 py-1 rounded-xl text-xs font-medium bg-yellow-100 text-yellow-700">Sedang</span>
                 </li>
             </ul>
         </section>

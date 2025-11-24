@@ -42,7 +42,7 @@
 
             <button onclick="window.location.href='{{ route('reports.create') }}'"
                 class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full shadow-md transition font-semibold">
-                <i class="fa-solid fa-plus-circle"></i> New Report
+                <i class="fa-solid fa-plus-circle"></i> Laporan Baru
             </button>
         </div>
 
@@ -60,7 +60,7 @@
 
         {{-- SEARCH + TITLE --}}
         <div class="p-6 border-b border-gray-200">
-            <h1 class="text-xl font-bold text-gray-800 mb-4">Communities</h1>
+            <h1 class="text-xl font-bold text-gray-800 mb-4">Komunitas</h1>
 
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>

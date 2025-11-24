@@ -44,7 +44,7 @@
 
             <button onclick="window.location.href='{{ route('reports.create') }}'"
                 class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full shadow-md transition font-semibold">
-                <i class="fa-solid fa-plus-circle"></i> New Report
+                <i class="fa-solid fa-plus-circle"></i> Laporan Baru
             </button>
         </div>
 

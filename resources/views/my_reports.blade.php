@@ -43,7 +43,7 @@
 
             <button onclick="window.location.href='{{ route('reports.create') }}'"
                 class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full shadow-md transition font-semibold">
-                <i class="fa-solid fa-plus-circle"></i> New Report
+                <i class="fa-solid fa-plus-circle"></i> Laporan Baru
             </button>
         </div>
 
@@ -62,7 +62,7 @@
 
         <!-- Header -->
         <header class="bg-white border-b border-gray-200 px-8 py-6">
-            <h1 class="text-2xl font-bold text-gray-800 mb-6">My Reports</h1>
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Laporan Saya</h1>
 
             <div class="flex items-center gap-4">
                 <img src="{{ asset('images/profile-user.jpg') }}" class="w-16 h-16 rounded-full object-cover">
