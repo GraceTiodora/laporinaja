@@ -31,17 +31,17 @@
             @endif
 
             <div>
-                <label for="username" class="block text-gray-800 font-semibold mb-2 text-sm">Username</label>
-                <input id="username" name="username" type="text" required placeholder="Masukkan Nama Lengkap Anda"
-                    class="w-full rounded-full bg-gray-100 placeholder-gray-400 px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition border-0" value="{{ old('username') }}">
-                @error('username')
+                <label for="email" class="block text-gray-800 font-semibold mb-2 text-sm">Email</label>
+                <input id="email" name="email" type="email" required placeholder="Masukkan Email Anda"
+                    class="w-full rounded-full bg-gray-100 placeholder-gray-400 px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition border-0" value="{{ old('email') }}">
+                @error('email')
                     <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
             <div>
-                <label for="password" class="block text-gray-800 font-semibold mb-2 text-sm">Kata sandi</label>
-                <input id="password" name="password" type="password" required placeholder="Masukkan Nomor HP atau Email Anda"
+                <label for="password" class="block text-gray-800 font-semibold mb-2 text-sm">Kata Sandi</label>
+                <input id="password" name="password" type="password" required placeholder="Masukkan Password Anda"
                     class="w-full rounded-full bg-gray-100 placeholder-gray-400 px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition border-0">
                 @error('password')
                     <p class="text-xs text-red-600 mt-1">{{ $message }}</p>

@@ -3,14 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\ExploreController;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ExploreController;  // ← TAMBAH INI
 
 
 Route::get('/', function () {
     return session()->has('user')
-        ? view('warga.homepage_auth') 
-        : view('warga.homepage');
+        ? view('homepage_auth') 
+        : view('homepage');
 })->name('home');
 
 Route::get('/profile', function () {
@@ -18,7 +17,7 @@ Route::get('/profile', function () {
         return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
     }
 
-    return view('warga.profile', ['user' => session('user')]);
+    return view('profile', ['user' => session('user')]);
 })->name('profile');
 
 // Auth Routes
@@ -41,6 +40,9 @@ Route::get('reports/create', [ReportController::class, 'create'])->name('reports
 Route::post('reports', [ReportController::class, 'store'])->name('reports.store');
 Route::get('/reports', [ReportController::class, 'index'])->name('reports');
 Route::get('/reports/{id}', [ReportController::class, 'show'])->name('reports.show');
+Route::get('/reports/{id}/edit', [ReportController::class, 'edit'])->name('reports.edit');
+Route::put('/reports/{id}', [ReportController::class, 'update'])->name('reports.update');
+Route::delete('/reports/{id}', [ReportController::class, 'destroy'])->name('reports.destroy');
 // Fallback for Google login
 Route::get('login/google', function () {
     return redirect()->route('login')->with('error', 'Login dengan Google belum dikonfigurasi.');
@@ -55,7 +57,7 @@ Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsR
 Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
 
 Route::get('/messages', function () {
-    return view('warga.messages');
+    return view('messages');
 })->name('messages');
 
 
@@ -63,10 +65,12 @@ Route::get('my-reports', [ReportController::class, 'myReports'])->name('my-repor
 
 
 Route::get('/communities', function () {
-    return view('warga.communities');
+    return view('communities');
 })->name('communities');
 
+
 Route::prefix('admin')->group(function () {
+
     // Dashboard utama admin
     Route::get('/dashboard', function () {
         return view('admin.dashboard');

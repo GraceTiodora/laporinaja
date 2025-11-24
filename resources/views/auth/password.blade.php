@@ -26,22 +26,20 @@
                 </div>
             @endif
 
-            <!-- Username field -->
             <div>
-                <label for="username" class="block text-gray-800 font-semibold mb-2 text-sm">Username</label>
-                <input id="username" name="username" type="text" required placeholder="username"
-                    value="{{ old('username', session('temp_register.email') ? strtok(session('temp_register.email'), '@') : '') }}"
+                <label for="password" class="block text-gray-800 font-semibold mb-2 text-sm">Kata Sandi</label>
+                <input id="password" name="password" type="password" required placeholder="Minimal 6 karakter"
                     class="w-full rounded-full bg-gray-100 placeholder-gray-400 px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition border-0">
-                @error('username')
+                @error('password')
                     <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
             <div>
-                <label for="password" class="block text-gray-800 font-semibold mb-2 text-sm">Kata Sandi</label>
-                <input id="password" name="password" type="password" required placeholder="Kata Sandi"
+                <label for="password_confirmation" class="block text-gray-800 font-semibold mb-2 text-sm">Konfirmasi Kata Sandi</label>
+                <input id="password_confirmation" name="password_confirmation" type="password" required placeholder="Ulangi kata sandi"
                     class="w-full rounded-full bg-gray-100 placeholder-gray-400 px-5 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition border-0">
-                @error('password')
+                @error('password_confirmation')
                     <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
                 @enderror
             </div>

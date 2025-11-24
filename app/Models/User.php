@@ -2,80 +2,37 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
-
-    protected $primaryKey = 'id_user';
-    public $timestamps = true;
+    use HasFactory;
 
     protected $fillable = [
-        'name',
-        'email',
-        'username',
-        'password',
-        'date_of_birth',
-        'role',
+        'name', 'email', 'password', 'role', 'avatar', 'bio', 'phone', 'address', 'reputation'
     ];
 
     protected $hidden = [
-        'password',
+        'password', 'remember_token',
     ];
 
     protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * Relationship: User has many Reports
-     */
     public function reports()
     {
-        return $this->hasMany(Report::class, 'id_user', 'id_user');
+        return $this->hasMany(Report::class, 'id_user');
     }
 
-    /**
-     * Relationship: User has many Comments
-     */
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'id_user', 'id_user');
+        return $this->hasMany(Comment::class, 'id_user');
     }
 
-    /**
-     * Relationship: User has many Votes
-     */
     public function votes()
     {
-        return $this->hasMany(Vote::class, 'id_user', 'id_user');
-    }
-
-    /**
-     * Relationship: User has many Notifications
-     */
-    public function notifications()
-    {
-        return $this->hasMany(Notification::class, 'id_user', 'id_user');
-    }
-
-    /**
-     * Check password
-     */
-    public function checkPassword($password)
-    {
-        return password_verify($password, $this->password);
-    }
-
-    /**
-     * Get by username
-     */
-    public static function findByUsername($username)
-    {
-        return self::where('username', $username)->first();
+        return $this->hasMany(Vote::class, 'id_user');
     }
 }

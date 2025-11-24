@@ -2,35 +2,29 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Vote extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'id_vote';
-    public $timestamps = true;
-
     protected $fillable = [
-        'id_user',
-        'id_report',
-        'type', // 'penting' atau 'tidak_penting'
+        'user_id', 'votable_id', 'votable_type', 'is_upvote'
     ];
 
     protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'is_upvote' => 'boolean',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user', 'id_user');
+        return $this->belongsTo(User::class);
     }
 
-    public function report()
+    public function votable()
     {
-        return $this->belongsTo(Report::class, 'id_report', 'id_report');
+        return $this->morphTo();
     }
 }
 

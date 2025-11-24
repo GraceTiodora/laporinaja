@@ -2,21 +2,28 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Solution extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'deskripsi', 'id_admin', 'id_report'
+        'report_id', 'user_id', 'description', 'upvotes', 'downvotes', 'is_accepted'
+    ];
+
+    protected $casts = [
+        'is_accepted' => 'boolean',
     ];
 
     public function report()
     {
-        return $this->belongsTo(Report::class, 'id_report');
+        return $this->belongsTo(Report::class);
     }
 
-    public function admin()
+    public function user()
     {
-        return $this->belongsTo(Admin::class, 'id_admin');
+        return $this->belongsTo(User::class);
     }
 }
