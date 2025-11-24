@@ -75,7 +75,7 @@ class ReportController extends Controller
     {
         $report = Report::findOrFail($id);
         
-        return view('detail_reports', compact('report'));
+        return view('warga.detail_reports', compact('report'));
     }
 
     public function myReports()
@@ -88,7 +88,7 @@ class ReportController extends Controller
                            ->orderByDesc('created_at')
                            ->get();
 
-        return view('my_reports', [
+        return view('warga.my_reports', [
             'user'    => session('user'),
             'reports' => $myReports
         ]);

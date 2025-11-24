@@ -21,7 +21,7 @@ class ExploreController extends Controller
         // Use Report model filter method
         $reports = Report::filter($location, $category, $status, $search);
 
-        return view('explorer', [
+        return view('warga.explorer', [
             'reports' => $reports,
             'totalReports' => Report::count(),
         ]);

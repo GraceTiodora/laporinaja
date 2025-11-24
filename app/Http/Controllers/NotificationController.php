@@ -22,7 +22,7 @@ class NotificationController extends Controller
 
         $unreadCount = Notification::getUnreadCount(session('user.id_user'));
 
-        return view('notifications', [
+        return view('warga.notifications', [
             'notifications' => $notifications,
             'unreadCount' => $unreadCount
         ]);
