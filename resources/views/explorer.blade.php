@@ -176,7 +176,7 @@
                             </div>
 
                             @if(!empty($report['description']))
-                                <p class="text-gray-700 text-sm leading-relaxed">{{ Str::limit($report['description'], 200) }}</p>
+                                <p class="text-gray-700 text-sm leading-relaxed line-clamp-3">{{ Str::limit($report['description'], 150) }}</p>
                             @endif
 
                             <div class="flex justify-between items-center text-sm text-gray-500 border-t border-gray-100 pt-3 mt-3">

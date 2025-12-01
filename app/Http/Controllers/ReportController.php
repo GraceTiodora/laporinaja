@@ -63,7 +63,7 @@ class ReportController extends Controller
                 'status' => 'pending',
             ]);
 
-            return redirect()->route('reports.show', $report->id)->with('success', 'Laporan berhasil dikirim!');
+            return redirect()->route('profile')->with('success', 'Laporan berhasil dikirim! Lihat di profil Anda.');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
@@ -75,7 +75,7 @@ class ReportController extends Controller
     public function index()
     {
         $reports = Report::with('user', 'category')->latest()->paginate(10);
-        return view('reports', ['reports' => $reports]);
+        return view('explore', ['reports' => $reports]);
     }
 
     /**
@@ -83,8 +83,29 @@ class ReportController extends Controller
      */
     public function show($id)
     {
-        $report = Report::with('user', 'category', 'comments.user', 'solutions', 'votes')->findOrFail($id);
-        return view('detail_reports', ['report' => $report]);
+        $reportModel = Report::with('user', 'category', 'comments.user', 'solutions', 'votes')->findOrFail($id);
+        
+        // Transform to array format for view compatibility
+        $report = [
+            'id' => $reportModel->id,
+            'title' => $reportModel->title,
+            'description' => $reportModel->description,
+            'location' => $reportModel->location,
+            'status' => ucfirst($reportModel->status ?? 'pending'),
+            'image' => $reportModel->image,
+            'created_at' => $reportModel->created_at->diffForHumans(),
+            'votes' => $reportModel->votes()->where('is_upvote', 1)->count(),
+            'downvotes' => $reportModel->votes()->where('is_upvote', 0)->count(),
+            'comments' => $reportModel->comments->count(),
+            'user' => [
+                'id' => $reportModel->user->id,
+                'name' => $reportModel->user->name,
+                'username' => $reportModel->user->email,
+            ],
+            'category' => $reportModel->category->name ?? 'Umum',
+        ];
+        
+        return view('detail_reports', ['report' => $report, 'reportModel' => $reportModel]);
     }
 
     /**
@@ -101,7 +122,7 @@ class ReportController extends Controller
                         ->latest()
                         ->paginate(10);
         
-        return view('my-reports', ['reports' => $reports]);
+        return view('my_reports', ['reports' => $reports]);
     }
 
     /**
@@ -181,5 +202,67 @@ class ReportController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Vote on report (upvote/downvote)
+     */
+    public function vote($id, Request $request)
+    {
+        if (!session()->has('user')) {
+            return response()->json(['error' => 'Silakan login terlebih dahulu'], 401);
+        }
+
+        $report = Report::findOrFail($id);
+        $isUpvote = $request->input('upvote', true);
+
+        // Check if already voted
+        $existingVote = $report->votes()->where('user_id', session('user.id'))->first();
+
+        if ($existingVote) {
+            if ($existingVote->is_upvote == $isUpvote) {
+                // Remove vote if same
+                $existingVote->delete();
+            } else {
+                // Update vote
+                $existingVote->update(['is_upvote' => $isUpvote]);
+            }
+        } else {
+            // Create new vote
+            $report->votes()->create([
+                'user_id' => session('user.id'),
+                'votable_id' => $report->id,
+                'votable_type' => 'App\\Models\\Report',
+                'is_upvote' => $isUpvote,
+            ]);
+        }
+
+        return response()->json([
+            'upvotes' => $report->votes()->where('is_upvote', 1)->count(),
+            'downvotes' => $report->votes()->where('is_upvote', 0)->count(),
+        ]);
+    }
+
+    /**
+     * Add comment on report
+     */
+    public function addComment($id, Request $request)
+    {
+        if (!session()->has('user')) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
+        }
+
+        $request->validate([
+            'content' => 'required|min:1|max:500',
+        ]);
+
+        $report = Report::findOrFail($id);
+
+        $report->comments()->create([
+            'user_id' => session('user.id'),
+            'content' => $request->input('content'),
+        ]);
+
+        return redirect()->route('reports.show', $id)->with('success', 'Komentar berhasil ditambahkan!');
     }
 }

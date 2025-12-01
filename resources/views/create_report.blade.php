@@ -100,7 +100,7 @@
                             </div>
                         </div>
 
-                        <!-- Description Textarea -->
+                <!-- Description Textarea -->
                         <div>
                             <label for="description" class="block text-base font-bold text-gray-900 mb-3">Deskripsi :</label>
                             <textarea 
@@ -116,8 +116,62 @@
                             @enderror
                         </div>
 
-                        <!-- Hidden Title (auto-generated) -->
-                        <input type="hidden" name="title" id="title" value="Laporan Baru">
+                        <!-- Title Input -->
+                        <div>
+                            <label for="title" class="block text-base font-bold text-gray-900 mb-3">Judul Laporan :</label>
+                            <input 
+                                type="text" 
+                                id="title" 
+                                name="title" 
+                                required
+                                value="{{ old('title', '') }}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                                placeholder="Ringkasan masalah Anda"
+                            >
+                            @error('title')
+                                <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Location Input -->
+                        <div>
+                            <label for="location" class="block text-base font-bold text-gray-900 mb-3">Lokasi :</label>
+                            <input 
+                                type="text" 
+                                id="location" 
+                                name="location" 
+                                value="{{ old('location', '') }}"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                                placeholder="Alamat / Nama jalan"
+                            >
+                            @error('location')
+                                <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Category Select -->
+                        <div>
+                            <label for="category_id" class="block text-base font-bold text-gray-900 mb-3">Kategori :</label>
+                            <select 
+                                id="category_id" 
+                                name="category_id" 
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                            >
+                                <option value="">-- Pilih Kategori --</option>
+                                @if(isset($categories) && $categories->count() > 0)
+                                    @foreach($categories as $cat)
+                                        <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
+                                            {{ $cat->name }}
+                                        </option>
+                                    @endforeach
+                                @else
+                                    <option disabled>Kategori tidak tersedia</option>
+                                @endif
+                            </select>
+                            @error('category_id')
+                                <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
 
                         <!-- Image Preview -->
                         <div id="imagePreview" class="hidden">
@@ -135,25 +189,26 @@
                             </div>
                         </div>
 
-                        <!-- Hidden File Input -->
+                        <!-- Hidden File Inputs -->
                         <input type="file" id="imageInput" name="image" accept="image/*" class="hidden" onchange="previewImage(event)">
+                        <input type="file" id="cameraInput" name="image" accept="image/*" capture="environment" class="hidden" onchange="previewImage(event)">
                     </form>
                 </div>
 
                 <!-- Modal Footer with Action Icons -->
                 <div class="border-t border-gray-200 px-6 py-4 flex-shrink-0">
                     <div class="flex items-center gap-1">
-                        <!-- Camera Icon -->
+                        <!-- Camera Icon (device camera) -->
                         <button 
                             type="button" 
-                            onclick="document.getElementById('imageInput').click()" 
+                            onclick="document.getElementById('cameraInput').click()" 
                             class="p-3 text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                            title="Upload Foto"
+                            title="Buka Kamera"
                         >
                             <i class="fa-solid fa-camera text-xl"></i>
                         </button>
 
-                        <!-- Image Icon -->
+                        <!-- Image Icon (file gallery) -->
                         <button 
                             type="button" 
                             onclick="document.getElementById('imageInput').click()" 
@@ -264,12 +319,5 @@ function removeImage() {
     document.getElementById('imagePreview').classList.add('hidden');
     document.getElementById('previewImg').src = '';
 }
-
-// Auto-generate title from description
-document.getElementById('description').addEventListener('input', function() {
-    const desc = this.value.trim();
-    const title = desc ? desc.substring(0, 50) : 'Laporan Baru';
-    document.getElementById('title').value = title;
-});
 </script>
 @endsection

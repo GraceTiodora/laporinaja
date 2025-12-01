@@ -69,8 +69,16 @@
                 </div>
 
                 <div style="display: flex; gap: 12px;">
-                    <button style="flex: 1; padding: 12px 16px; border: 2px solid #86efac; background: #f0fdf4; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 15px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; color: #15803d;" onmouseover="this.style.background='#dcfce7';" onmouseout="this.style.background='#f0fdf4';"><i class="fa-solid fa-thumbs-up"></i> Penting ({{ $report['votes'] ?? 0 }})</button>
-                    <button style="flex: 1; padding: 12px 16px; border: 2px solid #fca5a5; background: #fef2f2; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 15px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; color: #991b1b;" onmouseover="this.style.background='#fee2e2';" onmouseout="this.style.background='#fef2f2';"><i class="fa-solid fa-thumbs-down"></i> Tidak Penting</button>
+                    <form action="{{ route('reports.vote', $report['id']) }}" method="POST" style="flex: 1;">
+                        @csrf
+                        <input type="hidden" name="upvote" value="1">
+                        <button type="submit" style="width: 100%; padding: 12px 16px; border: 2px solid #86efac; background: #f0fdf4; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 15px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; color: #15803d;" onmouseover="this.style.background='#dcfce7';" onmouseout="this.style.background='#f0fdf4';"><i class="fa-solid fa-thumbs-up"></i> Penting ({{ $report['votes'] ?? 0 }})</button>
+                    </form>
+                    <form action="{{ route('reports.vote', $report['id']) }}" method="POST" style="flex: 1;">
+                        @csrf
+                        <input type="hidden" name="upvote" value="0">
+                        <button type="submit" style="width: 100%; padding: 12px 16px; border: 2px solid #fca5a5; background: #fef2f2; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 15px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; color: #991b1b;" onmouseover="this.style.background='#fee2e2';" onmouseout="this.style.background='#fef2f2';"><i class="fa-solid fa-thumbs-down"></i> Tidak Penting ({{ $report['downvotes'] ?? 0 }})</button>
+                    </form>
                 </div>
             </div>
 
@@ -80,47 +88,42 @@
                     <i class="fa-solid fa-comments"></i> Komentar ({{ $report['comments'] ?? 0 }})
                 </h3>
 
-                <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
-                    <textarea placeholder="Berikan komentar Anda..." style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 80px;" onmouseover="this.style.borderColor='#3b82f6';" onmouseout="this.style.borderColor='#d1d5db';"></textarea>
-                    <button style="margin-top: 8px; padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.3s ease;" onmouseover="this.style.background='#2563eb';" onmouseout="this.style.background='#3b82f6';"><i class="fa-solid fa-paper-plane"></i> Kirim</button>
-                </div>
+                @if(session('user'))
+                    <form action="{{ route('reports.comment', $report['id']) }}" method="POST" style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
+                        @csrf
+                        <textarea 
+                            name="content"
+                            placeholder="Berikan komentar Anda..." 
+                            style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 80px;" 
+                            required
+                            onmouseover="this.style.borderColor='#3b82f6';" 
+                            onmouseout="this.style.borderColor='#d1d5db';"
+                        ></textarea>
+                        <button type="submit" style="margin-top: 8px; padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.3s ease;" onmouseover="this.style.background='#2563eb';" onmouseout="this.style.background='#3b82f6';"><i class="fa-solid fa-paper-plane"></i> Kirim</button>
+                    </form>
+                @else
+                    <div style="margin-bottom: 24px; padding: 16px; background: #fffbeb; border-radius: 8px; color: #92400e; font-size: 14px;">
+                        <a href="{{ route('login') }}" style="color: #3b82f6; text-decoration: none; font-weight: 600;">Login</a> untuk menambahkan komentar.
+                    </div>
+                @endif
 
                 <div style="display: flex; flex-direction: column; gap: 16px;">
-                    @php
-                        $dummyComments = [
-                            [
-                                'author' => 'Jerinta Kim',
-                                'time' => '3 jam',
-                                'text' => 'Saya juga pernah lewat sini setidak raja... Lubang tersebut memang sangat besar dan sungguh membahayakan. Mohon juga segerakan proses perbaikan agar tidak terjadi kecelakaan.',
-                                'likes' => 1
-                            ],
-                            [
-                                'author' => 'Jerinta Kim',
-                                'time' => '3 jam',
-                                'text' => 'Saya juga pernah lewat sini setidak raja... Lubang tersebut memang sangat besar dan sungguh membahayakan. Mohon juga segerakan proses perbaikan agar tidak terjadi kecelakaan.',
-                                'likes' => 1
-                            ],
-                            [
-                                'author' => 'Jerinta Kim',
-                                'time' => '3 jam',
-                                'text' => 'Saya juga pernah lewat sini setidak raja... Lubang tersebut memang sangat besar dan sungguh membahayakan. Mohon juga segerakan proses perbaikan agar tidak terjadi kecelakaan.',
-                                'likes' => 1
-                            ]
-                        ];
-                    @endphp
-                    @foreach($dummyComments as $comment)
+                    @forelse($reportModel->comments as $comment)
                         <div style="display: flex; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid #f3f4f6;">
-                            <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px; flex-shrink: 0;">{{ substr($comment['author'], 0, 1) }}</div>
+                            <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px; flex-shrink: 0;">{{ substr($comment->user->name ?? 'U', 0, 1) }}</div>
                             <div style="flex: 1;">
                                 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                    <span style="font-weight: 600; color: #1f2937; font-size: 14px;">{{ $comment['author'] }}</span>
-                                    <span style="font-size: 12px; color: #9ca3af;">{{ $comment['time'] }}</span>
+                                    <span style="font-weight: 600; color: #1f2937; font-size: 14px;">{{ $comment->user->name ?? 'Anonymous' }}</span>
+                                    <span style="font-size: 12px; color: #9ca3af;">{{ $comment->created_at->diffForHumans() }}</span>
                                 </div>
-                                <p style="font-size: 14px; color: #374151; line-height: 1.5; margin: 0;">{{ $comment['text'] }}</p>
-                                <div style="font-size: 12px; color: #9ca3af; margin-top: 8px;"><i class="fa-solid fa-thumbs-up"></i> {{ $comment['likes'] }}</div>
+                                <p style="font-size: 14px; color: #374151; line-height: 1.5; margin: 0;">{{ $comment->content }}</p>
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        <div style="text-align: center; padding: 32px; color: #9ca3af;">
+                            <p>Belum ada komentar. Jadilah yang pertama berkomentar!</p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>

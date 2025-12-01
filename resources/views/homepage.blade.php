@@ -93,6 +93,7 @@
             <!-- FEED LIST -->
             @php
                 $sessionReports = session('reports', []);
+                $dbReports = $dbReports ?? [];
 
                 // Dummy reports → ID diperbesar supaya tidak bentrok
                 $dummyReports = [
@@ -122,7 +123,8 @@
                     ],
                 ];
 
-                $allReports = array_merge($sessionReports, $dummyReports);
+                // Merge DB reports first so new posts from DB appear on top, then any session reports, then dummy
+                $allReports = array_merge($dbReports, $sessionReports, $dummyReports);
             @endphp
 
             @foreach ($allReports as $report)

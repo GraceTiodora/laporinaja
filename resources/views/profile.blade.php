@@ -62,30 +62,34 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
                 <div class="flex items-start gap-6">
                     <img src="{{ data_get($user, 'avatar', '/images/default-avatar.jpg') }}" 
-                         alt="{{ data_get($user, 'name', 'Justin Hubner') }}" 
+                         alt="{{ $user->name ?? 'User' }}" 
                          class="w-24 h-24 rounded-full object-cover">
                     <div class="flex-1">
-                        <h2 class="text-2xl font-bold text-gray-900">{{ data_get($user, 'name', 'Justin Hubner') }}</h2>
-                        <p class="text-gray-600 mt-2">{{ data_get($user, 'bio', 'Community advocate passionate about making our neighborhood safer and cleaner. Environmental science graduate.') }}</p>
+                        <h2 class="text-2xl font-bold text-gray-900">{{ $user->name ?? 'Unknown' }}</h2>
+                        <p class="text-gray-600 text-sm mt-1">{{ $user->email ?? 'user@mail.com' }}</p>
+                        <p class="text-gray-600 mt-2">{{ $user->bio ?? 'Belum ada bio' }}</p>
+                        <button onclick="document.getElementById('editProfileModal').style.display='flex'" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition">
+                            Edit Profile
+                        </button>
                     </div>
                 </div>
 
                 <!-- Stats -->
                 <div class="grid grid-cols-4 gap-6 mt-6">
                     <div class="text-center">
-                        <p class="text-3xl font-bold text-purple-600">{{ $stats['reports_sent'] ?? 23 }}</p>
+                        <p class="text-3xl font-bold text-purple-600">{{ $stats['reports_sent'] ?? 0 }}</p>
                         <p class="text-sm text-gray-600 mt-1">Laporan Dikirimkan</p>
                     </div>
                     <div class="text-center">
-                        <p class="text-3xl font-bold text-green-600">{{ $stats['issues_resolved'] ?? 18 }}</p>
+                        <p class="text-3xl font-bold text-green-600">{{ $stats['issues_resolved'] ?? 0 }}</p>
                         <p class="text-sm text-gray-600 mt-1">Masalah Terselesaikan</p>
                     </div>
                     <div class="text-center">
-                        <p class="text-3xl font-bold text-orange-600">{{ $stats['community_posts'] ?? 25 }}</p>
+                        <p class="text-3xl font-bold text-orange-600">{{ $stats['community_posts'] ?? 0 }}</p>
                         <p class="text-sm text-gray-600 mt-1">Komunitas Post</p>
                     </div>
                     <div class="text-center">
-                        <p class="text-3xl font-bold text-purple-600">{{ $stats['vote_helps'] ?? 89 }}</p>
+                        <p class="text-3xl font-bold text-purple-600">{{ $stats['vote_helps'] ?? 0 }}</p>
                         <p class="text-sm text-gray-600 mt-1">Bantuan Vote</p>
                     </div>
                 </div>
@@ -121,15 +125,19 @@
                                 <span>{{ $report->created_at->diffForHumans() }}</span>
                             </div>
                             @if($report->description)
-                            <p class="text-gray-700 text-sm mb-3">{{ $report->description }}</p>
+                            <p class="text-gray-700 text-sm mb-3">{{ substr($report->description, 0, 100) }}...</p>
                             @endif
-                            <div class="flex items-center gap-4 text-sm text-gray-600">
+                            <div class="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                                <span class="px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium">{{ $report->category->name ?? 'Uncategorized' }}</span>
                                 <span>{{ $report->created_at->diffForHumans() }}</span>
-                                <span>{{ $report->votes_count ?? 0 }} vote bermanfaat</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-sm text-gray-600">
+                                <span><i class="fa-solid fa-thumbs-up"></i> {{ $report->votes_count ?? 0 }}</span>
+                                <span><i class="fa-solid fa-comments"></i> {{ $report->comments_count ?? 0 }}</span>
                             </div>
                         </div>
-                        <span class="px-3 py-1 rounded-full text-sm font-medium {{ $report->status === 'Penting' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">
-                            {{ $report->status ?? 'Penting' }}
+                        <span class="px-3 py-1 rounded-full text-sm font-medium {{ $report->status === 'resolved' ? 'bg-green-100 text-green-700' : ($report->status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700') }}">
+                            {{ ucfirst($report->status ?? 'pending') }}
                         </span>
                     </div>
                 </div>
@@ -207,6 +215,50 @@
             </ul>
         </section>
     </aside>
+</div>
+
+<!-- Edit Profile Modal -->
+<div id="editProfileModal" style="display:none" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full mx-4">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-bold text-gray-900">Edit Profile</h3>
+            <button onclick="document.getElementById('editProfileModal').style.display='none'" class="text-gray-500 hover:text-gray-900 text-2xl">&times;</button>
+        </div>
+
+        <form action="{{ route('profile.update') }}" method="POST" class="space-y-4">
+            @csrf
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Nama</label>
+                <input type="text" name="name" value="{{ $user->name ?? '' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <input type="email" name="email" value="{{ $user->email ?? '' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Telepon</label>
+                <input type="text" name="phone" value="{{ $user->phone ?? '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Alamat</label>
+                <input type="text" name="address" value="{{ $user->address ?? '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                <textarea name="bio" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">{{ $user->bio ?? '' }}</textarea>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="document.getElementById('editProfileModal').style.display='none'" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50">Batal</button>
+                <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">Simpan</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <!-- FontAwesome -->

@@ -79,83 +79,36 @@
 
         <!-- REPORT LIST -->
         <div class="flex-1 overflow-y-auto px-8 py-6 space-y-4">
-
-            @php
-                $reports = [
-                    [
-                        'title' => 'Lampu Jalan Mati di RT 05',
-                        'location' => 'Jl. Mawar',
-                        'time' => '2 hari yang lalu',
-                        'status' => 'Sedang Diproses',
-                        'status_color' => 'yellow',
-                        'category' => 'Keamanan',
-                        'votes' => 18,
-                        'comments' => 6
-                    ],
-                    [
-                        'title' => 'Sampah Menumpuk di Pasar Baru',
-                        'location' => 'Jl. Kenanga',
-                        'time' => '5 hari yang lalu',
-                        'status' => 'Baru',
-                        'status_color' => 'red',
-                        'category' => 'Sanitasi',
-                        'votes' => 3,
-                        'comments' => 1
-                    ],
-                    [
-                        'title' => 'Pohon Tumbang di Depan Halte',
-                        'location' => 'Jl. Sudirman',
-                        'time' => '1 minggu yang lalu',
-                        'status' => 'Selesai',
-                        'status_color' => 'green',
-                        'category' => 'Infrastruktur',
-                        'votes' => 34,
-                        'comments' => 12
-                    ],
-                ];
-            @endphp
-
             @forelse ($reports as $r)
                 <article class="report-card bg-white p-6 rounded-xl border shadow-sm hover:shadow-md transition">
 
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                        {{ $r['title'] }}
+                        {{ $r->title }}
                     </h3>
 
                     <div class="flex items-center gap-3 text-sm text-gray-500 mb-3">
                         <span class="flex items-center gap-1">
-                            <i class="fa-solid fa-location-dot text-gray-400"></i>{{ $r['location'] }}
+                            <i class="fa-solid fa-location-dot text-gray-400"></i>{{ $r->location }}
                         </span>
                         <span>•</span>
-                        <span>{{ $r['time'] }}</span>
+                        <span>{{ $r->created_at->diffForHumans() }}</span>
                     </div>
 
                     <div class="flex gap-2 mb-3">
-                        @if($r['status_color'] == 'yellow')
-                            <span class="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700">
-                                {{ $r['status'] }}
-                            </span>
-                        @elseif($r['status_color'] == 'red')
-                            <span class="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700">
-                                {{ $r['status'] }}
-                            </span>
-                        @elseif($r['status_color'] == 'green')
-                            <span class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700">
-                                {{ $r['status'] }}
-                            </span>
-                        @endif
-
+                        <span class="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700">
+                            {{ ucfirst($r->status ?? 'pending') }}
+                        </span>
                         <span class="px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700">
-                            {{ $r['category'] }}
+                            {{ $r->category->name ?? 'Umum' }}
                         </span>
                     </div>
 
                     <div class="flex items-center gap-4 text-sm text-gray-500 pt-2 border-t border-gray-100">
                         <span class="flex items-center gap-1">
-                            <i class="fa-regular fa-star"></i> {{ $r['votes'] }} votes
+                            <i class="fa-regular fa-star"></i> {{ $r->votes()->count() ?? 0 }} votes
                         </span>
                         <span class="flex items-center gap-1">
-                            <i class="fa-regular fa-comment"></i> {{ $r['comments'] }} komentar
+                            <i class="fa-regular fa-comment"></i> {{ $r->comments->count() ?? 0 }} komentar
                         </span>
                     </div>
 
