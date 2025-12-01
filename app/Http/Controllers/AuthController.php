@@ -34,7 +34,13 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'avatar' => $user->avatar,
+                'role' => $user->role ?? 'user',
             ]]);
+
+            // Redirect berdasarkan role
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard')->with('success', 'Berhasil login sebagai Admin!');
+            }
 
             return redirect()->route('home')->with('success', 'Berhasil login!');
         }
