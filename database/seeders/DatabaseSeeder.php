@@ -31,11 +31,11 @@ class DatabaseSeeder extends Seeder
 
         // Seed Categories with fixed names
         $categories = [
-            'Infrastructure' => 'Infrastructure issues',
-            'Health' => 'Health and safety concerns',
-            'Education' => 'Education related problems',
-            'Environment' => 'Environmental issues',
-            'Public Safety' => 'Public safety concerns',
+            'Infrastruktur' => 'Masalah infrastruktur',
+            'Keamanan' => 'Masalah keamanan publik',
+            'Sanitasi' => 'Masalah sanitasi dan kebersihan',
+            'Taman' => 'Masalah taman dan ruang hijau',
+            'Aksesibilitas' => 'Masalah aksesibilitas',
         ];
 
         foreach ($categories as $name => $description) {
@@ -48,8 +48,21 @@ class DatabaseSeeder extends Seeder
 
         $categories = Category::all();
 
-        // Seed Reports
+        // Seed Reports with images
         $reports = [];
+        $imageUrls = [
+            'https://via.placeholder.com/600x400?text=Infrastructure+Issue',
+            'https://via.placeholder.com/600x400?text=Health+Concern',
+            'https://via.placeholder.com/600x400?text=Education+Problem',
+            'https://via.placeholder.com/600x400?text=Environment+Issue',
+            'https://via.placeholder.com/600x400?text=Safety+Concern',
+            'https://via.placeholder.com/600x400?text=Road+Damage',
+            'https://via.placeholder.com/600x400?text=Garbage+Issue',
+            'https://via.placeholder.com/600x400?text=Water+Problem',
+            'https://via.placeholder.com/600x400?text=Power+Issue',
+            'https://via.placeholder.com/600x400?text=Public+Service',
+        ];
+
         for ($i = 0; $i < 10; $i++) {
             $reports[] = Report::create([
                 'user_id' => $users->random()->id,
@@ -57,7 +70,7 @@ class DatabaseSeeder extends Seeder
                 'title' => fake()->sentence(),
                 'description' => fake()->paragraphs(3, true),
                 'location' => fake()->address(),
-                'image' => null,
+                'image' => $imageUrls[$i % count($imageUrls)],
                 'status' => fake()->randomElement(['pending', 'in_progress', 'resolved', 'rejected']),
                 'upvotes' => fake()->numberBetween(0, 50),
                 'downvotes' => fake()->numberBetween(0, 20),

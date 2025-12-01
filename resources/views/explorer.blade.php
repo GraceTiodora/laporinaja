@@ -118,8 +118,11 @@
                     </button>
                     <div id="categoryDropdown" class="hidden absolute top-full left-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg z-10">
                         <div class="p-2 space-y-1">
-                            @foreach(['Infrastruktur', 'Keamanan', 'Sanitasi', 'Taman', 'Aksesibilitas'] as $cat)
-                                <button onclick="filterByCategory('{{ $cat }}')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition">{{ $cat }}</button>
+                            @php
+                                $categories = App\Models\Category::all();
+                            @endphp
+                            @foreach($categories as $cat)
+                                <button onclick="filterByCategory('{{ $cat->name }}')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition">{{ $cat->name }}</button>
                             @endforeach
                         </div>
                     </div>
@@ -155,38 +158,56 @@
 
                 <div class="space-y-4" id="reportsList">
                     @forelse($reports as $report)
-                        <article class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 hover:shadow-md transition-all duration-300 report-card"
-                             data-location="{{ $report['location'] ?? '' }}"
-                             data-category="{{ $report['category'] ?? '' }}"
-                             data-status="{{ $report['status'] ?? '' }}">
-                             
-                            <h3 class="text-base font-semibold text-gray-800 mb-2">{{ $report['title'] ?? '' }}</h3>
+                        <a href="{{ route('reports.show', $report['id']) }}" class="block no-underline">
+                            <article class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 report-card cursor-pointer"
+                                 data-location="{{ $report['location'] ?? '' }}"
+                                 data-category="{{ $report['category'] ?? '' }}"
+                                 data-status="{{ $report['status'] ?? '' }}">
+                                
+                                @if($report['image'])
+                                    <img src="{{ $report['image'] }}" alt="{{ $report['title'] }}" class="w-full h-48 object-cover">
+                                @endif
+                                 
+                                <div class="p-4">
+                                    <h3 class="text-base font-semibold text-gray-800 mb-2 hover:text-blue-600">{{ $report['title'] ?? '' }}</h3>
 
-                            <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                                <i class="fa-solid fa-location-dot text-gray-400"></i>
-                                <span>{{ $report['location'] ?? '—' }}</span>
-                                <span class="mx-2">•</span>
-                                <i class="fa-solid fa-heart text-red-500"></i>
-                                <span>{{ $report['votes'] ?? 0 }} votes</span>
-                            </div>
-
-                            <div class="flex gap-2 mb-3">
-                                <span class="px-3 py-1 text-xs font-medium bg-pink-100 text-pink-700 rounded-full">{{ $report['status'] ?? '' }}</span>
-                                <span class="px-3 py-1 text-xs font-medium bg-indigo-100 text-indigo-700 rounded-full">{{ $report['category'] ?? '' }}</span>
-                            </div>
-
-                            @if(!empty($report['description']))
-                                <p class="text-gray-700 text-sm leading-relaxed line-clamp-3">{{ Str::limit($report['description'], 150) }}</p>
-                            @endif
-
-                            <div class="flex justify-between items-center text-sm text-gray-500 border-t border-gray-100 pt-3 mt-3">
-                                <div class="flex gap-4">
-                                    <button class="hover:text-blue-600 transition"><i class="fa-regular fa-comment"></i> {{ $report['comments'] ?? 0 }}</button>
-                                    <button class="hover:text-red-500 transition"><i class="fa-solid fa-heart"></i> {{ $report['votes'] ?? 0 }}</button>
+                                <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                                    <i class="fa-solid fa-location-dot text-gray-400"></i>
+                                    <span>{{ $report['location'] ?? '—' }}</span>
+                                    <span class="mx-2">•</span>
+                                    <i class="fa-solid fa-heart text-red-500"></i>
+                                    <span>{{ $report['votes'] ?? 0 }} votes</span>
                                 </div>
-                                <a href="{{ route('reports.show', $report['id']) }}" class="text-xs text-blue-600 hover:underline">Lihat detail</a>
+
+                                <div class="flex gap-2 mb-3 flex-wrap">
+                                    <span class="px-3 py-1 text-xs font-medium bg-pink-100 text-pink-700 rounded-full">{{ $report['status'] ?? '' }}</span>
+                                    @php
+                                        $categoryColors = [
+                                            'Infrastruktur' => 'bg-blue-100 text-blue-700',
+                                            'Keamanan' => 'bg-red-100 text-red-700',
+                                            'Sanitasi' => 'bg-purple-100 text-purple-700',
+                                            'Taman' => 'bg-green-100 text-green-700',
+                                            'Aksesibilitas' => 'bg-yellow-100 text-yellow-700',
+                                        ];
+                                        $categoryClass = $categoryColors[$report['category']] ?? 'bg-gray-100 text-gray-700';
+                                    @endphp
+                                    <span class="px-3 py-1 text-xs font-medium {{ $categoryClass }} rounded-full">{{ $report['category'] ?? 'Umum' }}</span>
+                                </div>
+
+                                @if(!empty($report['description']))
+                                    <p class="text-gray-700 text-sm leading-relaxed line-clamp-3">{{ Str::limit($report['description'], 150) }}</p>
+                                @endif
+
+                                <div class="flex justify-between items-center text-sm text-gray-500 border-t border-gray-100 pt-3 mt-3">
+                                    <div class="flex gap-4">
+                                        <button class="hover:text-blue-600 transition"><i class="fa-regular fa-comment"></i> {{ $report['comments'] ?? 0 }}</button>
+                                        <button class="hover:text-red-500 transition"><i class="fa-solid fa-heart"></i> {{ $report['votes'] ?? 0 }}</button>
+                                    </div>
+                                    <a href="{{ route('reports.show', $report['id']) }}" class="text-xs text-blue-600 hover:underline">Lihat detail</a>
+                                </div>
                             </div>
                         </article>
+                        </a>
                     @empty
                         <div class="text-center py-12">
                             <i class="fa-regular fa-folder-open text-6xl text-gray-300 mb-4"></i>

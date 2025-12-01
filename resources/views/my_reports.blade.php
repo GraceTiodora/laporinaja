@@ -80,39 +80,56 @@
         <!-- REPORT LIST -->
         <div class="flex-1 overflow-y-auto px-8 py-6 space-y-4">
             @forelse ($reports as $r)
-                <article class="report-card bg-white p-6 rounded-xl border shadow-sm hover:shadow-md transition">
+                <a href="{{ route('reports.show', $r->id) }}" class="block no-underline">
+                    <article class="report-card bg-white rounded-xl border shadow-sm hover:shadow-md transition overflow-hidden cursor-pointer">
+                        
+                        @if($r->image)
+                            <img src="{{ asset($r->image) }}" alt="{{ $r->title }}" class="w-full h-40 object-cover">
+                        @endif
 
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                        {{ $r->title }}
-                    </h3>
+                        <div class="p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2 hover:text-blue-600">
+                                {{ $r->title }}
+                            </h3>
 
-                    <div class="flex items-center gap-3 text-sm text-gray-500 mb-3">
-                        <span class="flex items-center gap-1">
-                            <i class="fa-solid fa-location-dot text-gray-400"></i>{{ $r->location }}
-                        </span>
-                        <span>•</span>
-                        <span>{{ $r->created_at->diffForHumans() }}</span>
-                    </div>
+                            <div class="flex items-center gap-3 text-sm text-gray-500 mb-3">
+                                <span class="flex items-center gap-1">
+                                    <i class="fa-solid fa-location-dot text-gray-400"></i>{{ $r->location }}
+                                </span>
+                                <span>•</span>
+                                <span>{{ $r->created_at->diffForHumans() }}</span>
+                            </div>
 
-                    <div class="flex gap-2 mb-3">
-                        <span class="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700">
-                            {{ ucfirst($r->status ?? 'pending') }}
-                        </span>
-                        <span class="px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700">
-                            {{ $r->category->name ?? 'Umum' }}
-                        </span>
-                    </div>
+                            <div class="flex gap-2 mb-3">
+                                <span class="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700 font-medium">
+                                    {{ ucfirst($r->status ?? 'pending') }}
+                                </span>
+                                @php
+                                    $categoryColors = [
+                                        'Infrastruktur' => 'bg-blue-100 text-blue-700',
+                                        'Keamanan' => 'bg-red-100 text-red-700',
+                                        'Sanitasi' => 'bg-purple-100 text-purple-700',
+                                        'Taman' => 'bg-green-100 text-green-700',
+                                        'Aksesibilitas' => 'bg-yellow-100 text-yellow-700',
+                                    ];
+                                    $categoryClass = $categoryColors[$r->category->name] ?? 'bg-gray-100 text-gray-700';
+                                @endphp
+                                <span class="px-3 py-1 text-xs rounded-full {{ $categoryClass }} font-medium">
+                                    {{ $r->category->name ?? 'Umum' }}
+                                </span>
+                            </div>
 
-                    <div class="flex items-center gap-4 text-sm text-gray-500 pt-2 border-t border-gray-100">
-                        <span class="flex items-center gap-1">
-                            <i class="fa-regular fa-star"></i> {{ $r->votes()->count() ?? 0 }} votes
-                        </span>
-                        <span class="flex items-center gap-1">
-                            <i class="fa-regular fa-comment"></i> {{ $r->comments->count() ?? 0 }} komentar
-                        </span>
-                    </div>
-
-                </article>
+                            <div class="flex items-center gap-4 text-sm text-gray-500 pt-2 border-t border-gray-100">
+                                <span class="flex items-center gap-1">
+                                    <i class="fa-regular fa-star"></i> {{ $r->votes_count ?? 0 }} votes
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i class="fa-regular fa-comment"></i> {{ $r->comments_count ?? 0 }} komentar
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </a>
             @empty
                 <div class="text-center py-16 text-gray-500">
                     <i class="fa-regular fa-clipboard text-6xl text-gray-300 mb-4"></i>

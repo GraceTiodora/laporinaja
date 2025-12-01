@@ -51,14 +51,23 @@
                     <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%23ccc' width='600' height='400'/%3E%3C/svg%3E" alt="Report Image" style="width: 100%; max-height: 400px; border-radius: 8px; object-fit: cover; margin-bottom: 16px;">
                 @endif
 
-                <div style="display: flex; gap: 16px; flex-wrap: wrap; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                <div style="display: flex; gap: 16px; flex-wrap: wrap; padding-top: 16px; border-top: 1px solid #e5e7eb; align-items: center;">
                     <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6b7280;">
                         <i class="fa-solid fa-location-dot"></i>
                         {{ $report['location'] ?? 'Tidak diketahui' }}
                     </div>
-                    <div>
-                        <span style="background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">{{ $report['status'] ?? 'Baru' }}</span>
-                    </div>
+                    @php
+                        $categoryColors = [
+                            'Infrastruktur' => 'background: #dbeafe; color: #1e40af;',
+                            'Keamanan' => 'background: #fee2e2; color: #b91c1c;',
+                            'Sanitasi' => 'background: #f3e8ff; color: #6b21a8;',
+                            'Taman' => 'background: #dcfce7; color: #166534;',
+                            'Aksesibilitas' => 'background: #fef3c7; color: #92400e;',
+                        ];
+                        $categoryStyle = $categoryColors[$report['category']] ?? 'background: #f3f4f6; color: #374151;';
+                    @endphp
+                    <span style="{{ $categoryStyle }} padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">{{ $report['category'] ?? 'Umum' }}</span>
+                    <span style="background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">{{ $report['status'] ?? 'Baru' }}</span>
                 </div>
             </div>
 

@@ -63,7 +63,7 @@ class ReportController extends Controller
                 'status' => 'pending',
             ]);
 
-            return redirect()->route('profile')->with('success', 'Laporan berhasil dikirim! Lihat di profil Anda.');
+            return redirect()->route('my-reports')->with('success', 'Laporan berhasil dikirim! Lihat di laporan saya.');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
@@ -119,6 +119,7 @@ class ReportController extends Controller
 
         $reports = Report::where('user_id', session('user.id'))
                         ->with('category')
+                        ->withCount(['comments', 'votes'])
                         ->latest()
                         ->paginate(10);
         
