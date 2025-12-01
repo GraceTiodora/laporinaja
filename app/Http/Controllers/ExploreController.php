@@ -27,6 +27,7 @@ class ExploreController extends Controller
                         'status' => ucfirst($r->status ?? 'pending'),
                         'votes' => $r->votes()->where('is_upvote', 1)->count(),
                         'comments' => $r->comments->count(),
+                        'image' => $r->image ? asset($r->image) : null,
                         'created_at' => $r->created_at->toDateTimeString(),
                         'user' => [
                             'name' => $r->user->name ?? 'Anonymous',

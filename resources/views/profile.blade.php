@@ -8,6 +8,15 @@
 
 @section('content')
 <div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">
+    
+    @if(session('success'))
+    <div class="fixed top-4 left-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50 flex items-center gap-2" id="successAlert">
+        <i class="fa-solid fa-check-circle"></i>
+        <span>{{ session('success') }}</span>
+        <button onclick="this.parentElement.style.display='none'" class="ml-4 text-xl">&times;</button>
+    </div>
+    @endif
+
     <!-- 🧭 Left Sidebar -->
     <aside class="w-[270px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between sidebar-scroll">
         <div>
@@ -225,7 +234,7 @@
             <button onclick="document.getElementById('editProfileModal').style.display='none'" class="text-gray-500 hover:text-gray-900 text-2xl">&times;</button>
         </div>
 
-        <form action="{{ route('profile.update') }}" method="POST" class="space-y-4">
+        <form action="{{ route('profile.update') }}" method="POST" class="space-y-4" id="editProfileForm">
             @csrf
             
             <div>
@@ -265,6 +274,13 @@
 <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
 
 <script>
+// Auto-dismiss success message after 3 seconds
+if (document.getElementById('successAlert')) {
+    setTimeout(function() {
+        document.getElementById('successAlert').style.display = 'none';
+    }, 3000);
+}
+
 // Tab functionality
 document.addEventListener('DOMContentLoaded', function() {
     const tabButtons = document.querySelectorAll('.tab-btn');

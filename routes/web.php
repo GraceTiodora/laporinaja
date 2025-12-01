@@ -43,7 +43,11 @@ Route::get('/profile', function () {
     $user = App\Models\User::find($userId);
     
     // Get user's reports
-    $reports = App\Models\Report::where('user_id', $userId)->with('category')->latest()->get();
+    $reports = App\Models\Report::where('user_id', $userId)
+        ->with('category')
+        ->withCount(['comments', 'votes'])
+        ->latest()
+        ->get();
     
     // Get user's comments
     $comments = App\Models\Comment::where('user_id', $userId)->with('report.user')->latest()->get();
@@ -86,7 +90,6 @@ Route::get('explore', [ExploreController::class, 'index'])->name('explore');
 // Reports Routes
 Route::get('reports/create', [ReportController::class, 'create'])->name('reports.create');
 Route::post('reports', [ReportController::class, 'store'])->name('reports.store');
-Route::get('/reports', [ReportController::class, 'index'])->name('reports');
 Route::get('/reports/{id}', [ReportController::class, 'show'])->name('reports.show');
 Route::post('/reports/{id}/vote', [ReportController::class, 'vote'])->name('reports.vote');
 Route::post('/reports/{id}/comment', [ReportController::class, 'addComment'])->name('reports.comment');
