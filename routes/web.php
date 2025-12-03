@@ -131,8 +131,71 @@ Route::prefix('admin')->group(function () {
 
     // Verifikasi & Penanganan
     Route::get('/verifikasi', function () {
-        return view('admin.verifikasi');
+        $reports = App\Models\Report::with(['user', 'category'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return view('admin.verifikasi', ['reports' => $reports]);
     })->name('admin.verifikasi');
+
+    // Detail Verifikasi - menampilkan detail laporan untuk diverifikasi
+    Route::get('/verifikasi/{id}', function ($id) {
+        $report = App\Models\Report::with(['user', 'category', 'comments.user'])->findOrFail($id);
+        return view('admin.detail_verifikasi', ['report' => $report]);
+    })->name('admin.verifikasi.detail');
+
+    // Halaman Validasi - menampilkan form validasi laporan
+    Route::get('/verifikasi/{id}/validasi', function ($id) {
+        $report = App\Models\Report::with(['user', 'category', 'comments.user'])->findOrFail($id);
+        return view('admin.validasi', ['report' => $report]);
+    })->name('admin.verifikasi.validasi');
+
+    // Proses Validasi - menerima dan memproses laporan
+    Route::post('/verifikasi/{id}/validasi', function ($id) {
+        $report = App\Models\Report::findOrFail($id);
+        $report->status = 'diproses';
+        $report->save();
+        return redirect()->route('admin.verifikasi')->with('success', 'Laporan berhasil divalidasi dan sedang diproses');
+    })->name('admin.verifikasi.validasi.submit');
+
+    // Halaman Tolak - menampilkan form penolakan laporan
+    Route::get('/verifikasi/{id}/tolak', function ($id) {
+        $report = App\Models\Report::with(['user', 'category', 'comments.user'])->findOrFail($id);
+        return view('admin.tolak', ['report' => $report]);
+    })->name('admin.verifikasi.tolak');
+
+    // Proses Tolak - menolak laporan
+    Route::post('/verifikasi/{id}/tolak', function ($id) {
+        $report = App\Models\Report::findOrFail($id);
+        $report->status = 'ditolak';
+        $report->save();
+        return redirect()->route('admin.verifikasi')->with('success', 'Laporan berhasil ditolak');
+    })->name('admin.verifikasi.tolak.submit');
+
+    // Halaman Update Status - menampilkan form update status
+    Route::get('/verifikasi/{id}/update-status', function ($id) {
+        $report = App\Models\Report::with(['user', 'category', 'comments.user'])->findOrFail($id);
+        return view('admin.update_status', ['report' => $report]);
+    })->name('admin.verifikasi.update_status');
+
+    // Proses Update Status - mengubah status laporan
+    Route::post('/verifikasi/{id}/update-status', function (Illuminate\Http\Request $request, $id) {
+        $report = App\Models\Report::findOrFail($id);
+        
+        // Get status from form if provided, otherwise toggle
+        if ($request->has('status_baru') && !empty($request->status_baru)) {
+            $report->status = $request->status_baru;
+        } else {
+            // Fallback: Toggle status
+            if ($report->status == 'baru') {
+                $report->status = 'diproses';
+            } elseif ($report->status == 'diproses') {
+                $report->status = 'selesai';
+            }
+        }
+        
+        $report->save();
+        return redirect()->route('admin.verifikasi')->with('success', 'Status laporan berhasil diupdate');
+    })->name('admin.verifikasi.update_status.submit');
 
     // Monitoring & Statistik
     Route::get('/monitoring', function () {

@@ -1,0 +1,305 @@
+:root{
+  --bg: #f6f8fa;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --accent-600: #1e40af;
+  --radius: 16px;
+  --shadow: 0 4px 12px rgba(15,23,42,0.08);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+/* Layout */
+.flex {
+  display: flex;
+}
+
+.h-screen {
+  height: 100vh;
+}
+
+/* Sidebar styling (sama seperti monitoring) */
+aside i { 
+  width: 24px; 
+  text-align: center; 
+}
+
+/* Info Card */
+.info-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.info-card p {
+  font-size: 16px;
+  color: #111827;
+  line-height: 1.6;
+}
+
+/* Report Card */
+.report-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.2s ease;
+}
+
+.report-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* User Avatar */
+.report-card img[alt*="user"] {
+  border: 2px solid #e5e7eb;
+}
+
+/* Report Image */
+.report-card img:not([alt*="user"]) {
+  border-radius: 12px;
+  max-height: 400px;
+  object-fit: cover;
+}
+
+/* Voting Section */
+.voting-section {
+  padding-top: 20px;
+  border-top: 1px solid #f3f4f6;
+}
+
+/* Vote Buttons */
+.vote-btn {
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Urgent Button - Background Pink dengan Border Pink */
+.vote-urgent {
+  background: #fecdd3 !important;
+  color: #881337 !important;
+  border: 2px solid #fda4af !important;
+}
+
+.vote-urgent:hover {
+  background: #fda4af !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(253, 164, 175, 0.3);
+}
+
+.vote-urgent.active {
+  background: #fb7185 !important;
+  color: #ffffff !important;
+  border: 2px solid #f43f5e !important;
+  box-shadow: 0 0 0 3px rgba(251, 113, 133, 0.2);
+}
+
+/* Tidak Urgent Button - Background Pink dengan Border Pink */
+.vote-not-urgent {
+  background: #fecdd3 !important;
+  color: #881337 !important;
+  border: 2px solid #fda4af !important;
+}
+
+.vote-not-urgent:hover {
+  background: #fda4af !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(253, 164, 175, 0.3);
+}
+
+.vote-not-urgent.active {
+  background: #fb7185 !important;
+  color: #ffffff !important;
+  border: 2px solid #f43f5e !important;
+  box-shadow: 0 0 0 3px rgba(251, 113, 133, 0.2);
+}
+
+/* Vote Feedback */
+.vote-feedback {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  animation: fadeInOut 2s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+  20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+}
+
+/* Spacing */
+.space-y-6 > * + * {
+  margin-top: 1.5rem;
+}
+
+/* Typography */
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.font-extrabold {
+  font-weight: 800;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+/* Colors */
+.text-gray-900 {
+  color: #111827;
+}
+
+.text-gray-700 {
+  color: #374151;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.bg-white {
+  background-color: #ffffff;
+}
+
+.bg-gray-50 {
+  background-color: #f9fafb;
+}
+
+/* Border */
+.border {
+  border-width: 1px;
+}
+
+.border-gray-200 {
+  border-color: #e5e7eb;
+}
+
+.rounded-2xl {
+  border-radius: 1rem;
+}
+
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+
+.rounded-full {
+  border-radius: 9999px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .report-card {
+    padding: 20px;
+  }
+  
+  .vote-btn {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  main {
+    padding: 16px;
+  }
+  
+  .report-card {
+    padding: 16px;
+  }
+  
+  .report-card img:not([alt*="user"]) {
+    max-height: 300px;
+  }
+  
+  .grid.grid-cols-2 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 12px;
+  }
+  
+  .vote-btn {
+    width: 100%;
+  }
+  
+  h1.text-3xl {
+    font-size: 1.5rem;
+  }
+}
+@media (max-width: 640px) {
+  aside {
+    display: none;
+  }
+  
+  main {
+    padding: 12px;
+  }
+  
+  .info-card,
+  .report-card {
+    border-radius: 12px;
+    padding: 16px;
+  }
+  
+  .report-card .w-14 {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* Scrollbar */
+main::-webkit-scrollbar {
+  width: 8px;
+}
+
+main::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+main::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+
+main::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
