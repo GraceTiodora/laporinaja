@@ -122,7 +122,7 @@
                     <a href="{{ route('admin.verifikasi.detail', $report->id_report) }}" class="text-gray-400 hover:text-gray-600 transition-colors ml-4">
                         <i class="fa-solid fa-times text-xl"></i>
                     </a>
-                </div>
+                </div> 
 
                 {{-- Modal Body --}}
                 <form action="{{ route('admin.verifikasi.validasi.submit', $report->id_report) }}" method="POST" id="validasiForm">
