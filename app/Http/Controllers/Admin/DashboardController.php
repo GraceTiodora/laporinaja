@@ -10,13 +10,14 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // Ensure default values are 0 for empty database
         $stats = [
-            'total_reports' => Report::count(),
-            'pending' => Report::where('status', 'pending')->count(),
-            'in_progress' => Report::where('status', 'in_progress')->count(),
-            'resolved' => Report::where('status', 'resolved')->count(),
-            'rejected' => Report::where('status', 'rejected')->count(),
-            'total_users' => User::count(),
+            'total_reports' => Report::count() ?? 0,
+            'pending' => Report::where('status', 'pending')->count() ?? 0,
+            'in_progress' => Report::where('status', 'in_progress')->count() ?? 0,
+            'resolved' => Report::where('status', 'resolved')->count() ?? 0,
+            'rejected' => Report::where('status', 'rejected')->count() ?? 0,
+            'total_users' => User::where('role', 'user')->count() ?? 0,
         ];
 
         $recentReports = Report::with('user')
