@@ -6,7 +6,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ExploreController;  // ← TAMBAH INI
 use App\Models\Report;
 
-
+ 
 Route::get('/', function () {
     // load latest reports from database and map to the frontend structure
     try {
