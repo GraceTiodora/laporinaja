@@ -16,7 +16,7 @@ body {
 
 /* Custom Scrollbar Styling */
 .sidebar-scroll::-webkit-scrollbar,
-.feed-scroll::-webkit-scrollbar {
+.feed-scroll::-webkit-scrollbar { 
     width: 6px;
 }
 

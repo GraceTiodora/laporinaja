@@ -25,7 +25,7 @@
                     {{ session('error') }}
                 </div>
             @endif
-
+ 
             <div>
                 <label for="name" class="block text-gray-800 font-semibold mb-2 text-sm">Nama</label>
                 <input id="name" name="name" type="text" required placeholder="Nama"

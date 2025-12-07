@@ -24,7 +24,7 @@
                 <li><a href="#"><i class="fa-solid fa-ellipsis-h"></i> More</a></li>
             </ul>
         </aside>
-
+ 
         <!-- Main Content -->
         <main class="main-content">
             <header class="header">

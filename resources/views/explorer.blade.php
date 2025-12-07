@@ -26,7 +26,7 @@
         ['Profil', 'profile', 'fa-regular fa-user'],
     ];
 @endphp
-
+ 
 
 
               @foreach ($menu as [$name, $route, $icon])

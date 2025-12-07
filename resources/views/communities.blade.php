@@ -18,7 +18,7 @@
 
             <nav class="space-y-2">
                 
-                @php
+                @php 
                     $menu = [
                         ['Beranda', 'home', 'fa-solid fa-house'],
                         ['Pencarian', 'explore', 'fa-solid fa-hashtag'],

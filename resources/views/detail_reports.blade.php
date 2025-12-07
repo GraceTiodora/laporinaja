@@ -22,7 +22,7 @@
             <li style="margin-bottom: 12px;"><a href="{{ route('communities') }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; color: #6b7280; text-decoration: none; border-radius: 8px; transition: all 0.3s ease;" onmouseover="this.style.background='#f3f4f6'; this.style.color='#1f2937';" onmouseout="this.style.background=''; this.style.color='#6b7280';"><i class="fa-solid fa-users"></i> Communities</a></li>
             <li style="margin-bottom: 12px;"><a href="{{ route('profile') }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; color: #6b7280; text-decoration: none; border-radius: 8px; transition: all 0.3s ease;" onmouseover="this.style.background='#f3f4f6'; this.style.color='#1f2937';" onmouseout="this.style.background=''; this.style.color='#6b7280';"><i class="fa-regular fa-user"></i> Profile</a></li>
         </ul>
-    </aside>
+    </aside> 
 
     <!-- Main Content -->
     <main style="flex: 1; background-color: #f9fafb;">

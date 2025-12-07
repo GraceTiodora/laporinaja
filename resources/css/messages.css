@@ -15,7 +15,7 @@ body {
     background-color: #eff6ff;
     color: #3b82f6;
 }
-
+ 
 /* Custom Scrollbar Styling */
 .sidebar-scroll::-webkit-scrollbar,
 .feed-scroll::-webkit-scrollbar {

@@ -25,7 +25,7 @@
         ['Komunitas', 'communities', 'fa-solid fa-users'],
         ['Profil', 'profile', 'fa-regular fa-user'],
     ];
-@endphp
+@endphp 
 
 
 

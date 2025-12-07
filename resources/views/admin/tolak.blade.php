@@ -16,7 +16,7 @@
 
             {{-- Menu --}}
             <nav class="space-y-2 text-sm">
-                @php
+                @php 
                     $menu = [
                         ['Dashboard', 'admin.dashboard', 'fa-solid fa-house'],
                         ['Verifikasi & Penanganan', 'admin.verifikasi', 'fa-solid fa-check-circle'],

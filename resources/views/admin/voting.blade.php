@@ -21,7 +21,7 @@
             'urgent_votes' => 45,
             'not_urgent_votes' => 8,
             'urgent_percentage' => 85
-        ]
+        ] 
     ]);
 @endphp
 

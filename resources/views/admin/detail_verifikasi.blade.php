@@ -5,7 +5,7 @@
 @section('content')
 <div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">
 
-    {{-- SIDEBAR --}}
+    {{-- SIDEBAR --}} 
     <aside class="w-[260px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between">
         
         <div>

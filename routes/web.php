@@ -24,7 +24,7 @@ Route::get('/', function () {
                 'created_at' => $r->created_at->diffForHumans(),
                 'image' => $r->image ? $r->image : null,
             ];
-        })->toArray();
+        })->toArray(); 
     } catch (\Exception $e) {
         $dbReports = [];
     }

@@ -11,7 +11,7 @@
     $reports = $reports ?? collect();
     $summary = $summary ?? ['total'=>'—','active'=>'—','closed_today'=>'—','avg_response'=>'—'];
 @endphp
-
+ 
 <div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">
 
     {{-- SIDEBAR (sama seperti admin dashboard) --}}

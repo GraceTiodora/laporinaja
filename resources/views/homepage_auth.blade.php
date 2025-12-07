@@ -28,7 +28,7 @@
                         ['Profil', 'profile', 'fa-regular fa-user'],
                     ];
                 @endphp
-
+ 
                 @foreach ($menu as [$name, $route, $icon])
                     <a href="{{ $route == '#' ? '#' : route($route) }}"
                        class="group flex items-center gap-4 px-4 py-3 rounded-xl text-gray-600 font-medium

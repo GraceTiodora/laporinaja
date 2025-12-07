@@ -14,7 +14,7 @@
         'phone' => '081234567890',
         'role' => 'Admin',
         'avatar' => 'profile-user.jpg'
-    ];
+    ]; 
 @endphp
 
 <div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">

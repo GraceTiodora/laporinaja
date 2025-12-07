@@ -25,7 +25,7 @@
                     {{ session('error') }}
                 </div>
             @endif
-
+ 
             <div>
                 <label for="password" class="block text-gray-800 font-semibold mb-2 text-sm">Kata Sandi</label>
                 <input id="password" name="password" type="password" required placeholder="Minimal 6 karakter"

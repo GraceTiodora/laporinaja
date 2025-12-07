@@ -8,7 +8,7 @@
 
     {{-- SIDEBAR --}}
     <aside class="w-[260px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between">
-        
+         
         <div>
             <h2 class="text-xl font-extrabold text-blue-600 mb-8 tracking-tight">
                 Laporin<span class="text-gray-900">Aja</span>

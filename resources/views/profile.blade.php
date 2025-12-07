@@ -16,7 +16,7 @@
         <button onclick="this.parentElement.style.display='none'" class="ml-4 text-xl">&times;</button>
     </div>
     @endif
-
+ 
     <!-- 🧭 Left Sidebar -->
     <aside class="w-[270px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between sidebar-scroll">
         <div>

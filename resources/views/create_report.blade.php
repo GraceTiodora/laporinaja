@@ -14,7 +14,7 @@
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">Laporin<span class="text-gray-900">Aja</span></h2>
 
             <nav class="space-y-2">
-                @php
+                @php 
                     $menu = [
                         ['Beranda', 'home', 'fa-solid fa-house'],
                         ['Pencarian', 'explore', 'fa-solid fa-hashtag'],

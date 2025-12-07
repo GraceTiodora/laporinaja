@@ -20,7 +20,7 @@
         <div class="text-center mb-6">
             <p class="text-gray-500 text-base">Masuk untuk Melaporkan Masalah Anda</p>
         </div>
-
+ 
         <form action="{{ route('login') }}" method="POST" class="space-y-5">
             @csrf
             

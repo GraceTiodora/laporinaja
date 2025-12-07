@@ -23,7 +23,7 @@ body {
 
 .tab-btn:not(.active):hover {
     color: #111827;
-    border-color: #d1d5db;
+    border-color: #d1d5db; 
 }
 
 /* Card Hover Effects */
