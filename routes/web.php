@@ -161,7 +161,7 @@ Route::get('/messages', function () {
 })->name('messages');
 
 
-Route::get('my-reports', [ReportController::class, 'myReports'])->name('reports');
+Route::get('my-reports', [ReportController::class, 'myReports'])->name('my-reports');
 
 
 Route::get('/communities', function () {

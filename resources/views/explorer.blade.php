@@ -190,7 +190,7 @@
                                 </div>
 
                                 <div class="flex gap-2 mb-3 flex-wrap">
-                                    <span class="px-3 py-1 text-xs font-medium bg-pink-100 text-pink-700 rounded-full">{{ $report['status'] ?? '' }}</span>
+                                    <span class="px-3 py-2 text-sm font-medium bg-pink-100 text-pink-700 rounded-full">{{ $report['status'] ?? '' }}</span>
                                     @php
                                         $categoryColors = [
                                             'Infrastruktur' => 'bg-blue-100 text-blue-700',
@@ -201,7 +201,7 @@
                                         ];
                                         $categoryClass = $categoryColors[$report['category']] ?? 'bg-gray-100 text-gray-700';
                                     @endphp
-                                    <span class="px-3 py-1 text-xs font-medium {{ $categoryClass }} rounded-full">{{ $report['category'] ?? 'Umum' }}</span>
+                                    <span class="px-3 py-2 text-sm font-medium {{ $categoryClass }} rounded-full">{{ $report['category'] ?? 'Umum' }}</span>
                                 </div>
 
                                 @if(!empty($report['description']))
@@ -210,10 +210,10 @@
 
                                 <div class="flex justify-between items-center text-sm text-gray-500 border-t border-gray-100 pt-3 mt-3">
                                     <div class="flex gap-4">
-                                        <button class="hover:text-blue-600 transition"><i class="fa-regular fa-comment"></i> {{ $report['comments'] ?? 0 }}</button>
-                                        <button class="hover:text-red-500 transition"><i class="fa-solid fa-heart"></i> {{ $report['votes'] ?? 0 }}</button>
+                                        <button class="hover:text-blue-600 transition flex items-center gap-2"><i class="fa-regular fa-comment text-base"></i> {{ $report['comments'] ?? 0 }}</button>
+                                        <button class="hover:text-red-500 transition flex items-center gap-2"><i class="fa-solid fa-heart text-base"></i> {{ $report['votes'] ?? 0 }}</button>
                                     </div>
-                                    <a href="{{ route('reports.show', $report['id']) }}" class="text-xs text-blue-600 hover:underline">Lihat detail</a>
+                                    <a href="{{ route('reports.show', $report['id']) }}" class="text-sm text-blue-600 hover:underline font-semibold">Lihat detail</a>
                                 </div>
                             </div>
                         </article>

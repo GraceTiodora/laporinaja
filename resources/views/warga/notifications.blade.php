@@ -7,10 +7,10 @@
 @endpush
 
 @section('content')
-<div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">
+<div class="flex h-screen max-w-[1920px] mx-auto bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50">
 
     <!-- LEFT SIDEBAR -->
-    <aside class="w-[270px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between">
+    <aside class="w-[270px] bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-r border-gray-200 p-6 flex flex-col justify-between shadow-lg">
 
         <div>
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">
@@ -43,40 +43,62 @@
                         }
                     @endphp
                     <a href="{{ $href }}"
-                       class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all
-                              {{ request()->routeIs($route) ? 'bg-blue-50 text-blue-600' 
-                                 : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600' }}">
-                        <i class="{{ $icon }} text-lg"></i>
-                        <span>{{ $name }}</span>
+                       class="group flex items-center gap-4 px-4 py-3 rounded-xl text-gray-600 font-medium
+                              transition-all hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-600 
+                              hover:shadow-md hover:scale-105 transform">
+                        <i class="{{ $icon }} text-lg group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                        <span class="group-hover:translate-x-1 transition-transform">{{ $name }}</span>
                     </a>
                 @endforeach
             </nav>
 
             <button onclick="window.location.href='{{ route('reports.create') }}'"
-                class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full shadow-md transition font-semibold">
-                <i class="fa-solid fa-plus-circle"></i> Laporan Baru
+                    class="mt-6 w-full flex items-center justify-center gap-2 
+                           bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800
+                           text-white py-3.5 rounded-full shadow-lg hover:shadow-xl
+                           transition-all font-bold transform hover:scale-105 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                <i class="fa-solid fa-plus-circle group-hover:rotate-90 transition-transform duration-300"></i> 
+                <span>Laporan Baru</span>
             </button>
         </div>
 
-        <div class="flex items-center gap-3 border-t border-gray-200 pt-4">
-            <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full object-cover">
-            <div>
-                <p class="text-sm font-medium text-gray-800">{{ session('user.name','Guest') }}</p>
-                <p class="text-xs text-gray-500">{{ session('user.email','user@mail.com') }}</p>
+        <div>
+            <div class="flex items-center gap-3 border-t border-gray-200 pt-4 hover:bg-white/50 p-3 rounded-xl transition-all cursor-pointer group mb-3">
+                <div class="relative">
+                    <img src="{{ asset('images/profile-user.jpg') }}" class="w-11 h-11 rounded-full object-cover ring-2 ring-gray-200 group-hover:ring-blue-400 transition-all">
+                    <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+                </div>
+                <div class="flex flex-col leading-tight flex-1">
+                    <span class="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition">{{ session('user.name', 'Guest') }}</span>
+                    <span class="text-xs text-gray-500">{{ session('user.email', 'user@mail.com') }}</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-400 opacity-0 group-hover:opacity-100 transition-all"></i>
             </div>
+            
+            <form action="{{ route('logout') }}" method="POST" class="w-full">
+                @csrf
+                <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-red-600 font-semibold bg-white/50 hover:bg-red-50 hover:text-red-700 transition-all group border border-red-200 hover:border-red-300">
+                    <i class="fa-solid fa-right-from-bracket group-hover:translate-x-1 transition-transform"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
         </div>
     </aside>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 flex flex-col border-r border-gray-200 bg-white overflow-hidden">
+    <main class="flex-1 flex flex-col border-r border-gray-200 bg-gradient-to-br from-white to-blue-50/20 overflow-hidden">
 
         <!-- HEADER -->
-        <header class="bg-white border-b border-gray-200 px-6 py-4">
-            <h1 class="text-xl font-bold text-gray-800">Notifikasi</h1>
+        <header class="sticky top-0 bg-white/95 backdrop-blur-md border-b border-gray-200 px-6 py-4 flex justify-between items-center z-10 shadow-sm">
+            <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">Notifikasi</h1>
+            <button class="text-gray-400 hover:text-blue-600 transition p-2 hover:bg-blue-50 rounded-lg group">
+                <i class="fa-solid fa-gear text-xl group-hover:rotate-90 transition-transform duration-300"></i>
+            </button>
         </header>
 
         <!-- NOTIFICATION LIST -->
-        <div class="flex-1 overflow-y-auto p-6 bg-gray-50">
+        <div class="flex-1 overflow-y-auto p-6 space-y-5">
 
             @if(!empty($notifications))
 
@@ -95,24 +117,27 @@
                             $color = $types[$notif['type']][1] ?? 'bg-gray-100 text-gray-600';
                         @endphp
 
-                        <div class="p-5 rounded-xl shadow-sm border transition hover:shadow-md relative
-                            {{ $notif['read'] ? 'bg-white border-gray-200' : 'bg-blue-50 border-blue-300 unread' }}"
+                        <div class="group p-6 rounded-2xl shadow-md border transition-all duration-300 hover:shadow-xl hover:scale-[1.02] cursor-pointer relative
+                            {{ $notif['read'] ? 'bg-white border-gray-200 hover:border-gray-300' : 'bg-gradient-to-r from-blue-50 to-purple-50 border-blue-400 hover:border-blue-500 unread' }}"
                              data-id="{{ $notif['id'] }}">
 
                             <div class="flex items-start gap-4">
 
-                                <div class="p-2 rounded-full {{ $color }}">
-                                    <i class="{{ $icon }}"></i>
+                                <div class="p-3 rounded-xl {{ $color }} group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                                    <i class="{{ $icon }} text-xl"></i>
                                 </div>
 
                                 <div class="flex-1">
-                                    <p class="font-semibold text-gray-800">{{ $notif['title'] }}</p>
-                                    <p class="text-sm text-gray-600">{{ $notif['message'] }}</p>
-                                    <p class="text-xs text-gray-400 mt-1">{{ $notif['time'] }}</p>
+                                    <p class="font-bold text-gray-900 text-base group-hover:text-blue-600 transition-colors">{{ $notif['title'] }}</p>
+                                    <p class="text-sm text-gray-600 mt-1 leading-relaxed">{{ $notif['message'] }}</p>
+                                    <p class="text-xs text-gray-400 mt-2 flex items-center gap-1">
+                                        <i class="fa-regular fa-clock"></i>
+                                        {{ $notif['time'] }}
+                                    </p>
                                 </div>
 
                                 @if(!$notif['read'])
-                                    <span class="w-3 h-3 bg-blue-600 rounded-full absolute top-4 right-4"></span>
+                                    <span class="w-3 h-3 bg-blue-600 rounded-full absolute top-5 right-5 animate-pulse shadow-lg"></span>
                                 @endif
 
                             </div>
@@ -124,9 +149,12 @@
                 </div>
 
             @else
-                <div class="text-center py-16 text-gray-500">
-                    <i class="fa-regular fa-bell-slash text-6xl mb-4"></i>
-                    <p>Tidak ada notifikasi</p>
+                <div class="text-center py-20">
+                    <div class="inline-block p-8 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 mb-6">
+                        <i class="fa-regular fa-bell-slash text-6xl text-gray-400"></i>
+                    </div>
+                    <p class="text-lg font-semibold text-gray-600">Tidak ada notifikasi</p>
+                    <p class="text-sm text-gray-400 mt-2">Notifikasi baru akan muncul di sini</p>
                 </div>
             @endif
 
@@ -134,54 +162,86 @@
 
     </main>
 
-    <!-- RIGHT SIDEBAR (SAMA SEPERTI HOME / EXPLORE) -->
-    <aside class="w-[340px] bg-white p-6 overflow-y-auto">
+    <!-- RIGHT SIDEBAR -->
+    <aside class="w-[340px] bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-6 overflow-y-auto shadow-lg">
 
         <section class="mb-8">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-fire text-red-500"></i> Masalah Penting
+            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-fire text-red-500"></i> 
+                <span class="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Masalah Penting</span>
             </h2>
             <ul class="space-y-3">
-                <li class="flex justify-between">
-                    <div>
-                        <p class="font-medium text-gray-800">Jalan Rusak</p>
-                        <p class="text-xs text-gray-500">Jl. Melati</p>
+                <li class="p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border border-transparent hover:border-red-300">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <p class="font-bold text-gray-900 text-sm group-hover:text-red-700 transition mb-1">Jalan Rusak</p>
+                            <p class="text-xs text-gray-500 flex items-center gap-1">
+                                <i class="fa-solid fa-location-dot text-red-400"></i>
+                                Jl. Melati
+                            </p>
+                        </div>
+                        <span class="text-sm font-bold text-red-600">128 Votes</span>
                     </div>
-                    <span class="text-sm font-semibold text-red-600">128 Votes</span>
                 </li>
 
-                <li class="flex justify-between">
-                    <div>
-                        <p class="font-medium text-gray-800">Sampah Menumpuk</p>
-                        <p class="text-xs text-gray-500">Pasar Baru</p>
+                <li class="p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border border-transparent hover:border-red-300">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <p class="font-bold text-gray-900 text-sm group-hover:text-red-700 transition mb-1">Sampah Menumpuk</p>
+                            <p class="text-xs text-gray-500 flex items-center gap-1">
+                                <i class="fa-solid fa-location-dot text-red-400"></i>
+                                Pasar Baru
+                            </p>
+                        </div>
+                        <span class="text-sm font-bold text-red-600">96 Votes</span>
                     </div>
-                    <span class="text-sm font-semibold text-red-600">96 Votes</span>
                 </li>
             </ul>
         </section>
 
         <section>
-            <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-chart-line text-blue-500"></i> Masalah Trending
+            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-arrow-trend-up text-blue-500"></i> 
+                <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Trending</span>
             </h2>
             <ul class="space-y-3">
-                <li class="flex justify-between items-center">
-                    <div>
-                        <p class="font-medium text-gray-800">Infrastruktur Jalan</p>
-                        <p class="text-xs text-gray-500">5 laporan hari ini</p>
+                <li class="p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border border-transparent hover:border-blue-300">
+                    <p class="font-bold text-gray-900 text-sm group-hover:text-blue-700 transition mb-1">Infrastruktur Jalan</p>
+                    <p class="text-xs text-gray-500 mb-2 flex items-center gap-1">
+                        <i class="fa-solid fa-location-dot text-blue-400"></i>
+                        5 laporan hari ini
+                    </p>
+                    <div class="flex items-center gap-1">
+                        <i class="fa-solid fa-heart text-red-400"></i>
+                        <span class="text-xs text-gray-500">85 votes</span>
                     </div>
-                    <span class="px-3 py-1 rounded-xl text-xs bg-pink-100 text-pink-700 font-medium">Penting</span>
                 </li>
-                <li class="flex justify-between items-center">
-                    <div>
-                        <p class="font-medium text-gray-800">Sampah Menumpuk</p>
-                        <p class="text-xs text-gray-500">Pasar Baru</p>
+                
+                <li class="p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border border-transparent hover:border-blue-300">
+                    <p class="font-bold text-gray-900 text-sm group-hover:text-blue-700 transition mb-1">Sampah Menumpuk</p>
+                    <p class="text-xs text-gray-500 mb-2 flex items-center gap-1">
+                        <i class="fa-solid fa-location-dot text-blue-400"></i>
+                        Pasar Baru
+                    </p>
+                    <div class="flex items-center gap-1">
+                        <i class="fa-solid fa-heart text-red-400"></i>
+                        <span class="text-xs text-gray-500">72 votes</span>
                     </div>
-                    <span class="px-3 py-1 rounded-xl text-xs bg-yellow-100 text-yellow-700 font-medium">Sedang</span>
+                </li>
+                
+                <li class="p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border border-transparent hover:border-blue-300">
+                    <p class="font-bold text-gray-900 text-sm group-hover:text-blue-700 transition mb-1">Lampu Jalan Mati</p>
+                    <p class="text-xs text-gray-500 mb-2 flex items-center gap-1">
+                        <i class="fa-solid fa-location-dot text-blue-400"></i>
+                        Jl. Merdeka
+                    </p>
+                    <div class="flex items-center gap-1">
+                        <i class="fa-solid fa-heart text-red-400"></i>
+                        <span class="text-xs text-gray-500">58 votes</span>
+                    </div>
                 </li>
             </ul>
         </section>
-
     </aside>
 
 </div>

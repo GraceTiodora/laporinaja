@@ -10,7 +10,7 @@
 <div class="flex h-screen max-w-[1920px] mx-auto bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50">
 
     <!-- 🧭 Left Sidebar -->
-    <aside class="w-[270px] bg-white/95 backdrop-blur-sm border-r border-gray-200 p-6 flex flex-col justify-between">
+    <aside class="w-[270px] bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-r border-gray-200 p-6 flex flex-col justify-between shadow-lg">
         <div>
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">
                 Laporin<span class="text-gray-900">Aja</span>
@@ -62,16 +62,26 @@
         </div>
 
         <!-- Profile Bottom -->
-        <div class="flex items-center gap-3 border-t border-gray-200 pt-4 hover:bg-gray-50 p-3 rounded-xl transition-all cursor-pointer group">
-            <div class="relative">
-                <img src="{{ asset('images/profile-user.jpg') }}" class="w-11 h-11 rounded-full object-cover ring-2 ring-gray-200 group-hover:ring-blue-400 transition-all">
-                <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+        <div>
+            <div class="flex items-center gap-3 border-t border-gray-200 pt-4 hover:bg-white/50 p-3 rounded-xl transition-all cursor-pointer group mb-3">
+                <div class="relative">
+                    <img src="{{ asset('images/profile-user.jpg') }}" class="w-11 h-11 rounded-full object-cover ring-2 ring-gray-200 group-hover:ring-blue-400 transition-all">
+                    <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+                </div>
+                <div class="flex flex-col leading-tight flex-1">
+                    <span class="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition">{{ session('user.name', 'Guest') }}</span>
+                    <span class="text-xs text-gray-500">{{ session('user.email', 'user@mail.com') }}</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-400 opacity-0 group-hover:opacity-100 transition-all"></i>
             </div>
-            <div class="flex flex-col leading-tight flex-1">
-                <span class="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition">{{ session('user.name', 'Guest') }}</span>
-                <span class="text-xs text-gray-500">{{ session('user.email', 'user@mail.com') }}</span>
-            </div>
-            <i class="fa-solid fa-chevron-right text-gray-400 opacity-0 group-hover:opacity-100 transition-all"></i>
+            
+            <form action="{{ route('logout') }}" method="POST" class="w-full">
+                @csrf
+                <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-red-600 font-semibold bg-white/50 hover:bg-red-50 hover:text-red-700 transition-all group border border-red-200 hover:border-red-300">
+                    <i class="fa-solid fa-right-from-bracket group-hover:translate-x-1 transition-transform"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
         </div>
     </aside>
 
@@ -162,11 +172,11 @@
                 @endif
 
                 <div class="flex gap-2 mb-4">
-                    <span class="px-3 py-1.5 text-xs font-bold rounded-full bg-gradient-to-r from-pink-100 to-red-100 text-pink-700 
+                    <span class="px-4 py-2 text-sm font-bold rounded-full bg-gradient-to-r from-pink-100 to-red-100 text-pink-700 
                                  hover:from-pink-200 hover:to-red-200 transition-all cursor-default">
                         {{ $report['status'] ?? 'Baru' }}
                     </span>
-                    <span class="px-3 py-1.5 text-xs font-bold rounded-full bg-gradient-to-r from-indigo-100 to-blue-100 text-indigo-700
+                    <span class="px-4 py-2 text-sm font-bold rounded-full bg-gradient-to-r from-indigo-100 to-blue-100 text-blue-700 
                                  hover:from-indigo-200 hover:to-blue-200 transition-all cursor-default">
                         {{ $report['category'] ?? 'Umum' }}
                     </span>
@@ -176,22 +186,22 @@
                     <div class="flex gap-6">
                         <button onclick="window.location='{{ route('reports.show', $report['id']) }}'" 
                                 class="flex items-center gap-2 hover:text-blue-600 transition-all group/btn cursor-pointer">
-                            <i class="fa-regular fa-comment group-hover/btn:scale-125 transition-transform"></i>
+                            <i class="fa-regular fa-comment text-base group-hover/btn:scale-125 transition-transform"></i>
                             <span class="font-medium">{{ $report['comments'] ?? 0 }}</span>
                         </button>
                         <button onclick="toggleVote({{ $report['id'] }}, this)" 
                                 class="vote-btn flex items-center gap-2 hover:text-red-500 transition-all group/btn cursor-pointer"
                                 data-report-id="{{ $report['id'] }}">
-                            <i class="fa-solid fa-heart group-hover/btn:scale-125 transition-transform"></i>
+                            <i class="fa-solid fa-heart text-base group-hover/btn:scale-125 transition-transform"></i>
                             <span class="font-medium vote-count">{{ $report['votes'] ?? 0 }}</span>
                         </button>
                     </div>
 
                     <a href="{{ route('reports.show', $report['id']) }}"
-                       class="text-xs font-bold text-blue-600 hover:text-blue-700 transition-all flex items-center gap-1 
+                       class="text-sm font-bold text-blue-600 hover:text-blue-700 transition-all flex items-center gap-1 
                               hover:gap-2 group/link">
                         Lihat detail
-                        <i class="fa-solid fa-arrow-right text-xs group-hover/link:translate-x-1 transition-transform"></i>
+                        <i class="fa-solid fa-arrow-right text-sm group-hover/link:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
 
@@ -202,7 +212,7 @@
     </main>
 
     <!-- 📊 Right Sidebar -->
-    <aside class="w-[340px] bg-white/95 backdrop-blur-sm p-6 overflow-y-auto border-l border-gray-200 space-y-6">
+    <aside class="w-[340px] bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-6 overflow-y-auto border-l border-gray-200 space-y-6 shadow-lg">
         <!-- Masalah Penting -->
         <section class="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-5 border border-red-100">
             <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -237,42 +247,36 @@
         <!-- Trending -->
         <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-5 border border-blue-100">
             <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-chart-line text-blue-500"></i> 
-                <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Kategori Trending</span>
+                <i class="fa-solid fa-arrow-trend-up text-blue-500"></i> 
+                <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Trending</span>
             </h2>
             <ul class="space-y-3">
-                @forelse($trendingCategories ?? [] as $index => $trend)
+                @forelse($topReports ?? [] as $report)
                 <li class="p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border border-transparent hover:border-blue-300">
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <p class="font-bold text-gray-900 text-sm group-hover:text-blue-700 transition">{{ $trend['category'] }}</p>
-                            <p class="text-xs text-gray-500 mt-1">
-                                <i class="fa-solid fa-arrow-trend-up text-green-500"></i>
-                                {{ $trend['total'] }} laporan minggu ini
-                            </p>
+                    <a href="{{ route('reports.show', $report['id']) }}" class="block">
+                        <p class="font-bold text-gray-900 text-sm group-hover:text-blue-700 transition mb-1">{{ Str::limit($report['title'], 40) }}</p>
+                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-1">
+                            <i class="fa-solid fa-location-dot text-blue-400"></i>
+                            {{ Str::limit($report['location'] ?? 'Lokasi tidak diketahui', 25) }}
+                        </p>
+                        <div class="flex items-center gap-3 text-xs text-gray-500">
+                            <span class="flex items-center gap-1">
+                                <i class="fa-solid fa-heart text-red-400"></i>
+                                {{ $report['votes'] }} votes
+                            </span>
                         </div>
-                        @if($index === 0)
-                            <span class="px-2.5 py-1 rounded-full text-xs bg-gradient-to-r from-orange-400 to-red-500 text-white font-bold shadow-md">🔥 Hot</span>
-                        @elseif($index === 1)
-                            <span class="px-2.5 py-1 rounded-full text-xs bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold shadow-md">⚡ Warm</span>
-                        @else
-                            <span class="px-2.5 py-1 rounded-full text-xs bg-gradient-to-r from-blue-400 to-indigo-500 text-white font-bold shadow-md">📈 Rising</span>
-                        @endif
-                    </div>
+                    </a>
                 </li>
                 @empty
                 <li class="p-4 text-center text-gray-500 text-sm">
                     <i class="fa-regular fa-folder-open text-3xl mb-2 block"></i>
-                    Belum ada data trending
+                    Belum ada laporan trending
                 </li>
                 @endforelse
             </ul>
         </section>
     </aside>
 </div>
-
-<!-- CSRF Token Meta -->
-<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <!-- Vote/Like Functionality -->
 <script>
@@ -282,7 +286,15 @@ function toggleVote(reportId, button) {
         return;
     @endif
 
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    
+    if (!csrfToken) {
+        console.error('CSRF token not found');
+        alert('Error: CSRF token tidak ditemukan');
+        return;
+    }
+    
+    console.log('Voting on report:', reportId);
     
     fetch(`/reports/${reportId}/vote`, {
         method: 'POST',
@@ -295,8 +307,15 @@ function toggleVote(reportId, button) {
             upvote: true
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
+        console.log('Vote response:', data);
         if (data.upvotes !== undefined) {
             const voteCountElement = button.querySelector('.vote-count');
             voteCountElement.textContent = data.upvotes;
@@ -316,7 +335,7 @@ function toggleVote(reportId, button) {
     })
     .catch(error => {
         console.error('Error voting:', error);
-        alert('Terjadi kesalahan saat voting. Silakan coba lagi.');
+        alert('Terjadi kesalahan saat voting: ' + error.message);
     });
 }
 </script>

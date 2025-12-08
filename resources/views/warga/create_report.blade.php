@@ -9,7 +9,7 @@
 @section('content')
 <div class="flex h-screen max-w-[1920px] mx-auto bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50">
     <!-- 🧭 Left Sidebar -->
-    <aside class="w-[270px] bg-white/95 backdrop-blur-sm border-r border-gray-200 p-6 flex flex-col justify-between sidebar-scroll">
+    <aside class="w-[270px] bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-r border-gray-200 p-6 flex flex-col justify-between sidebar-scroll shadow-lg">
         <div>
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">Laporin<span class="text-gray-900">Aja</span></h2>
 
@@ -69,12 +69,22 @@
         </div>
 
         <!-- Profile Section -->
-        <div class="flex items-center gap-3 border-t border-gray-200 pt-4 user-info">
-            <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full object-cover">
-            <div class="flex flex-col leading-tight">
-                <span class="text-sm font-medium text-gray-800">{{ session('user.name', 'Guest') }}</span>
-                <span class="text-xs text-gray-500">@{{ session('user.username', 'guest') }}</span>
+        <div>
+            <div class="flex items-center gap-3 border-t border-gray-200 pt-4 user-info mb-3">
+                <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full object-cover">
+                <div class="flex flex-col leading-tight">
+                    <span class="text-sm font-medium text-gray-800">{{ session('user.name', 'Guest') }}</span>
+                    <span class="text-xs text-gray-500">@{{ session('user.username', 'guest') }}</span>
+                </div>
             </div>
+            
+            <form action="{{ route('logout') }}" method="POST" class="w-full">
+                @csrf
+                <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-red-600 font-semibold bg-white/50 hover:bg-red-50 hover:text-red-700 transition-all group border border-red-200 hover:border-red-300">
+                    <i class="fa-solid fa-right-from-bracket group-hover:translate-x-1 transition-transform"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
         </div>
     </aside>
 
@@ -256,7 +266,7 @@
     </main>
 
     <!-- 📊 Right Sidebar -->
-    <aside class="w-[340px] bg-white/95 backdrop-blur-sm p-6 overflow-y-auto sidebar-scroll border-l border-gray-200">
+    <aside class="w-[340px] bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-6 overflow-y-auto sidebar-scroll border-l border-gray-200 shadow-lg">
         <section class="mb-8">
             <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                 <i class="fa-solid fa-fire text-red-500"></i> Masalah Penting

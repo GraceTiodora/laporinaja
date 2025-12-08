@@ -10,7 +10,7 @@
 <div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">
 
     <!-- 🧭 Left Sidebar -->
-    <aside class="w-[270px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between">
+    <aside class="w-[270px] bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-r border-gray-200 p-6 flex flex-col justify-between shadow-lg">
         <div>
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">Laporin<span class="text-gray-900">Aja</span></h2>
 
@@ -64,19 +64,31 @@
         </div>
 
         <!-- Profile Section -->
-        <div class="flex items-center gap-3 border-t border-gray-200 pt-4">
+        <div>
+            <div class="flex items-center gap-3 border-t border-gray-200 pt-4 mb-3">
+                @if(session('user'))
+                    <img src="{{ asset('images/profile-user.jpg') }}" alt="{{ session('user.name') }}" class="w-10 h-10 rounded-full object-cover">
+                    <div class="flex flex-col leading-tight">
+                        <span class="text-sm font-medium text-gray-800">{{ session('user.name') }}</span>
+                        <span class="text-xs text-gray-500">@{{ session('user.username') }}</span>
+                    </div>
+                @else
+                    <img src="{{ asset('images/profile-user.jpg') }}" alt="User" class="w-10 h-10 rounded-full object-cover">
+                    <div class="flex flex-col leading-tight">
+                        <span class="text-sm font-medium text-gray-800">Guest</span>
+                        <span class="text-xs text-gray-500">user@mail.com</span>
+                    </div>
+                @endif
+            </div>
+            
             @if(session('user'))
-                <img src="{{ asset('images/profile-user.jpg') }}" alt="{{ session('user.name') }}" class="w-10 h-10 rounded-full object-cover">
-                <div class="flex flex-col leading-tight">
-                    <span class="text-sm font-medium text-gray-800">{{ session('user.name') }}</span>
-                    <span class="text-xs text-gray-500">@{{ session('user.username') }}</span>
-                </div>
-            @else
-                <img src="{{ asset('images/profile-user.jpg') }}" alt="User" class="w-10 h-10 rounded-full object-cover">
-                <div class="flex flex-col leading-tight">
-                    <span class="text-sm font-medium text-gray-800">Guest</span>
-                    <span class="text-xs text-gray-500">user@mail.com</span>
-                </div>
+                <form action="{{ route('logout') }}" method="POST" class="w-full">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-red-600 font-semibold bg-white/50 hover:bg-red-50 hover:text-red-700 transition-all group border border-red-200 hover:border-red-300">
+                        <i class="fa-solid fa-right-from-bracket group-hover:translate-x-1 transition-transform"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
             @endif
         </div>
     </aside>
@@ -181,8 +193,8 @@
                             </div>
 
                             <div class="flex gap-2 mb-3">
-                                <span class="px-3 py-1 text-xs font-medium bg-pink-100 text-pink-700 rounded-full">{{ $report['status'] ?? '' }}</span>
-                                <span class="px-3 py-1 text-xs font-medium bg-indigo-100 text-indigo-700 rounded-full">{{ $report['category'] ?? '' }}</span>
+                                <span class="px-3 py-2 text-sm font-medium bg-pink-100 text-pink-700 rounded-full">{{ $report['status'] ?? '' }}</span>
+                                <span class="px-3 py-2 text-sm font-medium bg-indigo-100 text-indigo-700 rounded-full">{{ $report['category'] ?? '' }}</span>
                             </div>
 
                             @if(!empty($report['description']))
@@ -191,10 +203,10 @@
 
                             <div class="flex justify-between items-center text-sm text-gray-500 border-t border-gray-100 pt-3 mt-3">
                                 <div class="flex gap-4">
-                                    <button class="hover:text-blue-600 transition"><i class="fa-regular fa-comment"></i> {{ $report['comments'] ?? 0 }}</button>
-                                    <button class="hover:text-red-500 transition"><i class="fa-solid fa-heart"></i> {{ $report['votes'] ?? 0 }}</button>
+                                    <button class="hover:text-blue-600 transition flex items-center gap-2"><i class="fa-regular fa-comment text-base"></i> {{ $report['comments'] ?? 0 }}</button>
+                                    <button class="hover:text-red-500 transition flex items-center gap-2"><i class="fa-solid fa-heart text-base"></i> {{ $report['votes'] ?? 0 }}</button>
                                 </div>
-                                <a href="{{ route('reports.show', $report['id']) }}" class="text-xs text-blue-600 hover:underline">Lihat detail</a>
+                                <a href="{{ route('reports.show', $report['id']) }}" class="text-sm text-blue-600 hover:underline font-semibold">Lihat detail</a>
                             </div>
                         </article>
                     @empty
@@ -209,7 +221,7 @@
     </main>
 
     <!-- 📊 Right Sidebar -->
-    <aside class="w-[340px] bg-white p-6 overflow-y-auto">
+    <aside class="w-[340px] bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-6 overflow-y-auto shadow-lg">
         <section class="mb-8">
             <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                 <i class="fa-solid fa-fire text-red-500"></i> Masalah Penting

@@ -10,7 +10,7 @@
 <div class="flex h-screen max-w-[1920px] mx-auto bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50">
 
     <!-- 🧭 Left Sidebar -->
-    <aside class="w-[270px] bg-white/95 backdrop-blur-sm border-r border-gray-200 p-6 flex flex-col justify-between">
+    <aside class="w-[270px] bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-r border-gray-200 p-6 flex flex-col justify-between shadow-lg">
         <div>
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">Laporin<span class="text-gray-900">Aja</span></h2>
 
@@ -39,54 +39,85 @@
                               $href = '#';
                           }
                       }
+                      $isActive = request()->routeIs($route);
                   @endphp
                   <a href="{{ $href }}"
-                     class="group flex items-center gap-4 px-4 py-3 rounded-xl 
-                            text-gray-600 font-medium transition-all 
-                            hover:bg-blue-50 hover:text-blue-600">
-                      <i class="{{ $icon }} text-lg group-hover:scale-110 transition-transform"></i>
-                      <span>{{ $name }}</span>
+                     class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all 
+                            {{ $isActive ? 'bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 shadow-md' : 'text-gray-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-600 hover:shadow-md hover:scale-105' }} 
+                            transform">
+                      <i class="{{ $icon }} text-lg group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                      <span class="group-hover:translate-x-1 transition-transform">{{ $name }}</span>
                   </a>
               @endforeach
             </nav>
 
             @if(session('user'))
                 <button onclick="window.location.href='{{ route('reports.create') }}'"
-                        class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full shadow-md transition-all font-semibold">
-                    <i class="fa-solid fa-plus-circle"></i> New Report
+                        class="mt-6 w-full flex items-center justify-center gap-2 
+                               bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800
+                               text-white py-3.5 rounded-full shadow-lg hover:shadow-xl
+                               transition-all font-bold transform hover:scale-105 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                    <i class="fa-solid fa-plus-circle group-hover:rotate-90 transition-transform duration-300"></i> 
+                    <span>Laporan Baru</span>
                 </button>
             @else
                 <button onclick="window.location.href='{{ route('login') }}'"
-                        class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full shadow-md transition-all font-semibold">
-                    <i class="fa-solid fa-plus-circle"></i> New Report
+                        class="mt-6 w-full flex items-center justify-center gap-2 
+                               bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800
+                               text-white py-3.5 rounded-full shadow-lg hover:shadow-xl
+                               transition-all font-bold transform hover:scale-105 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                    <i class="fa-solid fa-plus-circle group-hover:rotate-90 transition-transform duration-300"></i> 
+                    <span>Laporan Baru</span>
                 </button>
             @endif
         </div>
 
         <!-- Profile Section -->
-        <div class="flex items-center gap-3 border-t border-gray-200 pt-4">
+        <div>
+            <div class="flex items-center gap-3 border-t border-gray-200 pt-4 mb-3 hover:bg-white/50 p-3 rounded-xl transition-all cursor-pointer group">
+                @if(session('user'))
+                    <div class="relative">
+                        <img src="{{ asset('images/profile-user.jpg') }}" alt="{{ session('user.name') }}" class="w-11 h-11 rounded-full object-cover ring-2 ring-gray-200 group-hover:ring-blue-400 transition-all">
+                        <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+                    </div>
+                    <div class="flex flex-col leading-tight flex-1">
+                        <span class="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition">{{ session('user.name') }}</span>
+                        <span class="text-xs text-gray-500">@{{ session('user.username') }}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-400 opacity-0 group-hover:opacity-100 transition-all"></i>
+                @else
+                    <div class="relative">
+                        <img src="{{ asset('images/profile-user.jpg') }}" alt="User" class="w-11 h-11 rounded-full object-cover ring-2 ring-gray-200 group-hover:ring-blue-400 transition-all">
+                        <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+                    </div>
+                    <div class="flex flex-col leading-tight flex-1">
+                        <span class="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition">Guest</span>
+                        <span class="text-xs text-gray-500">user@mail.com</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-400 opacity-0 group-hover:opacity-100 transition-all"></i>
+                @endif
+            </div>
+            
             @if(session('user'))
-                <img src="{{ asset('images/profile-user.jpg') }}" alt="{{ session('user.name') }}" class="w-10 h-10 rounded-full object-cover">
-                <div class="flex flex-col leading-tight">
-                    <span class="text-sm font-medium text-gray-800">{{ session('user.name') }}</span>
-                    <span class="text-xs text-gray-500">@{{ session('user.username') }}</span>
-                </div>
-            @else
-                <img src="{{ asset('images/profile-user.jpg') }}" alt="User" class="w-10 h-10 rounded-full object-cover">
-                <div class="flex flex-col leading-tight">
-                    <span class="text-sm font-medium text-gray-800">Guest</span>
-                    <span class="text-xs text-gray-500">user@mail.com</span>
-                </div>
+                <form action="{{ route('logout') }}" method="POST" class="w-full">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-red-600 font-semibold bg-white/50 hover:bg-red-50 hover:text-red-700 transition-all group border border-red-200 hover:border-red-300">
+                        <i class="fa-solid fa-right-from-bracket group-hover:translate-x-1 transition-transform"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
             @endif
         </div>
     </aside>
 
     <!-- 📰 Main Content -->
     <main class="flex-1 flex flex-col border-r border-gray-200 bg-gradient-to-br from-white to-blue-50/20">
-        <header class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center z-10 shadow-sm">
-            <h1 class="text-2xl font-bold text-gray-800">Jelajahi Laporan</h1>
-            <button class="text-gray-400 hover:text-blue-600 transition p-2 hover:bg-gray-100 rounded-lg">
-                <i class="fa-solid fa-gear text-xl"></i>
+        <header class="sticky top-0 bg-white/95 backdrop-blur-md border-b border-gray-200 px-6 py-4 flex justify-between items-center z-10 shadow-sm">
+            <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">Jelajahi Laporan</h1>
+            <button class="text-gray-400 hover:text-blue-600 transition p-2 hover:bg-blue-50 rounded-lg group">
+                <i class="fa-solid fa-gear text-xl group-hover:rotate-90 transition-transform duration-300"></i>
             </button>
         </header>
 
@@ -192,7 +223,7 @@
 
             <!-- Badges -->
             <div class="flex flex-wrap gap-2 mb-4">
-                <span class="px-3 py-1.5 text-xs font-semibold rounded-full 
+                <span class="px-3 py-2 text-sm font-semibold rounded-full 
                     @if($report['status'] === 'Baru')
                         bg-red-100 text-red-700
                     @elseif($report['status'] === 'Dalam Pengerjaan')
@@ -205,24 +236,24 @@
                 ">
                     {{ $report['status'] ?? 'Baru' }}
                 </span>
-                <span class="px-3 py-1.5 text-xs font-semibold bg-blue-100 text-blue-700 rounded-full">
+                <span class="px-3 py-2 text-sm font-semibold bg-blue-100 text-blue-700 rounded-full">
                     {{ $report['category'] ?? 'Umum' }}
                 </span>
             </div>                            <!-- Stats and Action -->
                             <div class="flex justify-between items-center pt-4 border-t border-gray-100">
                                 <div class="flex gap-6 text-sm">
                                     <button class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition group">
-                                        <i class="fa-regular fa-comment text-gray-400 group-hover:text-blue-600"></i>
+                                        <i class="fa-regular fa-comment text-base text-gray-400 group-hover:text-blue-600"></i>
                                         <span>{{ $report['comments'] ?? 0 }}</span>
                                     </button>
                                     <button class="flex items-center gap-2 text-gray-600 hover:text-red-500 transition group">
-                                        <i class="fa-solid fa-heart text-gray-400 group-hover:text-red-500"></i>
+                                        <i class="fa-solid fa-heart text-base text-gray-400 group-hover:text-red-500"></i>
                                         <span>{{ $report['votes'] ?? 0 }}</span>
                                     </button>
                                 </div>
-                                <a href="{{ route('reports.show', $report['id']) }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700 transition flex items-center gap-1">
+                                <a href="{{ route('reports.show', $report['id']) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-700 transition flex items-center gap-1">
                                     Lihat detail
-                                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                                    <i class="fa-solid fa-arrow-right text-sm"></i>
                                 </a>
                             </div>
                         </article>
@@ -238,57 +269,90 @@
     </main>
 
     <!-- 📊 Right Sidebar -->
-    <aside class="w-[340px] bg-white/95 backdrop-blur-sm p-6 overflow-y-auto shadow-sm border-l border-gray-200 space-y-8">
+    <aside class="w-[340px] bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-6 overflow-y-auto shadow-lg border-l border-gray-200 space-y-6">
         <!-- Masalah Penting -->
-        <section>
-            <h2 class="text-lg font-bold text-gray-800 mb-5 flex items-center gap-2">
-                <i class="fa-solid fa-fire text-red-500"></i> Masalah Penting
+        <section class="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-5 border border-red-100">
+            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-fire text-red-500 animate-pulse"></i> 
+                <span class="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Masalah Penting</span>
             </h2>
             <ul class="space-y-3">
-                <li class="p-4 bg-gradient-to-r from-red-50 to-transparent rounded-lg hover:from-red-100 transition border border-red-100 hover:border-red-300 cursor-pointer group">
-                    <div class="flex items-start justify-between">
+                <li class="p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border border-transparent hover:border-red-300">
+                    <a href="#" class="flex items-center justify-between">
                         <div class="flex-1">
-                            <p class="font-semibold text-gray-800 text-sm group-hover:text-red-700 transition">Jalan Rusak</p>
-                            <p class="text-xs text-gray-500 mt-1">Jl. Melati</p>
+                            <p class="font-bold text-gray-900 text-sm group-hover:text-red-700 transition">Jalan Rusak</p>
+                            <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                <i class="fa-solid fa-location-dot text-red-400"></i>
+                                Jl. Melati
+                            </p>
                         </div>
-                        <span class="px-3 py-1.5 text-xs font-bold bg-red-100 text-red-700 rounded-full whitespace-nowrap ml-2">128</span>
-                    </div>
+                        <div class="flex flex-col items-center ml-2">
+                            <span class="px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full shadow-md">128V</span>
+                        </div>
+                    </a>
                 </li>
-                <li class="p-4 bg-gradient-to-r from-red-50 to-transparent rounded-lg hover:from-red-100 transition border border-red-100 hover:border-red-300 cursor-pointer group">
-                    <div class="flex items-start justify-between">
+                <li class="p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border border-transparent hover:border-red-300">
+                    <a href="#" class="flex items-center justify-between">
                         <div class="flex-1">
-                            <p class="font-semibold text-gray-800 text-sm group-hover:text-red-700 transition">Sampah Menumpuk</p>
-                            <p class="text-xs text-gray-500 mt-1">Pasar Baru</p>
+                            <p class="font-bold text-gray-900 text-sm group-hover:text-red-700 transition">Sampah Menumpuk</p>
+                            <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                <i class="fa-solid fa-location-dot text-red-400"></i>
+                                Pasar Baru
+                            </p>
                         </div>
-                        <span class="px-3 py-1.5 text-xs font-bold bg-red-100 text-red-700 rounded-full whitespace-nowrap ml-2">96</span>
-                    </div>
+                        <div class="flex flex-col items-center ml-2">
+                            <span class="px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full shadow-md">96V</span>
+                        </div>
+                    </a>
                 </li>
             </ul>
         </section>
 
         <!-- Trending -->
-        <section class="border-t border-gray-200 pt-8">
-            <h2 class="text-lg font-bold text-gray-800 mb-5 flex items-center gap-2">
-                <i class="fa-solid fa-chart-line text-blue-500"></i> Trending
+        <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-5 border border-blue-100">
+            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-arrow-trend-up text-blue-500"></i> 
+                <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Trending</span>
             </h2>
             <ul class="space-y-3">
-                <li class="p-4 bg-gradient-to-r from-orange-50 to-transparent rounded-lg hover:from-orange-100 transition border border-orange-100 hover:border-orange-300 cursor-pointer group">
-                    <div class="flex items-start justify-between">
-                        <div class="flex-1">
-                            <p class="font-semibold text-gray-800 text-sm group-hover:text-orange-700 transition">Infrastruktur Jalan</p>
-                            <p class="text-xs text-gray-500 mt-1">5 laporan hari ini</p>
+                <li class="p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border border-transparent hover:border-blue-300">
+                    <a href="#" class="block">
+                        <p class="font-bold text-gray-900 text-sm group-hover:text-blue-700 transition mb-1">Taman Berserak</p>
+                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-1">
+                            <i class="fa-solid fa-location-dot text-blue-400"></i>
+                            LAGUBOITI
+                        </p>
+                        <div class="flex items-center gap-1 text-xs text-gray-500">
+                            <i class="fa-solid fa-heart text-red-400"></i>
+                            <span>2 votes</span>
                         </div>
-                        <span class="px-2 py-1 rounded-full text-xs bg-orange-100 text-orange-700 font-semibold whitespace-nowrap ml-2">Hot</span>
-                    </div>
+                    </a>
                 </li>
-                <li class="p-4 bg-gradient-to-r from-yellow-50 to-transparent rounded-lg hover:from-yellow-100 transition border border-yellow-100 hover:border-yellow-300 cursor-pointer group">
-                    <div class="flex items-start justify-between">
-                        <div class="flex-1">
-                            <p class="font-semibold text-gray-800 text-sm group-hover:text-yellow-700 transition">Sampah Menumpuk</p>
-                            <p class="text-xs text-gray-500 mt-1">3 laporan hari ini</p>
+                <li class="p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border border-transparent hover:border-blue-300">
+                    <a href="#" class="block">
+                        <p class="font-bold text-gray-900 text-sm group-hover:text-blue-700 transition mb-1">Deserunt error totam recusandae laudanti...</p>
+                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-1">
+                            <i class="fa-solid fa-location-dot text-blue-400"></i>
+                            31672 Adela Overpass Apt...
+                        </p>
+                        <div class="flex items-center gap-1 text-xs text-gray-500">
+                            <i class="fa-solid fa-heart text-red-400"></i>
+                            <span>1 votes</span>
                         </div>
-                        <span class="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-700 font-semibold whitespace-nowrap ml-2">Warm</span>
-                    </div>
+                    </a>
+                </li>
+                <li class="p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border border-transparent hover:border-blue-300">
+                    <a href="#" class="block">
+                        <p class="font-bold text-gray-900 text-sm group-hover:text-blue-700 transition mb-1">Est consequatur iste in aperam.</p>
+                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-1">
+                            <i class="fa-solid fa-location-dot text-blue-400"></i>
+                            165 Runolfsdottir Island...
+                        </p>
+                        <div class="flex items-center gap-1 text-xs text-gray-500">
+                            <i class="fa-solid fa-heart text-red-400"></i>
+                            <span>1 votes</span>
+                        </div>
+                    </a>
                 </li>
             </ul>
         </section>
