@@ -22,7 +22,7 @@
     {{-- SIDEBAR (sama seperti monitoring) --}}
     <aside class="w-[260px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between">
         <div>
-            <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">
+            <h2 class="text-xl font-extrabold text-blue-600 mb-8 tracking-tight">
                 Laporin<span class="text-gray-900">Aja</span>
             </h2>
 
@@ -30,7 +30,7 @@
             <nav class="space-y-2 text-sm">
                 @php
                     $menu = [
-                        ['Beranda', 'admin.dashboard', 'fa-solid fa-house'],
+                        ['Dashboard', 'admin.dashboard', 'fa-solid fa-house'],
                         ['Verifikasi & Penanganan', 'admin.verifikasi', 'fa-solid fa-check-circle'],
                         ['Monitoring & Statistik', 'admin.monitoring', 'fa-solid fa-chart-line'],
                         ['Voting Publik', 'admin.voting', 'fa-solid fa-vote-yea'],
@@ -74,67 +74,75 @@
     <main class="flex-1 p-8 overflow-y-auto bg-gray-50">
 
         {{-- Header --}}
-        <div class="mb-8">
+        <div class="mb-6">
             <h1 class="text-xl font-bold text-gray-800 mb-1">Pengaturan Akun</h1>
             <p class="text-sm text-gray-500">Selamat datang di sistem manajemen laporan masyarakat</p>
         </div>
 
         {{-- Profile Section --}}
-        <div class="settings-card bg-white rounded-3xl border-2 border-gray-200 p-8 mb-6">
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Profil Admin</h2>
-            <p class="text-base text-gray-500 mb-8">Selamat datang di sistem  manajemen  laporan masyarakat</p>
+        <div class="settings-card bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+            <h2 class="text-base font-bold text-gray-900 mb-1">Profil Admin</h2>
+            <p class="text-sm text-gray-500 mb-5">Selamat datang di sistem manajemen laporan masyarakat</p>
 
             <form action="#" method="POST" enctype="multipart/form-data" id="profileForm">
                 @csrf
                 @method('PUT')
 
                 {{-- Avatar Upload --}}
-                <div class="flex items-center gap-6 mb-10">
+                <div class="flex items-center gap-3 mb-5">
                     <div class="avatar-wrapper">
                         <img src="{{ asset('images/' . $user->avatar) }}" 
-                             class="w-32 h-32 rounded-full object-cover border-2 border-gray-200"
+                             class="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
                              alt="Profile Avatar"
                              id="avatarPreview">
                     </div>
-                    <div class="flex flex-col gap-2">
+                    <div class="flex flex-col gap-1">
                         <label for="avatarInput" class="upload-btn-text">
                             Ubah Foto
                         </label>
                         <input type="file" id="avatarInput" name="avatar" accept="image/*" class="hidden">
-                        <p class="text-sm text-gray-500">JPG, PNG atau GIF, Maks 2MB.</p>
+                        <p class="text-xs text-gray-500">JPG, PNG atau GIF, Maks 2MB.</p>
                     </div>
                 </div>
 
-                {{-- Profile Info Display --}}
-                <div class="grid grid-cols-2 gap-x-8 gap-y-6 mb-10">
-                    <div class="profile-info-item">
-                        <b><label class="profile-label">Nama Lengkap</label></b>
-                        <div class="profile-value">{{ $user->name }}</div>
+                {{-- Profile Input Fields --}}
+                <div class="grid grid-cols-2 gap-x-5 gap-y-4 mb-5">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Nama Lengkap</label>
+                        <input type="text" id="name" name="name" 
+                               class="form-input" 
+                               value="{{ $user->name }}"
+                               placeholder="Masukkan nama lengkap">
                     </div>
 
-                    <div class="profile-info-item">
-                        <b><label class="profile-label">Email</label></b>
-                        <div class="profile-value">{{ $user->email }}</div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" 
+                               class="form-input" 
+                               value="{{ $user->email }}"
+                               placeholder="Masukkan email">
                     </div>
 
-                    <div class="profile-info-item">
-                        <b><label class="profile-label">Nomor Telepon</label></b>
-                        <div class="profile-value">{{ $user->phone }}</div>
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Nomor Telepon</label>
+                        <input type="text" id="phone" name="phone" 
+                               class="form-input" 
+                               value="{{ $user->phone }}"
+                               placeholder="Masukkan nomor telepon">
                     </div>
 
-                    <div class="profile-info-item">
-                        <b><label class="profile-label">Role</label></b>
-                        <div class="profile-value">{{ $user->role }}</div>
+                    <div class="form-group">
+                        <label for="role" class="form-label">Role</label>
+                        <input type="text" id="role" name="role" 
+                               class="form-input" 
+                               value="{{ $user->role }}"
+                               readonly
+                               style="background: #f9fafb; cursor: not-allowed;">
                     </div>
                 </div>
-
-                {{-- Hidden inputs untuk actual form data --}}
-                <input type="hidden" name="name" value="{{ $user->name }}">
-                <input type="hidden" name="email" value="{{ $user->email }}">
-                <input type="hidden" name="phone" value="{{ $user->phone }}">
 
                 {{-- Action Buttons --}}
-                <div class="flex justify-end gap-4">
+                <div class="flex justify-end gap-3">
                     <button type="button" class="btn-cancel">Batal</button>
                     <button type="submit" class="btn-submit">Simpan Perubahan</button>
                 </div>
@@ -142,47 +150,50 @@
         </div>
 
         {{-- Security Section --}}
-        <div class="settings-card bg-white rounded-3xl border-2 border-gray-200 p-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Keamanan</h2>
-            <p class="text-base text-gray-500 mb-8">Kelola password dan keamanan akun</p>
+        <div class="settings-card bg-white rounded-2xl border border-gray-200 p-6">
+            <h2 class="text-base font-bold text-gray-900 mb-1">Keamanan</h2>
+            <p class="text-sm text-gray-500 mb-5">Kelola password dan keamanan akun</p>
 
             <form action="#" method="POST" id="passwordForm">
                 @csrf
                 @method('PUT')
 
                 {{-- Password Saat Ini (Full Width) --}}
-                <div class="form-group mb-6">
+                <div class="form-group mb-4">
                     <label for="current_password" class="form-label">Password Saat Ini</label>
                     <div class="password-input-wrapper">
-                        <i class="fa-solid fa-lock password-icon"></i>
+                        <i class="fa-solid fa-lock password-icon-left"></i>
                         <input type="password" id="current_password" name="current_password" 
-                               class="form-input-full with-icon" placeholder="Masukkan password saat ini">
+                               class="form-input-full with-icons" placeholder="Masukkan password saat ini">
+                        <i class="fa-solid fa-eye-slash password-icon-right toggle-password" data-target="current_password"></i>
                     </div>
                 </div>
 
                 {{-- Password Baru & Konfirmasi (Grid 2 Kolom) --}}
-                <div class="grid grid-cols-2 gap-x-8 gap-y-6 mb-10">
+                <div class="grid grid-cols-2 gap-x-5 gap-y-4 mb-5">
                     <div class="form-group">
                         <label for="new_password" class="form-label">Password Baru</label>
                         <div class="password-input-wrapper">
-                            <i class="fa-solid fa-lock password-icon"></i>
+                            <i class="fa-solid fa-lock password-icon-left"></i>
                             <input type="password" id="new_password" name="new_password" 
-                                   class="form-input with-icon" placeholder="Masukkan password baru">
+                                   class="form-input with-icons" placeholder="Masukkan password baru">
+                            <i class="fa-solid fa-eye-slash password-icon-right toggle-password" data-target="new_password"></i>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
                         <div class="password-input-wrapper">
-                            <i class="fa-solid fa-lock password-icon"></i>
+                            <i class="fa-solid fa-lock password-icon-left"></i>
                             <input type="password" id="password_confirmation" name="password_confirmation" 
-                                   class="form-input with-icon" placeholder="Konfirmasi password baru">
+                                   class="form-input with-icons" placeholder="Konfirmasi password baru">
+                            <i class="fa-solid fa-eye-slash password-icon-right toggle-password" data-target="password_confirmation"></i>
                         </div>
                     </div>
                 </div>
 
                 {{-- Action Buttons --}}
-                <div class="flex justify-end gap-4">
+                <div class="flex justify-end gap-3">
                     <button type="button" class="btn-cancel">Batal</button>
                     <button type="submit" class="btn-submit">Simpan Perubahan</button>
                 </div>
@@ -198,12 +209,45 @@
   document.getElementById('avatarInput')?.addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
+      // Validate file size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Ukuran file maksimal 2MB!');
+        this.value = '';
+        return;
+      }
+      
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+      if (!validTypes.includes(file.type)) {
+        alert('Format file harus JPG, PNG, atau GIF!');
+        this.value = '';
+        return;
+      }
+      
       const reader = new FileReader();
       reader.onload = function(e) {
         document.getElementById('avatarPreview').src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
+  });
+
+  // Toggle password visibility
+  document.querySelectorAll('.toggle-password').forEach(icon => {
+    icon.addEventListener('click', function() {
+      const targetId = this.dataset.target;
+      const input = document.getElementById(targetId);
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        this.classList.remove('fa-eye-slash');
+        this.classList.add('fa-eye');
+      } else {
+        input.type = 'password';
+        this.classList.remove('fa-eye');
+        this.classList.add('fa-eye-slash');
+      }
+    });
   });
 
   // Cancel buttons
@@ -216,22 +260,73 @@
       if (form.id === 'profileForm') {
         document.getElementById('avatarPreview').src = '{{ asset("images/" . $user->avatar) }}';
       }
+      
+      // Reset all password toggles to hide
+      document.querySelectorAll('.toggle-password').forEach(icon => {
+        const targetId = icon.dataset.target;
+        const input = document.getElementById(targetId);
+        if (input.type === 'text') {
+          input.type = 'password';
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        }
+      });
     });
   });
 
   // Form submissions
   document.getElementById('profileForm')?.addEventListener('submit', function(e) {
     e.preventDefault();
+    
+    // Validate form
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    
+    if (!name || !email || !phone) {
+      alert('Semua field harus diisi!');
+      return;
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert('Format email tidak valid!');
+      return;
+    }
+    
+    // Validate phone format (basic)
+    const phoneRegex = /^[0-9]{10,13}$/;
+    if (!phoneRegex.test(phone)) {
+      alert('Nomor telepon harus 10-13 digit angka!');
+      return;
+    }
+    
     // Add your AJAX submission here
     alert('Profil berhasil diperbarui!');
+    console.log('Profile data:', { name, email, phone });
   });
 
   document.getElementById('passwordForm')?.addEventListener('submit', function(e) {
     e.preventDefault();
     
+    const currentPass = document.getElementById('current_password').value;
     const newPass = document.getElementById('new_password').value;
     const confirmPass = document.getElementById('password_confirmation').value;
     
+    // Validate all fields filled
+    if (!currentPass || !newPass || !confirmPass) {
+      alert('Semua field password harus diisi!');
+      return;
+    }
+    
+    // Validate new password length
+    if (newPass.length < 8) {
+      alert('Password baru minimal 8 karakter!');
+      return;
+    }
+    
+    // Validate password match
     if (newPass !== confirmPass) {
       alert('Password baru dan konfirmasi password tidak cocok!');
       return;
@@ -239,7 +334,19 @@
     
     // Add your AJAX submission here
     alert('Password berhasil diubah!');
+    console.log('Password change requested');
     this.reset();
+    
+    // Reset all password toggles
+    document.querySelectorAll('.toggle-password').forEach(icon => {
+      const targetId = icon.dataset.target;
+      const input = document.getElementById(targetId);
+      if (input.type === 'text') {
+        input.type = 'password';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      }
+    });
   });
 </script>
 @endpush

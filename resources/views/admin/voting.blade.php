@@ -16,7 +16,7 @@
             'time_ago' => '2 jam yang lalu',
             'location' => 'Jl. Sudirman No. 45, Jakarta Pusat',
             'description' => 'Jalan berlubang besar di Jl. Sudirman menyebabkan beberapa pengendara motor terjatuh. Diameter lubang sekitar 2 meter dengan kedalaman 30cm. Sangat berbahaya terutama saat malam hari',
-            'image' => 'report-1.jpg',
+            'image' => 'jalan_berlubang.jpg',
             'total_votes' => 53,
             'urgent_votes' => 45,
             'not_urgent_votes' => 8,
@@ -27,10 +27,10 @@
 
 <div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">
 
-    {{-- SIDEBAR (sama seperti monitoring) --}}
+    {{-- SIDEBAR --}}
     <aside class="w-[260px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between">
         <div>
-            <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">
+            <h2 class="text-xl font-extrabold text-blue-600 mb-8 tracking-tight">
                 Laporin<span class="text-gray-900">Aja</span>
             </h2>
 
@@ -38,7 +38,7 @@
             <nav class="space-y-2 text-sm">
                 @php
                     $menu = [
-                        ['Beranda', 'admin.dashboard', 'fa-solid fa-house'],
+                        ['Dashboard', 'admin.dashboard', 'fa-solid fa-house'],
                         ['Verifikasi & Penanganan', 'admin.verifikasi', 'fa-solid fa-check-circle'],
                         ['Monitoring & Statistik', 'admin.monitoring', 'fa-solid fa-chart-line'],
                         ['Voting Publik', 'admin.voting', 'fa-solid fa-vote-yea'],
@@ -82,17 +82,8 @@
     <main class="flex-1 p-8 overflow-y-auto">
 
         {{-- Header --}}
-        <div class="mb-8">
-            <h1 class="text-xl font-bold text-gray-800 mb-1">Voting Publik</h1>
-            <p class="text-sm text-gray-500">Selamat datang di sistem manajemen laporan masyarakat</p>
-        </div>
-
-        {{-- Info Card --}}
-        <div class="info-card bg-white rounded-2xl border border-gray-200 p-6 mb-8">
-            <p class="text-gray-900 text-base leading-relaxed">
-                Vote laporan untuk membantu kepala desa menentukan masalah mana yang harus ditangani lebih dulu
-            </p>
-        </div>
+        <h1 class="text-xl font-bold text-gray-800 mb-1">Voting Publik</h1>
+        <p class="text-sm text-gray-500 mb-6">Selamat datang di sistem manajemen laporan masyarakat</p>
 
         {{-- Reports List --}}
         <div class="space-y-6">
@@ -100,52 +91,57 @@
             <div class="report-card bg-white rounded-2xl border border-gray-200 p-6">
                 {{-- User Info --}}
                 <div class="flex items-center gap-3 mb-4">
-                    <img src="{{ asset('images/profile-user.jpg' . $report->user_avatar) }}" 
-                         class="w-14 h-14 rounded-full object-cover"
+                    <img src="{{ asset('images/' . $report->user_avatar) }}" 
+                         class="w-12 h-12 rounded-full object-cover"
                          alt="{{ $report->user_name }}">
                     <div>
-                        <h3 class="text-lg font-bold text-gray-900">{{ $report->user_name }}</h3>
-                        <p class="text-sm text-gray-500">{{ $report->time_ago }}</p>
+                        <h3 class="text-base font-bold text-gray-900">{{ $report->user_name }}</h3>
+                        <p class="text-xs text-gray-500">{{ $report->time_ago }}</p>
                     </div>
                 </div>
 
                 {{-- Report Image --}}
                 <div class="mb-4 rounded-xl overflow-hidden">
-                    <img src="{{ asset('images/jalan_berlubang.jpg' . $report->image) }}" 
+                    <img src="{{ asset('images/' . $report->image) }}" 
                          class="w-full max-w-lg h-auto object-cover"
                          alt="Report image">
                 </div>
 
                 {{-- Location --}}
-                <p class="text-base font-semibold text-gray-900 mb-3">{{ $report->location }}</p>
+                <p class="text-sm font-semibold text-gray-900 mb-3">
+                    <i class="fa-solid fa-location-dot text-red-500 mr-2"></i>{{ $report->location }}
+                </p>
 
                 {{-- Description --}}
-                <p class="text-sm text-gray-700 leading-relaxed mb-5">{{ $report->description }}</p>
+                <p class="text-xs text-gray-700 leading-relaxed mb-4">{{ $report->description }}</p>
 
                 {{-- Voting Section --}}
                 <div class="voting-section">
-                    <div class="flex items-center justify-between mb-4">
-                        <p class="text-sm text-gray-700">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-xs text-gray-700">
                             <span class="font-semibold">{{ $report->total_votes }}</span> warga telah memberikan penilaian
                         </p>
-                        <p class="text-sm font-semibold text-gray-900">
+                        <p class="text-xs font-semibold text-gray-900">
                             {{ $report->urgent_percentage }}% menilai urgent
                         </p>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <button class="vote-btn vote-urgent">
-                            Urgent ({{ $report->urgent_votes }})
-                        </button>
-                        <button class="vote-btn vote-not-urgent">
-                            Tidak Urgent ({{ $report->not_urgent_votes }})
-                        </button>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="vote-display vote-urgent">
+                            <span class="vote-icon">!</span>
+                            <span>Urgent ({{ $report->urgent_votes }})</span>
+                        </div>
+                        <div class="vote-display vote-not-urgent">
+                            <span class="vote-icon">✓</span>
+                            <span>Tidak Urgent ({{ $report->not_urgent_votes }})</span>
+                        </div>
                     </div>
                 </div>
             </div>
             @empty
             <div class="text-center py-12 text-gray-500">
-                Belum ada laporan untuk divoting
+                <i class="fa-solid fa-inbox text-5xl mb-4 opacity-50"></i>
+                <p class="text-lg">Belum ada laporan untuk divoting</p>
             </div>
             @endforelse
         </div>
@@ -155,33 +151,8 @@
 
 @push('scripts')
 <script>
-  // Vote button interactions
-  document.querySelectorAll('.vote-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const card = this.closest('.report-card');
-      const allBtns = card.querySelectorAll('.vote-btn');
-      
-      // Remove active from all buttons in this card
-      allBtns.forEach(b => b.classList.remove('active'));
-      
-      // Add active to clicked button
-      this.classList.add('active');
-      
-      // Here you would send the vote to the backend
-      const isUrgent = this.classList.contains('vote-urgent');
-      console.log('Vote:', isUrgent ? 'Urgent' : 'Tidak Urgent');
-      
-      // Show feedback
-      const feedback = document.createElement('div');
-      feedback.className = 'vote-feedback';
-      feedback.textContent = 'Vote berhasil disimpan!';
-      this.appendChild(feedback);
-      
-      setTimeout(() => {
-        feedback.remove();
-      }, 2000);
-    });
-  });
+  // Admin view - voting is read-only, no interaction
+  console.log('Voting results displayed in read-only mode for admin');
 </script>
 @endpush
 @endsection

@@ -11,7 +11,6 @@
         <div>
             <h2 class="text-xl font-extrabold text-blue-600 mb-8 tracking-tight">
                 Laporin<span class="text-gray-900">Aja</span>
-                <p class="text-xs font-normal text-gray-600 mt-1">Admin Dashboard</p>
             </h2>
 
             {{-- Menu --}}
