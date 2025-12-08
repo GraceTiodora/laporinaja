@@ -190,27 +190,25 @@
                                 <p class="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-3">{{ $report['description'] }}</p>
                             @endif
 
-                            <!-- Badges -->
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                <span class="px-3 py-1.5 text-xs font-semibold rounded-full 
-                                    @if($report['status'] === 'Baru')
-                                        bg-red-100 text-red-700
-                                    @elseif($report['status'] === 'Dalam Pengerjaan')
-                                        bg-yellow-100 text-yellow-700
-                                    @elseif($report['status'] === 'Selesai')
-                                        bg-green-100 text-green-700
-                                    @else
-                                        bg-gray-100 text-gray-700
-                                    @endif
-                                ">
-                                    {{ $report['status'] ?? '' }}
-                                </span>
-                                <span class="px-3 py-1.5 text-xs font-semibold bg-blue-100 text-blue-700 rounded-full">
-                                    {{ $report['category'] ?? 'Umum' }}
-                                </span>
-                            </div>
-
-                            <!-- Stats and Action -->
+            <!-- Badges -->
+            <div class="flex flex-wrap gap-2 mb-4">
+                <span class="px-3 py-1.5 text-xs font-semibold rounded-full 
+                    @if($report['status'] === 'Baru')
+                        bg-red-100 text-red-700
+                    @elseif($report['status'] === 'Dalam Pengerjaan')
+                        bg-yellow-100 text-yellow-700
+                    @elseif($report['status'] === 'Selesai')
+                        bg-green-100 text-green-700
+                    @else
+                        bg-gray-100 text-gray-700
+                    @endif
+                ">
+                    {{ $report['status'] ?? 'Baru' }}
+                </span>
+                <span class="px-3 py-1.5 text-xs font-semibold bg-blue-100 text-blue-700 rounded-full">
+                    {{ $report['category'] ?? 'Umum' }}
+                </span>
+            </div>                            <!-- Stats and Action -->
                             <div class="flex justify-between items-center pt-4 border-t border-gray-100">
                                 <div class="flex gap-6 text-sm">
                                     <button class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition group">

@@ -23,20 +23,33 @@
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">Laporin<span class="text-gray-900">Aja</span></h2>
 
             <nav class="space-y-2">
-                @php
-                    $menu = [
-                        ['Beranda', 'home', 'fa-solid fa-house'],
-                        ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
-                        ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
-                        ['Pesan', 'messages', 'fa-regular fa-envelope'],
-                        ['Laporan Saya', 'reports', 'fa-solid fa-clipboard-list'],
-                        ['Komunitas', 'communities', 'fa-solid fa-users'],
-                        ['Profil', 'profile', 'fa-regular fa-user'],
-                    ];
-                @endphp
+           <nav class="space-y-2">
+    @php
+        $menu = [
+            ['Beranda', 'home', 'fa-solid fa-house'],
+            ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
+            ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
+            ['Pesan', 'messages', 'fa-regular fa-envelope'],
+            ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
+            ['Komunitas', 'communities', 'fa-solid fa-users'],
+            ['Profil', 'profile', 'fa-regular fa-user'],
+        ];
+    @endphp
+</nav>
+
 
                 @foreach ($menu as [$name, $route, $icon])
-                    <a href="{{ $route == '#' ? '#' : route($route) }}"
+                    @php
+                        $href = '#';
+                        if ($route !== '#') {
+                            try {
+                                $href = route($route);
+                            } catch (\Exception $e) {
+                                $href = '#';
+                            }
+                        }
+                    @endphp
+                    <a href="{{ $href }}"
                        class="group flex items-center gap-4 px-4 py-3 rounded-xl {{ $route == 'profile' ? 'bg-gray-100 text-gray-900 font-semibold' : 'text-gray-600' }} font-medium transition-all hover:bg-blue-50 hover:text-blue-600">
                         <i class="{{ $icon }} text-lg group-hover:scale-110 transition-transform"></i>
                         <span>{{ $name }}</span>
@@ -145,8 +158,8 @@
                                 <span><i class="fa-solid fa-comments"></i> {{ $report->comments_count ?? 0 }}</span>
                             </div>
                         </div>
-                        <span class="px-3 py-1 rounded-full text-sm font-medium {{ $report->status === 'resolved' ? 'bg-green-100 text-green-700' : ($report->status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700') }}">
-                            {{ ucfirst($report->status ?? 'pending') }}
+                        <span class="px-3 py-1 rounded-full text-sm font-medium {{ $report->status === 'Selesai' ? 'bg-green-100 text-green-700' : ($report->status === 'Dalam Pengerjaan' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700') }}">
+                            {{ $report->status ?? 'Baru' }}
                         </span>
                     </div>
                 </div>

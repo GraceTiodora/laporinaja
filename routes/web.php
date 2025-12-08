@@ -15,6 +15,7 @@ Route::get('/', function () {
             return [
                 'id' => $r->id,
                 'user' => ['name' => $r->user->name ?? 'Anonymous'],
+                'title' => $r->title,
                 'description' => $r->description,
                 'location' => $r->location,
                 'category' => $r->category->name ?? 'Umum',
@@ -24,14 +25,57 @@ Route::get('/', function () {
                 'created_at' => $r->created_at->diffForHumans(),
                 'image' => $r->image ? $r->image : null,
             ];
-        })->toArray(); 
+        })->toArray();
+        
+        // Top voted reports
+        $topReports = Report::with('user', 'category')
+            ->withCount(['votes' => function($query) {
+                $query->where('is_upvote', 1);
+            }])
+            ->orderBy('votes_count', 'desc')
+            ->take(5)
+            ->get()
+            ->map(function($r) {
+                return [
+                    'id' => $r->id,
+                    'title' => $r->title,
+                    'location' => $r->location,
+                    'votes' => $r->votes_count,
+                ];
+            });
+            
+        // Trending by category
+        $trendingCategories = Report::with('category')
+            ->select('category_id', \DB::raw('count(*) as total'))
+            ->whereDate('created_at', '>=', now()->subDays(7))
+            ->groupBy('category_id')
+            ->orderBy('total', 'desc')
+            ->take(5)
+            ->get()
+            ->map(function($r) {
+                return [
+                    'category' => $r->category->name ?? 'Umum',
+                    'total' => $r->total,
+                ];
+            });
+            
     } catch (\Exception $e) {
         $dbReports = [];
+        $topReports = [];
+        $trendingCategories = [];
     }
 
     return session()->has('user')
-        ? view('homepage_auth', ['dbReports' => $dbReports])
-        : view('homepage', ['dbReports' => $dbReports]);
+        ? view('warga.homepage', [
+            'dbReports' => $dbReports,
+            'topReports' => $topReports,
+            'trendingCategories' => $trendingCategories
+        ])
+        : view('warga.homepage', [
+            'dbReports' => $dbReports,
+            'topReports' => $topReports,
+            'trendingCategories' => $trendingCategories
+        ]);
 })->name('home');
 
 Route::get('/profile', function () {
@@ -42,10 +86,13 @@ Route::get('/profile', function () {
     $userId = session('user.id');
     $user = App\Models\User::find($userId);
     
+    if (!$user) {
+        return redirect()->route('login')->with('error', 'User tidak ditemukan.');
+    }
+    
     // Get user's reports
     $reports = App\Models\Report::where('user_id', $userId)
         ->with('category')
-        ->withCount(['comments', 'votes'])
         ->latest()
         ->get();
     
@@ -58,12 +105,12 @@ Route::get('/profile', function () {
     // Calculate stats
     $stats = [
         'reports_sent' => $reports->count(),
-        'issues_resolved' => $reports->where('status', 'resolved')->count(),
+        'issues_resolved' => $reports->where('status', 'Selesai')->count(),
         'community_posts' => $comments->count(),
         'vote_helps' => $votes->where('is_upvote', 1)->count(),
     ];
     
-    return view('profile', [
+    return view('warga.profile', [
         'user' => $user,
         'reports' => $reports,
         'comments' => $comments,
@@ -114,7 +161,7 @@ Route::get('/messages', function () {
 })->name('messages');
 
 
-Route::get('my-reports', [ReportController::class, 'myReports'])->name('my-reports');
+Route::get('my-reports', [ReportController::class, 'myReports'])->name('reports');
 
 
 Route::get('/communities', function () {

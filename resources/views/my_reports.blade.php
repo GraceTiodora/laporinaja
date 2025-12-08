@@ -102,7 +102,7 @@
 
                             <div class="flex gap-2 mb-3">
                                 <span class="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700 font-medium">
-                                    {{ ucfirst($r->status ?? 'pending') }}
+                                    {{ $r->status ?? 'Baru' }}
                                 </span>
                                 @php
                                     $categoryColors = [

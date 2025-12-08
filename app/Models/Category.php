@@ -9,22 +9,10 @@ class Category extends Model
 {
     use HasFactory;
     
-    protected $primaryKey = 'id_category';
-    protected $fillable = ['nama_category'];
-
-    // Accessor untuk kompatibilitas
-    public function getIdAttribute()
-    {
-        return $this->id_category;
-    }
-
-    public function getNameAttribute()
-    {
-        return $this->nama_category;
-    }
+    protected $fillable = ['name', 'slug', 'description'];
 
     public function reports()
     {
-        return $this->hasMany(Report::class, 'id_category', 'id_category');
+        return $this->hasMany(Report::class, 'category_id', 'id');
     }
 }

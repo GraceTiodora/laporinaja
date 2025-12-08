@@ -30,7 +30,17 @@
                 @endphp
 
                 @foreach ($menu as [$name, $route, $icon])
-                    <a href="{{ $route == '#' ? '#' : route($route) }}"
+                    @php
+                        $href = '#';
+                        if ($route !== '#') {
+                            try {
+                                $href = route($route);
+                            } catch (\Exception $e) {
+                                $href = '#';
+                            }
+                        }
+                    @endphp
+                    <a href="{{ $href }}"
                        class="group flex items-center gap-4 px-4 py-3 rounded-xl text-gray-600 font-medium
                               transition-all hover:bg-blue-50 hover:text-blue-600">
                         <i class="{{ $icon }} text-lg group-hover:scale-110 transition-transform"></i>
@@ -83,9 +93,7 @@
                         <i class="fa-solid fa-camera cursor-pointer hover:text-blue-600 transition"></i>
                         <i class="fa-solid fa-image cursor-pointer hover:text-blue-600 transition"></i>
                         <i class="fa-solid fa-location-dot cursor-pointer hover:text-blue-600 transition"></i>
-                        <i class="fa-solid fa-tag cursor-pointer hover:text-blue-600 transition"></i>
-                        <i class="fa-solid fa-pen cursor-pointer hover:text-blue-600 transition"></i>
-                    </div>
+                </div>
                     <button class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition font-semibold">Post</button>
                 </div>
             </div>

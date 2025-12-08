@@ -19,7 +19,7 @@ class ReportController extends Controller
         }
 
         $categories = Category::all();
-        return view('create_report', ['categories' => $categories]);
+        return view('warga.create_report', ['categories' => $categories]);
     }
 
     /**
@@ -40,6 +40,13 @@ class ReportController extends Controller
         ]);
 
         try {
+            $userId = session('user.id');
+            
+            // Debug: check if user_id exists
+            if (!$userId) {
+                return back()->withInput()->with('error', 'User ID tidak ditemukan. Silakan login ulang.');
+            }
+
             $imagePath = null;
 
             if ($request->hasFile('image')) {
@@ -54,16 +61,16 @@ class ReportController extends Controller
             }
 
             $report = Report::create([
-                'user_id' => session('user.id'),
+                'user_id' => $userId,
                 'category_id' => $data['category_id'] ?? null,
                 'title' => $data['title'],
                 'description' => $data['description'],
                 'location' => $data['location'],
                 'image' => $imagePath,
-                'status' => 'pending',
+                'status' => 'Baru',
             ]);
 
-            return redirect()->route('my-reports')->with('success', 'Laporan berhasil dikirim! Lihat di laporan saya.');
+            return redirect()->route('home')->with('success', 'Laporan berhasil dikirim!');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
@@ -91,7 +98,7 @@ class ReportController extends Controller
             'title' => $reportModel->title,
             'description' => $reportModel->description,
             'location' => $reportModel->location,
-            'status' => ucfirst($reportModel->status ?? 'pending'),
+            'status' => $reportModel->status ?? 'Baru',
             'image' => $reportModel->image,
             'created_at' => $reportModel->created_at->diffForHumans(),
             'votes' => $reportModel->votes()->where('is_upvote', 1)->count(),
@@ -119,11 +126,10 @@ class ReportController extends Controller
 
         $reports = Report::where('user_id', session('user.id'))
                         ->with('category')
-                        ->withCount(['comments', 'votes'])
                         ->latest()
                         ->paginate(10);
         
-        return view('my_reports', ['reports' => $reports]);
+        return view('warga.my_reports', ['reports' => $reports]);
     }
 
     /**
@@ -138,7 +144,7 @@ class ReportController extends Controller
         }
 
         $categories = Category::all();
-        return view('edit_report', ['report' => $report, 'categories' => $categories]);
+        return view('warga.edit_report', ['report' => $report, 'categories' => $categories]);
     }
 
     /**
@@ -157,7 +163,7 @@ class ReportController extends Controller
             'description' => 'required|string',
             'location'    => 'nullable|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
-            'status'      => 'nullable|in:pending,in_progress,resolved,rejected',
+            'status'      => 'nullable|in:Baru,Dalam Pengerjaan,Selesai',
             'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 

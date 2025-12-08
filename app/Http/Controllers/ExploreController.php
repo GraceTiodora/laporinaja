@@ -79,7 +79,7 @@ class ExploreController extends Controller
         // Sort by votes (trending) and reset keys
         $filteredReports = $filteredReports->sortByDesc('votes')->values();
 
-        return view('explore', [
+        return view('warga.explore', [
             'reports' => $filteredReports,
             'totalReports' => count($allReports),
         ]);

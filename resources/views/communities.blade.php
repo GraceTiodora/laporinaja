@@ -31,7 +31,17 @@
                 @endphp
 
                 @foreach ($menu as [$name, $route, $icon])
-                    <a href="{{ $route == '#' ? '#' : route($route) }}"
+                    @php
+                        $href = '#';
+                        if ($route !== '#') {
+                            try {
+                                $href = route($route);
+                            } catch (\Exception $e) {
+                                $href = '#';
+                            }
+                        }
+                    @endphp
+                    <a href="{{ $href }}"
                         class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all
                             {{ request()->routeIs($route) ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600' }}">
                         <i class="{{ $icon }} text-lg group-hover:scale-110 transition-transform"></i>

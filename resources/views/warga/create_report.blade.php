@@ -7,9 +7,9 @@
 @endpush
 
 @section('content')
-<div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">
+<div class="flex h-screen max-w-[1920px] mx-auto bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50">
     <!-- 🧭 Left Sidebar -->
-    <aside class="w-[270px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between sidebar-scroll">
+    <aside class="w-[270px] bg-white/95 backdrop-blur-sm border-r border-gray-200 p-6 flex flex-col justify-between sidebar-scroll">
         <div>
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">Laporin<span class="text-gray-900">Aja</span></h2>
 
@@ -27,7 +27,17 @@
                 @endphp
 
                 @foreach ($menu as [$name, $route, $icon])
-                    <a href="{{ $route == '#' ? '#' : route($route) }}"
+                    @php
+                        $href = '#';
+                        if ($route !== '#') {
+                            try {
+                                $href = route($route);
+                            } catch (\Exception $e) {
+                                $href = '#';
+                            }
+                        }
+                    @endphp
+                    <a href="{{ $href }}"
                        class="group flex items-center gap-4 px-4 py-3 rounded-xl text-gray-600 font-medium transition-all hover:bg-blue-50 hover:text-blue-600 {{ request()->routeIs($route) ? 'bg-blue-50 text-blue-600' : '' }}">
                         <i class="{{ $icon }} text-lg group-hover:scale-110 transition-transform"></i>
                         <span class="nav-text">{{ $name }}</span>
@@ -69,7 +79,7 @@
     </aside>
 
     <!-- 📰 Main Content with Modal -->
-    <main class="flex-1 relative bg-white border-r border-gray-200">
+    <main class="flex-1 relative bg-gradient-to-br from-white to-blue-50/20 border-r border-gray-200">
         <!-- Semi-transparent overlay -->
         <div class="absolute inset-0 bg-black/30 z-10"></div>
         
@@ -89,6 +99,23 @@
 
                 <!-- Modal Body (Scrollable) -->
                 <div class="flex-1 overflow-y-auto px-6 py-6">
+                    @if ($errors->any())
+                        <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <p class="text-red-700 font-semibold mb-2">Terjadi kesalahan:</p>
+                            <ul class="list-disc list-inside text-red-600 text-sm">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <p class="text-red-700">{{ session('error') }}</p>
+                        </div>
+                    @endif
+
                     <form id="reportForm" action="{{ route('reports.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
                         @csrf
                         
@@ -100,15 +127,32 @@
                             </div>
                         </div>
 
+                        <!-- Title Input -->
+                        <div>
+                            <label for="title" class="block text-base font-bold text-gray-900 mb-3">Judul Laporan :</label>
+                            <input 
+                                type="text" 
+                                id="title" 
+                                name="title" 
+                                required
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base text-gray-700 placeholder-gray-400"
+                                placeholder="Ringkasan singkat masalah Anda"
+                                value="{{ old('title') }}"
+                            >
+                            @error('title')
+                                <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- Description Textarea -->
                         <div>
                             <label for="description" class="block text-base font-bold text-gray-900 mb-3">Deskripsi :</label>
                             <textarea 
                                 id="description" 
                                 name="description" 
-                                rows="10" 
+                                rows="6" 
                                 required
-                                class="w-full px-0 py-2 border-0 focus:ring-0 text-base text-gray-700 placeholder-gray-400 resize-none bg-transparent"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base text-gray-700 placeholder-gray-400 resize-none"
                                 placeholder="Apa yang terjadi?"
                             >{{ old('description') }}</textarea>
                             @error('description')
@@ -116,8 +160,41 @@
                             @enderror
                         </div>
 
-                        <!-- Hidden Title (auto-generated) -->
-                        <input type="hidden" name="title" id="title" value="Laporan Baru">
+                        <!-- Location Input -->
+                        <div>
+                            <label for="location" class="block text-base font-bold text-gray-900 mb-3">Lokasi :</label>
+                            <input 
+                                type="text" 
+                                id="location" 
+                                name="location" 
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base text-gray-700 placeholder-gray-400"
+                                placeholder="Alamat / Nama jalan"
+                                value="{{ old('location') }}"
+                            >
+                            @error('location')
+                                <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Category Select -->
+                        <div>
+                            <label for="category_id" class="block text-base font-bold text-gray-900 mb-3">Kategori :</label>
+                            <select 
+                                id="category_id" 
+                                name="category_id"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base text-gray-700"
+                            >
+                                <option value="">-- Pilih Kategori --</option>
+                                <option value="1">Infrastruktur</option>
+                                <option value="2">Keamanan</option>
+                                <option value="3">Sanitasi</option>
+                                <option value="4">Taman</option>
+                                <option value="5">Aksesibilitas</option>
+                            </select>
+                            @error('category_id')
+                                <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
 
                         <!-- Image Preview -->
                         <div id="imagePreview" class="hidden">
@@ -166,28 +243,11 @@
                         <!-- Location Icon -->
                         <button 
                             type="button" 
+                            onclick="document.getElementById('location').focus()" 
                             class="p-3 text-blue-600 hover:bg-blue-50 rounded-lg transition"
                             title="Tambah Lokasi"
                         >
                             <i class="fa-solid fa-location-dot text-xl"></i>
-                        </button>
-
-                        <!-- Tag Icon -->
-                        <button 
-                            type="button" 
-                            class="p-3 text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                            title="Tambah Tag"
-                        >
-                            <i class="fa-solid fa-tag text-xl"></i>
-                        </button>
-
-                        <!-- Edit Icon -->
-                        <button 
-                            type="button" 
-                            class="p-3 text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                            title="Edit"
-                        >
-                            <i class="fa-solid fa-pen text-xl"></i>
                         </button>
                     </div>
                 </div>
@@ -196,7 +256,7 @@
     </main>
 
     <!-- 📊 Right Sidebar -->
-    <aside class="w-[340px] bg-white p-6 overflow-y-auto sidebar-scroll">
+    <aside class="w-[340px] bg-white/95 backdrop-blur-sm p-6 overflow-y-auto sidebar-scroll border-l border-gray-200">
         <section class="mb-8">
             <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                 <i class="fa-solid fa-fire text-red-500"></i> Masalah Penting
@@ -254,6 +314,9 @@ function previewImage(event) {
         reader.onload = function(e) {
             document.getElementById('previewImg').src = e.target.result;
             document.getElementById('imagePreview').classList.remove('hidden');
+            // Add animation
+            const preview = document.getElementById('imagePreview');
+            preview.style.animation = 'fadeIn 0.3s ease-in';
         }
         reader.readAsDataURL(file);
     }
@@ -261,15 +324,114 @@ function previewImage(event) {
 
 function removeImage() {
     document.getElementById('imageInput').value = '';
-    document.getElementById('imagePreview').classList.add('hidden');
-    document.getElementById('previewImg').src = '';
+    const preview = document.getElementById('imagePreview');
+    preview.style.animation = 'fadeOut 0.3s ease-out';
+    setTimeout(() => {
+        preview.classList.add('hidden');
+        document.getElementById('previewImg').src = '';
+    }, 300);
 }
 
-// Auto-generate title from description
-document.getElementById('description').addEventListener('input', function() {
-    const desc = this.value.trim();
-    const title = desc ? desc.substring(0, 50) : 'Laporan Baru';
-    document.getElementById('title').value = title;
+// Add interactivity to form inputs
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('reportForm');
+    const inputs = document.querySelectorAll('input[type="text"], textarea, select');
+    
+    // Form validation before submit
+    form.addEventListener('submit', function(e) {
+        const title = document.getElementById('title').value.trim();
+        const description = document.getElementById('description').value.trim();
+        
+        if (!title) {
+            e.preventDefault();
+            alert('Judul Laporan wajib diisi!');
+            document.getElementById('title').focus();
+            return false;
+        }
+        
+        if (!description) {
+            e.preventDefault();
+            alert('Deskripsi wajib diisi!');
+            document.getElementById('description').focus();
+            return false;
+        }
+        
+        // If all validation passes, submit form
+        console.log('Form berhasil divalidasi, submit sekarang...');
+    });
+    
+    inputs.forEach(input => {
+        // Focus animation
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('opacity-100');
+            this.parentElement.style.transform = 'scale(1.01)';
+        });
+        
+        // Blur animation
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
+        
+        // Input validation with visual feedback
+        input.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.classList.remove('border-gray-200');
+                this.classList.add('border-blue-400');
+            } else {
+                this.classList.remove('border-blue-400');
+                this.classList.add('border-gray-200');
+            }
+        });
+    });
+    
+    // Submit button animation
+    const submitBtn = document.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        submitBtn.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 8px 16px rgba(37, 99, 235, 0.3)';
+        });
+        
+        submitBtn.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '';
+        });
+    }
 });
+
+// CSS for animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+    }
+    
+    input:focus, textarea:focus, select:focus {
+        transition: all 0.3s ease;
+    }
+    
+    button[type="submit"] {
+        transition: all 0.2s ease;
+    }
+`;
+document.head.appendChild(style);
 </script>
 @endsection

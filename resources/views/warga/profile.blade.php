@@ -27,7 +27,17 @@
                 @endphp
 
                 @foreach ($menu as [$name, $route, $icon])
-                    <a href="{{ $route == '#' ? '#' : route($route) }}"
+                    @php
+                        $href = '#';
+                        if ($route !== '#') {
+                            try {
+                                $href = route($route);
+                            } catch (\Exception $e) {
+                                $href = '#';
+                            }
+                        }
+                    @endphp
+                    <a href="{{ $href }}"
                        class="group flex items-center gap-4 px-4 py-3 rounded-xl {{ $route == 'profile' ? 'bg-gray-100 text-gray-900 font-semibold' : 'text-gray-600' }} font-medium transition-all hover:bg-blue-50 hover:text-blue-600">
                         <i class="{{ $icon }} text-lg group-hover:scale-110 transition-transform"></i>
                         <span>{{ $name }}</span>
@@ -43,10 +53,10 @@
 
         <!-- Profile Section -->
         <div class="flex items-center gap-3 border-t border-gray-200 pt-4">
-            <img src="{{ data_get($user, 'avatar', '/images/default-avatar.jpg') }}" class="w-10 h-10 rounded-full object-cover">
+            <img src="{{ $user->avatar ?? '/images/default-avatar.jpg' }}" class="w-10 h-10 rounded-full object-cover" onerror="this.src='/images/default-avatar.jpg'">
             <div class="flex flex-col leading-tight">
-                <span class="text-sm font-medium text-gray-800">{{ data_get($user, 'name', 'Justin Hubner') }}</span>
-                <span class="text-xs text-gray-500">@{{ data_get($user, 'username', 'hubnerjustin') }}</span>
+                <span class="text-sm font-medium text-gray-800">{{ $user->name ?? 'User' }}</span>
+                <span class="text-xs text-gray-500">@{{ $user->username ?? 'username' }}</span>
             </div>
         </div>
     </aside>
@@ -61,12 +71,13 @@
             <!-- Profile Header -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
                 <div class="flex items-start gap-6">
-                    <img src="{{ data_get($user, 'avatar', '/images/default-avatar.jpg') }}" 
-                         alt="{{ data_get($user, 'name', 'Justin Hubner') }}" 
-                         class="w-24 h-24 rounded-full object-cover">
+                    <img src="{{ $user->avatar ?? '/images/default-avatar.jpg' }}" 
+                         alt="{{ $user->name ?? 'User' }}" 
+                         class="w-24 h-24 rounded-full object-cover"
+                         onerror="this.src='/images/default-avatar.jpg'">
                     <div class="flex-1">
-                        <h2 class="text-2xl font-bold text-gray-900">{{ data_get($user, 'name', 'Justin Hubner') }}</h2>
-                        <p class="text-gray-600 mt-2">{{ data_get($user, 'bio', 'Community advocate passionate about making our neighborhood safer and cleaner. Environmental science graduate.') }}</p>
+                        <h2 class="text-2xl font-bold text-gray-900">{{ $user->name ?? 'User' }}</h2>
+                        <p class="text-gray-600 mt-2">{{ $user->bio ?? 'Community advocate passionate about making our neighborhood safer and cleaner.' }}</p>
                     </div>
                 </div>
 
