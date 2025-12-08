@@ -165,7 +165,7 @@
                                 <span class="inline-block px-3 py-1 text-xs font-medium {{ $statusClass }} rounded-full">{{ $statusLabel }}</span>
                             </td>
                             <td class="py-4 px-4">
-                                <a href="{{ route('admin.verifikasi.detail', $report->id_report) }}" class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
+                                <a href="{{ route('admin.verifikasi.detail', $report->id) }}" class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
                                     <i class="fa-solid fa-eye text-sm"></i> Detail
                                 </a>
                             </td>

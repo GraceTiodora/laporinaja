@@ -4,13 +4,38 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/messages.css') }}">
+<style>
+    .typing-indicator span {
+        animation: typing 1.4s infinite;
+        opacity: 0.3;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing {
+        0%, 60%, 100% { opacity: 0.3; }
+        30% { opacity: 1; }
+    }
+    .message-bubble {
+        animation: slideIn 0.3s ease-out;
+    }
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
 @endpush
 
 @section('content')
-<div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">
+<div class="flex h-screen max-w-[1920px] mx-auto bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50">
 
-    <!-- SIDEBAR -->
-    <aside class="w-[270px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between">
+    <!-- 📱 LEFT SIDEBAR -->
+    <aside class="w-[270px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between shadow-lg">
 
         <div>
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">
@@ -25,7 +50,6 @@
                         ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
                         ['Pesan', 'messages', 'fa-regular fa-envelope'],
                         ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
-                        ['Komunitas', 'communities', 'fa-solid fa-users'],
                         ['Profil', 'profile', 'fa-regular fa-user'],
                     ]; 
                 @endphp
@@ -60,50 +84,67 @@
 
         <div class="flex items-center gap-3 border-t border-gray-200 pt-4">
             <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full object-cover">
-            <div>
+            <div class="flex-1">
                 <p class="text-sm font-medium text-gray-800">{{ session('user.name','Guest') }}</p>
                 <p class="text-xs text-gray-500">{{ session('user.email','user@mail.com') }}</p>
             </div>
         </div>
     </aside>
 
-    <!-- CHAT LAYOUT -->
+    <!-- 💬 CHAT LAYOUT -->
     <div class="flex flex-1 overflow-hidden">
 
         <!-- LEFT CHAT LIST -->
-        <div class="w-[380px] border-r border-gray-200 bg-white flex flex-col">
+        <div class="w-[380px] border-r border-gray-200 bg-white flex flex-col shadow-sm">
             
-            <div class="p-4">
-                <input type="text" placeholder="Search conversations..."
-                    class="w-full bg-gray-100 px-4 py-2.5 rounded-xl outline-none text-sm">
+            <div class="p-5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
+                <h3 class="text-xl font-bold mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-inbox"></i>
+                    Percakapan
+                </h3>
+                <div class="relative">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Cari percakapan..." 
+                        class="w-full bg-white/90 px-10 py-3 rounded-full outline-none text-sm text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-yellow-400 transition">
+                </div>
             </div>
 
-            <div class="overflow-y-auto p-2 space-y-2">
+            <div class="overflow-y-auto p-3 space-y-2">
 
-                <!-- SAMPLE CHAT LIST ITEM -->
+                <!-- CHAT LIST ITEMS WITH ENHANCED DESIGN -->
                 @foreach([
-                    ['Jennie Kim', 'Online', 'Setuju. Thanks ya udah laporin, aku ju...', 'images/user1.jpg', true],
-                    ['Sabrina Carpenter', null, 'Eh aku juga lewat jalan itu..', 'images/user2.jpg', false],
-                    ['Admin Kota', 'Online', 'Terimakasih atas laporan anda...', 'images/user3.jpg', false],
-                    ['Lara Raj', null, 'Malam tadi aku hampir jatuh gara2...', 'images/user4.jpg', false],
-                    ['Kim Mingyu', null, 'Thanks.', 'images/user5.jpg', true],
+                    ['Jennie Kim', 'Online', 'Setuju. Thanks ya udah laporin, aku ju...', 'images/user1.jpg', true, 'online'],
+                    ['Sabrina Carpenter', null, 'Eh aku juga lewat jalan itu..', 'images/user2.jpg', false, 'offline'],
+                    ['Admin Kota', 'Online', 'Terimakasih atas laporan anda...', 'images/user3.jpg', false, 'online'],
+                    ['Lara Raj', null, 'Malam tadi aku hampir jatuh gara2...', 'images/user4.jpg', false, 'offline'],
+                    ['Kim Mingyu', null, 'Thanks.', 'images/user5.jpg', true, 'offline'],
                 ] as $c)
 
-                <div class="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition">
-                    <img src="{{ asset($c[3]) }}" class="w-12 h-12 rounded-full object-cover">
+                <div class="flex items-center gap-3 p-3 rounded-2xl cursor-pointer hover:bg-gray-50 transition-all duration-300 group border border-transparent hover:border-gray-200 hover:shadow-sm {{ $c[4] ? 'bg-blue-50/50' : '' }}">
+                    <div class="relative">
+                        <img src="{{ asset($c[3]) }}" class="w-14 h-14 rounded-full object-cover ring-2 ring-white group-hover:ring-gray-200 transition">
+                        @if($c[5] == 'online')
+                            <span class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full animate-pulse"></span>
+                        @endif
+                    </div>
 
-                    <div class="flex-1">
-                        <p class="font-semibold text-gray-900 flex items-center gap-2">
-                            {{ $c[0] }}
-                            @if($c[1])
-                                <span class="text-green-500 text-xs">●</span>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <p class="font-bold text-gray-900 group-hover:text-indigo-700 transition truncate">
+                                {{ $c[0] }}
+                            </p>
+                            @if($c[4])
+                                <span class="flex-shrink-0 w-2 h-2 bg-blue-600 rounded-full animate-pulse"></span>
                             @endif
-                        </p>
-                        <p class="text-sm text-gray-600 truncate">{{ $c[2] }}</p>
+                        </div>
+                        <p class="text-sm text-gray-600 truncate group-hover:text-gray-800">{{ $c[2] }}</p>
+                        @if($c[1])
+                            <p class="text-xs text-green-500 font-medium mt-0.5">● {{ $c[1] }}</p>
+                        @endif
                     </div>
 
                     @if($c[4])
-                        <span class="w-5 h-5 bg-blue-600 text-white text-xs flex items-center justify-center rounded-full">1</span>
+                        <span class="flex-shrink-0 w-6 h-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold flex items-center justify-center rounded-full shadow-lg">1</span>
                     @endif
                 </div>
 
@@ -113,69 +154,139 @@
 
         </div>
 
-        <!-- CHAT ROOM -->
-        <div class="flex-1 bg-gray-50 flex flex-col">
+        <!-- 💭 CHAT ROOM -->
+        <div class="flex-1 bg-white flex flex-col">
 
             <!-- CHAT HEADER -->
-            <div class="p-5 bg-white flex items-center justify-between border-b border-gray-200">
-                <div class="flex items-center gap-3">
-                    <img src="{{ asset('images/user1.jpg') }}" class="w-12 h-12 rounded-full object-cover">
+            <div class="p-5 bg-white flex items-center justify-between border-b border-gray-200 shadow-sm">
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <img src="{{ asset('images/user1.jpg') }}" class="w-14 h-14 rounded-full object-cover ring-4 ring-blue-100">
+                        <span class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
+                    </div>
                     <div>
-                        <p class="font-semibold text-gray-900">Jennie Kim</p>
-                        <p class="text-green-500 text-sm">Online</p>
+                        <p class="font-bold text-gray-900 text-lg">Jennie Kim</p>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                            <p class="text-green-600 text-sm font-medium">Online</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex gap-6 text-gray-500 text-xl">
-                    <i class="fa-solid fa-phone cursor-pointer hover:text-blue-600"></i>
-                    <i class="fa-solid fa-video cursor-pointer hover:text-blue-600"></i>
-                    <i class="fa-solid fa-info-circle cursor-pointer hover:text-blue-600"></i>
+                <div class="flex gap-4 text-gray-500">
+                    <button class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-all duration-300 hover:text-indigo-600 hover:scale-110">
+                        <i class="fa-solid fa-phone text-lg"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full hover:bg-purple-100 flex items-center justify-center transition-all duration-300 hover:text-purple-600 hover:scale-110">
+                        <i class="fa-solid fa-video text-lg"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-all duration-300 hover:text-gray-800 hover:scale-110">
+                        <i class="fa-solid fa-info-circle text-lg"></i>
+                    </button>
                 </div>
             </div>
 
             <!-- CHAT MESSAGES -->
-            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+            <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50">
 
-                <div class="text-center text-gray-400 text-sm">Kamis 22:46</div>
+                <div class="text-center">
+                    <span class="inline-block bg-white/70 backdrop-blur-sm px-4 py-2 rounded-full text-gray-500 text-xs font-medium shadow-sm">
+                        <i class="fa-regular fa-clock mr-1"></i>
+                        Kamis 22:46
+                    </span>
+                </div>
 
-                <!-- LEFT MESSAGE -->
-                <div class="flex">
-                    <div class="bg-gray-200 text-gray-900 px-4 py-2 rounded-2xl max-w-[60%]">
-                        Aku tadi baca lapormu tentang jalan berlubang deket sekolah itu.
+                <!-- LEFT MESSAGE (RECEIVED) -->
+                <div class="flex gap-3 message-bubble">
+                    <img src="{{ asset('images/user1.jpg') }}" class="w-9 h-9 rounded-full object-cover flex-shrink-0">
+                    <div class="flex flex-col max-w-[60%]">
+                        <div class="bg-white text-gray-900 px-5 py-3 rounded-3xl rounded-tl-md shadow-md border border-gray-100">
+                            <p class="text-sm leading-relaxed">Aku tadi baca lapormu tentang jalan berlubang deket sekolah itu.</p>
+                        </div>
+                        <span class="text-xs text-gray-400 mt-1 ml-3">22:46</span>
                     </div>
                 </div>
 
-                <!-- RIGHT MESSAGE -->
-                <div class="flex justify-end">
-                    <div class="bg-blue-600 text-white px-4 py-2 rounded-2xl max-w-[60%]">
-                        Iya, udah beberapa minggu nggak diperbaiki. Banyak motor yang hampir jatuh
+                <!-- RIGHT MESSAGE (SENT) -->
+                <div class="flex justify-end message-bubble">
+                    <div class="flex flex-col max-w-[60%] items-end">
+                        <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-3 rounded-3xl rounded-tr-md shadow-lg">
+                            <p class="text-sm leading-relaxed">Iya, udah beberapa minggu nggak diperbaiki. Banyak motor yang hampir jatuh</p>
+                        </div>
+                        <span class="text-xs text-gray-400 mt-1 mr-3 flex items-center gap-1">
+                            22:48
+                            <i class="fa-solid fa-check-double text-blue-500"></i>
+                        </span>
                     </div>
                 </div>
 
-                <div class="text-center text-gray-400 text-sm">Jumat 13:35</div>
+                <div class="text-center">
+                    <span class="inline-block bg-white/70 backdrop-blur-sm px-4 py-2 rounded-full text-gray-500 text-xs font-medium shadow-sm">
+                        <i class="fa-regular fa-clock mr-1"></i>
+                        Jumat 13:35
+                    </span>
+                </div>
 
-                <div class="flex">
-                    <div class="bg-gray-200 text-gray-900 px-4 py-2 rounded-2xl max-w-[60%]">
-                        Aku juga pernah hampir kepeleset pas hujan 😅. Emang harus cepat diperbaiki.
+                <div class="flex gap-3 message-bubble">
+                    <img src="{{ asset('images/user1.jpg') }}" class="w-9 h-9 rounded-full object-cover flex-shrink-0">
+                    <div class="flex flex-col max-w-[60%]">
+                        <div class="bg-white text-gray-900 px-5 py-3 rounded-3xl rounded-tl-md shadow-md border border-gray-100">
+                            <p class="text-sm leading-relaxed">Aku juga pernah hampir kepeleset pas hujan 😅. Emang harus cepat diperbaiki.</p>
+                        </div>
+                        <span class="text-xs text-gray-400 mt-1 ml-3">13:35</span>
                     </div>
                 </div>
 
+                <div class="flex justify-end message-bubble">
+                    <div class="flex flex-col max-w-[60%] items-end">
+                        <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-3 rounded-3xl rounded-tr-md shadow-lg">
+                            <p class="text-sm leading-relaxed">Makanya aku laporin di sini, biar banyak yang lihat dan kasih vote</p>
+                        </div>
+                        <span class="text-xs text-gray-400 mt-1 mr-3 flex items-center gap-1">
+                            13:37
+                            <i class="fa-solid fa-check-double text-blue-500"></i>
+                        </span>
+                    </div>
+                </div>
 
-                <div class="flex justify-end">
-                    <div class="bg-blue-600 text-white px-4 py-2 rounded-2xl max-w-[60%]">
-                        Makanya aku laporin di sini, biar banyak yang lihat dan kasih vote
+                <!-- TYPING INDICATOR -->
+                <div class="flex gap-3 message-bubble">
+                    <img src="{{ asset('images/user1.jpg') }}" class="w-9 h-9 rounded-full object-cover flex-shrink-0">
+                    <div class="bg-white px-5 py-3 rounded-3xl rounded-tl-md shadow-md border border-gray-100">
+                        <div class="typing-indicator flex gap-1">
+                            <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                            <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                            <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                        </div>
                     </div>
                 </div>
 
             </div>
 
             <!-- MESSAGE INPUT -->
-            <div class="p-4 bg-white border-t border-gray-200">
-                <div class="flex items-center gap-3 bg-gray-100 rounded-full px-4 py-2">
-                    <i class="fa-regular fa-face-smile text-xl text-gray-500"></i>
-                    <input type="text" placeholder="Pesan..." class="flex-1 bg-transparent outline-none">
-                    <i class="fa-solid fa-paperclip text-gray-500"></i>
-                    <i class="fa-solid fa-paper-plane text-blue-600 cursor-pointer"></i>
+            <div class="p-5 bg-white border-t border-gray-200">
+                <div class="flex items-center gap-3">
+                    <button class="w-11 h-11 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-white hover:scale-110 transition-transform shadow-md">
+                        <i class="fa-solid fa-plus text-lg"></i>
+                    </button>
+                    
+                    <div class="flex-1 flex items-center gap-3 bg-gray-50 rounded-full px-5 py-3 border border-gray-200 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition">
+                        <button class="hover:scale-110 transition-transform">
+                            <i class="fa-regular fa-face-smile text-xl text-gray-500 hover:text-yellow-500"></i>
+                        </button>
+                        <input type="text" placeholder="Ketik pesan..." 
+                            class="flex-1 bg-transparent outline-none text-sm placeholder-gray-400">
+                        <button class="hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-paperclip text-gray-500 hover:text-indigo-600"></i>
+                        </button>
+                        <button class="hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-image text-gray-500 hover:text-purple-600"></i>
+                        </button>
+                    </div>
+                    
+                    <button class="w-11 h-11 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center text-white hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
 

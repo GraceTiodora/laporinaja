@@ -164,11 +164,6 @@ Route::get('/messages', function () {
 Route::get('my-reports', [ReportController::class, 'myReports'])->name('my-reports');
 
 
-Route::get('/communities', function () {
-    return view('communities');
-})->name('communities');
-
-
 Route::prefix('admin')->group(function () {
 
     // Dashboard utama admin

@@ -7,11 +7,13 @@
 @endpush
 
 @section('content')
-<div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">
+<div class="flex h-screen max-w-[1920px] mx-auto bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50">
     <!-- 🧭 Left Sidebar -->
-    <aside class="w-[270px] bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-r border-gray-200 p-6 flex flex-col justify-between sidebar-scroll shadow-lg">
+    <aside class="w-[270px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between shadow-lg">
         <div>
-            <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">Laporin<span class="text-gray-900">Aja</span></h2>
+            <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">
+                Laporin<span class="text-gray-900">Aja</span>
+            </h2>
 
             <nav class="space-y-2">
                 @php
@@ -20,8 +22,7 @@
                         ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
                         ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
                         ['Pesan', 'messages', 'fa-regular fa-envelope'],
-                        ['Laporan Saya', 'reports', 'fa-solid fa-clipboard-list'],
-                        ['Komunitas', 'communities', 'fa-solid fa-users'],
+                        ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
                         ['Profil', 'profile', 'fa-regular fa-user'],
                     ];
                 @endphp
@@ -38,32 +39,39 @@
                         }
                     @endphp
                     <a href="{{ $href }}"
-                       class="group flex items-center gap-4 px-4 py-3 rounded-xl {{ $route == 'profile' ? 'bg-gray-100 text-gray-900 font-semibold' : 'text-gray-600' }} font-medium transition-all hover:bg-blue-50 hover:text-blue-600">
-                        <i class="{{ $icon }} text-lg group-hover:scale-110 transition-transform"></i>
+                       class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all
+                              {{ request()->routeIs($route) 
+                                  ? 'bg-blue-50 text-blue-600' 
+                                  : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600' }}">
+                        <i class="{{ $icon }} text-lg"></i>
                         <span>{{ $name }}</span>
                     </a>
                 @endforeach
             </nav>
 
             <button onclick="window.location.href='{{ route('reports.create') }}'"
-                    class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full shadow-md transition-all font-semibold">
-                <i class="fa-solid fa-plus-circle"></i> New Report
+                    class="mt-6 w-full flex items-center justify-center gap-2 
+                           bg-blue-600 hover:bg-blue-700
+                           text-white py-3 rounded-full shadow-md
+                           transition font-semibold">
+                <i class="fa-solid fa-plus-circle"></i> 
+                <span>Laporan Baru</span>
             </button>
         </div>
 
         <!-- Profile Section -->
         <div>
             <div class="flex items-center gap-3 border-t border-gray-200 pt-4 mb-3">
-                <img src="{{ $user->avatar ?? '/images/default-avatar.jpg' }}" class="w-10 h-10 rounded-full object-cover" onerror="this.src='/images/default-avatar.jpg'">
-                <div class="flex flex-col leading-tight">
-                    <span class="text-sm font-medium text-gray-800">{{ $user->name ?? 'User' }}</span>
-                    <span class="text-xs text-gray-500">@{{ $user->username ?? 'username' }}</span>
+                <img src="{{ $user->avatar ?? asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full object-cover" onerror="this.src='{{ asset('images/profile-user.jpg') }}'">
+                <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-800">{{ $user->name ?? 'User' }}</p>
+                    <p class="text-xs text-gray-500">@{{ $user->username ?? 'username' }}</p>
                 </div>
             </div>
             
             <form action="{{ route('logout') }}" method="POST" class="w-full">
                 @csrf
-                <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-red-600 font-semibold bg-white/50 hover:bg-red-50 hover:text-red-700 transition-all group border border-red-200 hover:border-red-300">
+                <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-red-600 font-semibold bg-white hover:bg-red-50 transition-all group border border-red-200 hover:border-red-300">
                     <i class="fa-solid fa-right-from-bracket group-hover:translate-x-1 transition-transform"></i>
                     <span>Logout</span>
                 </button>

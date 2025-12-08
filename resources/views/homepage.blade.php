@@ -24,7 +24,6 @@
                         ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
                         ['Pesan', 'messages', 'fa-regular fa-envelope'],
                         ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
-                        ['Komunitas', 'communities', 'fa-solid fa-users'],
                         ['Profil', 'profile', 'fa-regular fa-user'],
                     ];
                 @endphp 
