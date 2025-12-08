@@ -4,6 +4,202 @@
 @section('title', 'Admin Dashboard')
 
 @section('content')
+<style>
+/* Stat Cards dengan Gradient */
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    transition: height 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.stat-card:hover::before {
+    height: 100%;
+    opacity: 0.05;
+}
+
+.stat-card-blue::before { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.stat-card-yellow::before { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+.stat-card-green::before { background: linear-gradient(135deg, #10b981, #059669); }
+.stat-card-red::before { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.stat-card-blue .stat-icon { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; }
+.stat-card-yellow .stat-icon { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; }
+.stat-card-green .stat-icon { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; }
+.stat-card-red .stat-icon { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; }
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* Chart Cards */
+.chart-card {
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.chart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+    border-color: #3b82f6;
+}
+
+/* Report Cards */
+.reports-card {
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.report-item {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.report-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, #3b82f6, #2563eb);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.report-item:hover::before {
+    transform: scaleY(1);
+}
+
+.report-item:hover {
+    background: white;
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    transform: translateX(4px);
+}
+
+.report-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.report-item:hover .report-badge {
+    transform: rotate(10deg) scale(1.1);
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+
+.report-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 2px solid #3b82f6;
+    background: white;
+    color: #2563eb;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.report-action-btn:hover {
+    background: #3b82f6;
+    color: white;
+    transform: translateX(4px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+.report-action-btn i {
+    transition: transform 0.3s ease;
+}
+
+.report-action-btn:hover i {
+    transform: translateX(4px);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-card, .chart-card, .reports-card {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.2s; }
+.stat-card:nth-child(3) { animation-delay: 0.3s; }
+.stat-card:nth-child(4) { animation-delay: 0.4s; }
+</style>
+
 <div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">
 
     {{-- SIDEBAR --}}
@@ -67,24 +263,44 @@
         {{-- Top Statistic Cards --}}
         <div class="grid grid-cols-4 gap-6 mb-10">
 
-            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-                <p class="text-sm text-gray-500 mb-2">Laporan Masuk</p>
-                <h2 class="text-3xl font-extrabold">156</h2>
+            <div class="stat-card stat-card-blue">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-inbox"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600 mb-1">Laporan Masuk</p>
+                    <h2 class="text-3xl font-extrabold text-gray-900">156</h2>
+                </div>
             </div>
 
-            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-                <p class="text-sm text-gray-500 mb-2">Sedang Diproses</p>
-                <h2 class="text-3xl font-extrabold">42</h2>
+            <div class="stat-card stat-card-yellow">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-spinner"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600 mb-1">Sedang Diproses</p>
+                    <h2 class="text-3xl font-extrabold text-gray-900">42</h2>
+                </div>
             </div>
 
-            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-                <p class="text-sm text-gray-500 mb-2">Selesai</p>
-                <h2 class="text-3xl font-extrabold">98</h2>
+            <div class="stat-card stat-card-green">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600 mb-1">Selesai</p>
+                    <h2 class="text-3xl font-extrabold text-gray-900">98</h2>
+                </div>
             </div>
 
-            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-                <p class="text-sm text-gray-500 mb-2">Perlu Verifikasi</p>
-                <h2 class="text-3xl font-extrabold">16</h2>
+            <div class="stat-card stat-card-red">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600 mb-1">Perlu Verifikasi</p>
+                    <h2 class="text-3xl font-extrabold text-gray-900">16</h2>
+                </div>
             </div>
 
         </div>
@@ -92,34 +308,54 @@
         {{-- Chart & Pie --}}
         <div class="grid grid-cols-2 gap-8 mb-10">
             
-            <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-                <h3 class="font-semibold text-sm text-gray-700 mb-3">Status Penanganan Laporan</h3>
+            <div class="chart-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-base text-gray-900">Status Penanganan Laporan</h3>
+                    <i class="fa-solid fa-chart-bar text-blue-500"></i>
+                </div>
                 <canvas id="statusChart"></canvas>
             </div>
 
-            <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-                <h3 class="font-semibold text-sm text-gray-700 mb-3">Laporan Berdasarkan Kategori</h3>
+            <div class="chart-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-base text-gray-900">Laporan Berdasarkan Kategori</h3>
+                    <i class="fa-solid fa-chart-pie text-blue-500"></i>
+                </div>
                 <canvas id="kategoriChart"></canvas>
             </div>
 
         </div>
 
         {{-- New Reports Table --}}
-        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <div class="reports-card">
 
-            <h3 class="font-semibold text-sm text-gray-700 mb-4">Laporan Baru Perlu Verifikasi</h3>
+            <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-list text-blue-600"></i>
+                    <h3 class="font-bold text-base text-gray-900">Laporan Baru Perlu Verifikasi</h3>
+                </div>
+                <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded-full">3 Baru</span>
+            </div>
 
-            <div class="space-y-4">
+            <div class="space-y-3">
                 @foreach ([1,2,3] as $i)
-                <div class="border border-gray-200 rounded-lg p-4 flex justify-between items-center">
-                    <div>
-                        <p class="font-semibold">LP-2025-15{{ $i }} <span class="text-xs text-gray-500">(Infrastruktur)</span></p>
-                        <p class="text-sm text-gray-700">Jalan berlubang di Jl. Merdeka</p>
-                        <p class="text-xs text-gray-500">Pelapor: Budi Santoso • 2 jam lalu</p>
+                <div class="report-item">
+                    <div class="flex items-start gap-3">
+                        <div class="report-badge">
+                            <i class="fa-solid fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-gray-900 mb-1">LP-2025-15{{ $i }} <span class="text-xs font-normal text-gray-500">(Infrastruktur)</span></p>
+                            <p class="text-sm text-gray-700 mb-2">Jalan berlubang di Jl. Merdeka</p>
+                            <p class="text-xs text-gray-500">
+                                <i class="fa-solid fa-user text-gray-400"></i> Budi Santoso • 
+                                <i class="fa-solid fa-clock text-gray-400"></i> 2 jam lalu
+                            </p>
+                        </div>
                     </div>
-
-                    <a href="#" class="px-3 py-1 rounded-lg border border-blue-600 text-blue-600 text-sm hover:bg-blue-50">
-                        Lihat Detail
+                    <a href="#" class="report-action-btn">
+                        <span>Lihat Detail</span>
+                        <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
                 @endforeach
