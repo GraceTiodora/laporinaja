@@ -156,7 +156,7 @@
                         </button>
                         <div id="statusDropdown" class="hidden absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
                             <div class="p-2 space-y-1">
-                                @foreach(['Baru', 'Dalam Pengerjaan', 'Selesai'] as $status)
+                                @foreach(['Baru', 'Dalam Pengerjaan', 'Selesai', 'Ditolak'] as $status)
                                     <button onclick="filterByStatus('{{ $status }}')" class="w-full text-left px-3 py-2 text-xs text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded transition">{{ $status }}</button>
                                 @endforeach
                             </div>
