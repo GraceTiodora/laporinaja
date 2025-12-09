@@ -164,19 +164,21 @@ Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsR
 Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
 
 Route::get('/messages', function () {
-    return view('messages');
+    return view('warga.messages');
 })->name('messages');
 
+Route::get('/communities', function () {
+    return view('warga.communities');
+})->name('communities');
 
 Route::get('my-reports', [ReportController::class, 'myReports'])->name('my-reports');
 
 
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware('admin')->group(function () {
 
-    // Dashboard utama admin
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    // Dashboard utama admin - menggunakan controller
+    Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])
+        ->name('admin.dashboard');
 
     // Verifikasi & Penanganan
     Route::get('/verifikasi', function () {
@@ -198,11 +200,26 @@ Route::prefix('admin')->group(function () {
         return view('admin.validasi', ['report' => $report]);
     })->name('admin.verifikasi.validasi');
 
-    // Proses Validasi - menerima dan memproses laporan
+    // Proses Validasi - menerima dan memproses laporan (dengan notifikasi)
     Route::post('/verifikasi/{id}/validasi', function ($id) {
         $report = App\Models\Report::findOrFail($id);
-        $report->status = 'diproses';
+        $report->status = 'Dalam Pengerjaan';
         $report->save();
+        
+        // Kirim notifikasi ke user
+        App\Models\Notification::create([
+            'user_id' => $report->user_id,
+            'report_id' => $report->id,
+            'type' => 'status_update',
+            'title' => 'Laporan Sedang Diproses',
+            'message' => 'Laporan Anda "' . $report->title . '" sedang dalam pengerjaan oleh tim kami.',
+            'data' => json_encode([
+                'status' => 'Dalam Pengerjaan',
+                'icon' => 'sync'
+            ]),
+            'read' => false
+        ]);
+        
         return redirect()->route('admin.verifikasi')->with('success', 'Laporan berhasil divalidasi dan sedang diproses');
     })->name('admin.verifikasi.validasi.submit');
 
@@ -212,11 +229,27 @@ Route::prefix('admin')->group(function () {
         return view('admin.tolak', ['report' => $report]);
     })->name('admin.verifikasi.tolak');
 
-    // Proses Tolak - menolak laporan
-    Route::post('/verifikasi/{id}/tolak', function ($id) {
+    // Proses Tolak - menolak laporan (dengan notifikasi)
+    Route::post('/verifikasi/{id}/tolak', function (Illuminate\Http\Request $request, $id) {
         $report = App\Models\Report::findOrFail($id);
-        $report->status = 'ditolak';
+        $report->status = 'Ditolak';
         $report->save();
+        
+        // Kirim notifikasi ke user
+        App\Models\Notification::create([
+            'user_id' => $report->user_id,
+            'report_id' => $report->id,
+            'type' => 'status_update',
+            'title' => 'Laporan Ditolak',
+            'message' => 'Laporan Anda "' . $report->title . '" tidak dapat diproses. Alasan: ' . ($request->input('alasan', 'Tidak memenuhi kriteria')),
+            'data' => json_encode([
+                'status' => 'Ditolak',
+                'icon' => 'times',
+                'alasan' => $request->input('alasan')
+            ]),
+            'read' => false
+        ]);
+        
         return redirect()->route('admin.verifikasi')->with('success', 'Laporan berhasil ditolak');
     })->name('admin.verifikasi.tolak.submit');
 
@@ -226,25 +259,9 @@ Route::prefix('admin')->group(function () {
         return view('admin.update_status', ['report' => $report]);
     })->name('admin.verifikasi.update_status');
 
-    // Proses Update Status - mengubah status laporan
-    Route::post('/verifikasi/{id}/update-status', function (Illuminate\Http\Request $request, $id) {
-        $report = App\Models\Report::findOrFail($id);
-        
-        // Get status from form if provided, otherwise toggle
-        if ($request->has('status_baru') && !empty($request->status_baru)) {
-            $report->status = $request->status_baru;
-        } else {
-            // Fallback: Toggle status
-            if ($report->status == 'baru') {
-                $report->status = 'diproses';
-            } elseif ($report->status == 'diproses') {
-                $report->status = 'selesai';
-            }
-        }
-        
-        $report->save();
-        return redirect()->route('admin.verifikasi')->with('success', 'Status laporan berhasil diupdate');
-    })->name('admin.verifikasi.update_status.submit');
+    // Proses Update Status - menggunakan AdminController dengan notifikasi otomatis
+    Route::post('/verifikasi/{id}/update-status', [App\Http\Controllers\AdminController::class, 'updateStatus'])
+        ->name('admin.verifikasi.update_status.submit');
 
     // Monitoring & Statistik
     Route::get('/monitoring', function () {

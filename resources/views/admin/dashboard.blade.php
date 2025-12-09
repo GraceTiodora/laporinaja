@@ -268,8 +268,8 @@
                     <i class="fa-solid fa-inbox"></i>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-600 mb-1">Laporan Masuk</p>
-                    <h2 class="text-3xl font-extrabold text-gray-900">156</h2>
+                    <p class="text-sm text-gray-600 mb-1">Total Laporan</p>
+                    <h2 class="text-3xl font-extrabold text-gray-900">{{ $stats['total_reports'] ?? 0 }}</h2>
                 </div>
             </div>
 
@@ -279,7 +279,7 @@
                 </div>
                 <div>
                     <p class="text-sm text-gray-600 mb-1">Sedang Diproses</p>
-                    <h2 class="text-3xl font-extrabold text-gray-900">42</h2>
+                    <h2 class="text-3xl font-extrabold text-gray-900">{{ $stats['in_progress'] ?? 0 }}</h2>
                 </div>
             </div>
 
@@ -289,7 +289,7 @@
                 </div>
                 <div>
                     <p class="text-sm text-gray-600 mb-1">Selesai</p>
-                    <h2 class="text-3xl font-extrabold text-gray-900">98</h2>
+                    <h2 class="text-3xl font-extrabold text-gray-900">{{ $stats['completed'] ?? 0 }}</h2>
                 </div>
             </div>
 
@@ -299,7 +299,7 @@
                 </div>
                 <div>
                     <p class="text-sm text-gray-600 mb-1">Perlu Verifikasi</p>
-                    <h2 class="text-3xl font-extrabold text-gray-900">16</h2>
+                    <h2 class="text-3xl font-extrabold text-gray-900">{{ $stats['new_reports'] ?? 0 }}</h2>
                 </div>
             </div>
 
@@ -332,33 +332,51 @@
             <div class="flex items-center justify-between mb-5">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-clipboard-list text-blue-600"></i>
-                    <h3 class="font-bold text-base text-gray-900">Laporan Baru Perlu Verifikasi</h3>
+                    <h3 class="font-bold text-base text-gray-900">Laporan Terbaru</h3>
                 </div>
-                <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded-full">3 Baru</span>
+                <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded-full">
+                    {{ $stats['new_reports'] ?? 0 }} Perlu Verifikasi
+                </span>
             </div>
 
             <div class="space-y-3">
-                @foreach ([1,2,3] as $i)
+                @forelse ($recentReports as $report)
                 <div class="report-item">
                     <div class="flex items-start gap-3">
                         <div class="report-badge">
-                            <i class="fa-solid fa-exclamation-triangle"></i>
+                            @if($report->status == 'Baru')
+                                <i class="fa-solid fa-exclamation-triangle"></i>
+                            @elseif($report->status == 'Dalam Pengerjaan')
+                                <i class="fa-solid fa-sync"></i>
+                            @elseif($report->status == 'Selesai')
+                                <i class="fa-solid fa-check-circle"></i>
+                            @else
+                                <i class="fa-solid fa-times-circle"></i>
+                            @endif
                         </div>
                         <div class="flex-1">
-                            <p class="font-semibold text-gray-900 mb-1">LP-2025-15{{ $i }} <span class="text-xs font-normal text-gray-500">(Infrastruktur)</span></p>
-                            <p class="text-sm text-gray-700 mb-2">Jalan berlubang di Jl. Merdeka</p>
+                            <p class="font-semibold text-gray-900 mb-1">
+                                #{{ $report->id }} 
+                                <span class="text-xs font-normal text-gray-500">({{ $report->category->name ?? 'Tanpa Kategori' }})</span>
+                            </p>
+                            <p class="text-sm text-gray-700 mb-2">{{ Str::limit($report->title, 50) }}</p>
                             <p class="text-xs text-gray-500">
-                                <i class="fa-solid fa-user text-gray-400"></i> Budi Santoso • 
-                                <i class="fa-solid fa-clock text-gray-400"></i> 2 jam lalu
+                                <i class="fa-solid fa-user text-gray-400"></i> {{ $report->user->name ?? 'Unknown' }} • 
+                                <i class="fa-solid fa-clock text-gray-400"></i> {{ $report->created_at->diffForHumans() }}
                             </p>
                         </div>
                     </div>
-                    <a href="#" class="report-action-btn">
+                    <a href="{{ route('admin.verifikasi.detail', $report->id) }}" class="report-action-btn">
                         <span>Lihat Detail</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
-                @endforeach
+                @empty
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fa-solid fa-inbox text-4xl mb-2"></i>
+                    <p>Tidak ada laporan</p>
+                </div>
+                @endforelse
             </div>
 
         </div>
@@ -372,22 +390,41 @@
     new Chart(document.getElementById('statusChart'), {
         type: 'bar',
         data: {
-            labels: ['Masuk', 'Diproses', 'Selesai'],
+            labels: ['Baru', 'Dalam Pengerjaan', 'Selesai', 'Ditolak'],
             datasets: [{
-                data: [156, 42, 98],
-                backgroundColor: ['#93C5FD', '#FDE68A', '#86EFAC']
+                label: 'Jumlah Laporan',
+                data: [{{ $stats['new_reports'] ?? 0 }}, {{ $stats['in_progress'] ?? 0 }}, {{ $stats['completed'] ?? 0 }}, {{ $stats['rejected'] ?? 0 }}],
+                backgroundColor: ['#93C5FD', '#FDE68A', '#86EFAC', '#FCA5A5']
             }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 }
+                }
+            }
         }
     });
 
     new Chart(document.getElementById('kategoriChart'), {
         type: 'pie',
         data: {
-            labels: ['Infrastruktur', 'Sosial', 'Aksesibilitas', 'Keamanan', 'Sampah'],
+            labels: {!! json_encode($categoryStats->pluck('name')) !!},
             datasets: [{
-                data: [25, 21, 19, 24, 11],
-                backgroundColor: ['#60A5FA','#F87171','#FBBF24','#34D399','#A78BFA']
+                data: {!! json_encode($categoryStats->pluck('reports_count')) !!},
+                backgroundColor: ['#60A5FA','#F87171','#FBBF24','#34D399','#A78BFA','#FB923C','#EC4899']
             }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
         }
     });
 </script>

@@ -120,7 +120,7 @@
                 <div class="sticky top-0 bg-white border-b border-gray-200 p-6 rounded-t-2xl">
                     <div class="flex items-start justify-between">
                         <div class="flex-1">
-                            <h2 class="text-xl font-bold text-gray-900">Detail Laporan LP-2025-{{ str_pad($report->id_report, 3, '0', STR_PAD_LEFT) }}</h2>
+                            <h2 class="text-xl font-bold text-gray-900">Detail Laporan #{{ $report->id }}</h2>
                             <p class="text-sm text-gray-500 mt-1">Informasi lengkap tentang laporan dari masyarakat</p>
                         </div>
                         <a href="{{ route('admin.verifikasi') }}" class="text-gray-400 hover:text-gray-600 transition-colors ml-4">
@@ -228,15 +228,15 @@
                 {{-- Modal Footer with Actions --}}
                 <div class="sticky bottom-0 bg-white border-t border-gray-200 p-6 rounded-b-2xl">
                     <div class="flex items-center gap-3">
-                        <a href="{{ route('admin.verifikasi.validasi', $report->id_report) }}" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 no-underline">
+                        <a href="{{ route('admin.verifikasi.validasi', $report->id) }}" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 no-underline">
                             <i class="fa-solid fa-check"></i>
                             Valid & Proses
                         </a>
-                        <a href="{{ route('admin.verifikasi.tolak', $report->id_report) }}" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 no-underline">
+                        <a href="{{ route('admin.verifikasi.tolak', $report->id) }}" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 no-underline">
                             <i class="fa-solid fa-times"></i>
                             Tolak
                         </a>
-                        <a href="{{ route('admin.verifikasi.update_status', $report->id_report) }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 no-underline">
+                        <a href="{{ route('admin.verifikasi.update_status', $report->id) }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 no-underline">
                             <i class="fa-solid fa-rotate"></i>
                             Update Status
                         </a>

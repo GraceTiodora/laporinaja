@@ -122,7 +122,7 @@ class ReportController extends Controller
             'category' => $reportModel->category->name ?? 'Umum',
         ];
         
-        return view('detail_reports', ['report' => $report, 'reportModel' => $reportModel]);
+        return view('warga.detail_reports', ['report' => $report, 'reportModel' => $reportModel]);
     }
 
     /**

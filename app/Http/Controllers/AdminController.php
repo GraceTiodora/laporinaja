@@ -189,10 +189,13 @@ class AdminController extends Controller
 
         $recentReports = Report::with('user', 'category')
             ->latest()
-            ->limit(10)
+            ->limit(5)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'recentReports'));
+        // Category stats for chart
+        $categoryStats = \App\Models\Category::withCount('reports')->get();
+
+        return view('admin.dashboard', compact('stats', 'recentReports', 'categoryStats'));
     }
 
     /**

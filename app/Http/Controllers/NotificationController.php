@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Notification;
 
 class NotificationController extends Controller
 {
@@ -16,22 +17,17 @@ class NotificationController extends Controller
             return redirect()->route('login')->with('error', 'Silakan login untuk melihat notifikasi.');
         }
         
+        $userId = session('user.id');
+        
+        // Ambil notifications dari database
+        $notifications = Notification::where('user_id', $userId)
+            ->with('report')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        // Ambil notifications dari session
-        $notifications = session('notifications', []);
+        $unreadCount = $notifications->where('read', false)->count();
 
-        // Jika belum ada, buat dummy notifications
-        if (empty($notifications)) {
-            $notifications = $this->getDummyNotifications();
-            session(['notifications' => $notifications]);
-        }
-
-        return view('notifications', [
-            'notifications' => $notifications,
-            'unreadCount' => count(array_filter($notifications, function($n) {
-                return !$n['read'];
-            }))
-        ]);
+        return view('warga.notifications', compact('notifications', 'unreadCount'));
     }
 
     /**
@@ -43,18 +39,19 @@ class NotificationController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $notifications = session('notifications', []);
+        $userId = session('user.id');
         
-        foreach ($notifications as $key => $notification) {
-            if ($notification['id'] == $id) {
-                $notifications[$key]['read'] = true;
-                break;
-            }
+        $notification = Notification::where('id', $id)
+            ->where('user_id', $userId)
+            ->first();
+        
+        if ($notification) {
+            $notification->read = true;
+            $notification->save();
+            return response()->json(['success' => true]);
         }
 
-        session(['notifications' => $notifications]);
-
-        return response()->json(['success' => true]);
+        return response()->json(['error' => 'Notification not found'], 404);
     }
 
     /**
@@ -66,13 +63,11 @@ class NotificationController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $notifications = session('notifications', []);
+        $userId = session('user.id');
         
-        foreach ($notifications as $key => $notification) {
-            $notifications[$key]['read'] = true;
-        }
-
-        session(['notifications' => $notifications]);
+        Notification::where('user_id', $userId)
+            ->where('read', false)
+            ->update(['read' => true]);
 
         return redirect()->back()->with('success', 'Semua notifikasi telah ditandai sebagai dibaca.');
     }

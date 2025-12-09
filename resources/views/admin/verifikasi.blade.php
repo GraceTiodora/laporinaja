@@ -127,7 +127,7 @@
                     <tbody>
                         @forelse($reports ?? [] as $report)
                         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                            <td class="py-4 px-4 text-sm font-semibold text-gray-900">LP-2025-{{ str_pad($report->id_report, 3, '0', STR_PAD_LEFT) }}</td>
+                            <td class="py-4 px-4 text-sm font-semibold text-gray-900">LP-2025-{{ str_pad($report->id, 3, '0', STR_PAD_LEFT) }}</td>
                             <td class="py-4 px-4 text-sm text-gray-700">{{ $report->user->nama ?? 'Anonymous' }}</td>
                             <td class="py-4 px-4">
                                 @php
