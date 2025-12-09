@@ -13,14 +13,17 @@ class Notification extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'id_user',
+        'user_id',
+        'report_id',
         'type',
         'title',
         'message',
+        'data',
         'read',
     ];
 
     protected $casts = [
+        'data' => 'array',
         'read' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -31,7 +34,23 @@ class Notification extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user', 'id_user');
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Relationship: Notification belongs to Report
+     */
+    public function report()
+    {
+        return $this->belongsTo(Report::class);
+    }
+
+    /**
+     * Mark notification as read
+     */
+    public function markAsRead()
+    {
+        $this->update(['read' => true]);
     }
 
     /**
@@ -39,7 +58,7 @@ class Notification extends Model
      */
     public static function getUnreadCount($userId)
     {
-        return self::where('id_user', $userId)
+        return self::where('user_id', $userId)
                    ->where('read', false)
                    ->count();
     }

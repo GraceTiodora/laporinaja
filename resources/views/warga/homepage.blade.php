@@ -39,6 +39,7 @@
                             }
                         }
                         $isActive = request()->routeIs($route);
+                        $showBadge = $route === 'notifications' && isset($unreadNotifications) && $unreadNotifications > 0;
                     @endphp
                     <a href="{{ $href }}"
                        class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all duration-300 relative
@@ -50,6 +51,11 @@
                         @endif
                         <i class="{{ $icon }} text-lg group-hover:scale-125 transition-transform"></i>
                         <span class="font-semibold">{{ $name }}</span>
+                        @if($showBadge)
+                            <span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">
+                                {{ $unreadNotifications > 99 ? '99+' : $unreadNotifications }}
+                            </span>
+                        @endif
                     </a>
                 @endforeach
             </nav>
