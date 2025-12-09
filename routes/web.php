@@ -119,6 +119,13 @@ Route::get('/profile', function () {
     ]);
 })->name('profile');
 
+Route::get('/profile/edit', function () {
+    if (!session()->has('user')) {
+        return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+    }
+    return view('warga.edit_profile');
+})->name('profile.edit');
+
 // Auth Routes
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login'])->name('login.post');

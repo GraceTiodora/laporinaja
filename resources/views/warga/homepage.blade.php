@@ -41,15 +41,15 @@
                         $isActive = request()->routeIs($route);
                     @endphp
                     <a href="{{ $href }}"
-                       class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all duration-300
+                       class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all duration-300 relative
                               {{ $isActive 
-                                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-200 scale-105' 
+                                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg' 
                                   : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1' }}">
-                        <i class="{{ $icon }} text-lg {{ $isActive ? '' : 'group-hover:scale-125' }} transition-transform"></i>
-                        <span class="font-semibold">{{ $name }}</span>
                         @if($isActive)
-                            <i class="fa-solid fa-circle text-xs ml-auto animate-pulse"></i>
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full animate-pulse"></span>
                         @endif
+                        <i class="{{ $icon }} text-lg group-hover:scale-125 transition-transform"></i>
+                        <span class="font-semibold">{{ $name }}</span>
                     </a>
                 @endforeach
             </nav>
@@ -66,17 +66,16 @@
 
         <!-- Profile Bottom -->
         <div>
-            <div class="flex items-center gap-3 border-t border-gray-200 pt-4 mb-3 hover:bg-blue-50 p-3 rounded-xl transition-all cursor-pointer group">
+            <a href="{{ route('profile') }}" class="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 bg-white hover:bg-blue-50 transition-all cursor-pointer mb-3 group ring-2 ring-gray-200 hover:ring-blue-400">
                 <div class="relative">
-                    <img src="{{ asset('images/profile-user.jpg') }}" class="w-11 h-11 rounded-full object-cover ring-2 ring-blue-100 group-hover:ring-4 group-hover:ring-blue-300 transition-all">
-                    <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+                    <img src="{{ session('user')['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode(session('user')['name'] ?? 'User') }}" class="w-12 h-12 rounded-full object-cover ring-2 ring-white">
+                    <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></span>
                 </div>
                 <div class="flex-1">
-                    <p class="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors">{{ session('user.name', 'Guest') }}</p>
-                    <p class="text-xs text-gray-500">{{ session('user.email', 'user@mail.com') }}</p>
+                    <p class="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors">{{ session('user')['name'] ?? 'User' }}</p>
+                    <p class="text-xs text-gray-500">@{{ session('user')['username'] ?? 'username' }}</p>
                 </div>
-                <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all"></i>
-            </div>
+            </a>
             
             <form action="{{ route('logout') }}" method="POST" class="w-full">
                 @csrf

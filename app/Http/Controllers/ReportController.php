@@ -32,11 +32,21 @@ class ReportController extends Controller
         }
 
         $data = $request->validate([
-            'title'       => 'required|string|max:255',
-            'description' => 'required|string',
+            'title'       => 'required|string|min:5|max:255',
+            'description' => 'required|string|min:10',
             'location'    => 'nullable|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
             'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'title.required' => 'Judul laporan wajib diisi.',
+            'title.min' => 'Judul laporan minimal 5 karakter.',
+            'title.max' => 'Judul laporan maksimal 255 karakter.',
+            'description.required' => 'Deskripsi laporan wajib diisi.',
+            'description.min' => 'Deskripsi minimal 10 karakter.',
+            'category_id.exists' => 'Kategori yang dipilih tidak valid.',
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus: JPEG, PNG, JPG, atau GIF.',
+            'image.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
         try {
@@ -70,9 +80,9 @@ class ReportController extends Controller
                 'status' => 'Baru',
             ]);
 
-            return redirect()->route('home')->with('success', 'Laporan berhasil dikirim!');
+            return redirect()->route('my-reports')->with('success', '🎉 Laporan berhasil dikirim! Tim kami akan segera menindaklanjuti.');
         } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return back()->withInput()->with('error', '❌ Gagal mengirim laporan: ' . $e->getMessage());
         }
     }
 
@@ -125,7 +135,7 @@ class ReportController extends Controller
         }
 
         $reports = Report::where('user_id', session('user.id'))
-                        ->with('category')
+                        ->with('category', 'comments')
                         ->latest()
                         ->paginate(10);
         

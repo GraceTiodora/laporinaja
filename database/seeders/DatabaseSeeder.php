@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
                 'description' => fake()->paragraphs(3, true),
                 'location' => fake()->address(),
                 'image' => $imageUrls[$i % count($imageUrls)],
-                'status' => fake()->randomElement(['pending', 'in_progress', 'resolved', 'rejected']),
+                'status' => fake()->randomElement(['Baru', 'Dalam Pengerjaan', 'Selesai', 'Ditolak']),
                 'upvotes' => fake()->numberBetween(0, 50),
                 'downvotes' => fake()->numberBetween(0, 20),
                 'resolved_at' => fake()->optional(0.3)->dateTime(),

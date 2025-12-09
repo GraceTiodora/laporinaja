@@ -12,7 +12,9 @@
     <!-- 🧭 Left Sidebar -->
     <aside class="w-[270px] bg-white border-r border-gray-200 p-6 flex flex-col justify-between shadow-lg">
         <div>
-            <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight hover:scale-105 transition-transform cursor-pointer">Laporin<span class="text-gray-900">Aja</span></h2>
+            <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight hover:scale-105 transition-transform cursor-pointer">
+                Laporin<span class="text-gray-900">Aja</span>
+            </h2>
 
             <nav class="space-y-2">
             @php
@@ -24,94 +26,66 @@
         ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
         ['Profil', 'profile', 'fa-regular fa-user'],
     ];
-@endphp
-
-              @foreach ($menu as [$name, $route, $icon])
-                  @php
-                      $href = '#';
-                      if ($route !== '#') {
-                          try {
-                              $href = route($route);
-                          } catch (\Exception $e) {
-                              $href = '#';
-                          }
-                      }
-                      $isActive = request()->routeIs($route);
-                  @endphp
-                  <a href="{{ $href }}"
-                     class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all duration-300
-                            {{ $isActive 
-                                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-200 scale-105' 
-                                : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1' }}">
-                      <i class="{{ $icon }} text-lg {{ $isActive ? '' : 'group-hover:scale-125' }} transition-transform"></i>
-                      <span class="font-semibold">{{ $name }}</span>
-                      @if($isActive)
-                          <i class="fa-solid fa-circle text-xs ml-auto animate-pulse"></i>
-                      @endif
-                  </a>
-              @endforeach
+@endphp                @foreach ($menu as [$name, $route, $icon])
+                    @php
+                        $href = '#';
+                        if ($route !== '#') {
+                            try {
+                                $href = route($route);
+                            } catch (\Exception $e) {
+                                $href = '#';
+                            }
+                        }
+                        $isActive = request()->routeIs($route);
+                    @endphp
+                    <a href="{{ $href }}"
+                       class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all duration-300 relative
+                              {{ $isActive 
+                                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg' 
+                                  : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1' }}">
+                        @if($isActive)
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                        @endif
+                        <i class="{{ $icon }} text-lg group-hover:scale-125 transition-transform"></i>
+                        <span class="font-semibold">{{ $name }}</span>
+                    </a>
+                @endforeach
             </nav>
 
-            @if(session('user'))
-                <button onclick="window.location.href='{{ route('reports.create') }}'"
-                        class="mt-6 w-full flex items-center justify-center gap-2 
-                               bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800
-                               text-white py-3.5 rounded-full shadow-lg hover:shadow-xl
-                               transition-all duration-300 font-bold transform hover:scale-105 group">
-                    <i class="fa-solid fa-plus-circle text-lg group-hover:rotate-90 transition-transform"></i> 
-                    <span>Laporan Baru</span>
-                </button>
-            @else
-                <button onclick="window.location.href='{{ route('login') }}'"
-                        class="mt-6 w-full flex items-center justify-center gap-2 
-                               bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800
-                               text-white py-3.5 rounded-full shadow-lg hover:shadow-xl
-                               transition-all duration-300 font-bold transform hover:scale-105 group">
-                    <i class="fa-solid fa-plus-circle text-lg group-hover:rotate-90 transition-transform"></i> 
-                    <span>Laporan Baru</span>
-                </button>
-            @endif
+            <button onclick="window.location.href='{{ route('reports.create') }}'"
+                    class="mt-6 w-full flex items-center justify-center gap-2 
+                           bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800
+                           text-white py-3.5 rounded-full shadow-lg hover:shadow-xl
+                           transition-all duration-300 font-bold transform hover:scale-105 group">
+                <i class="fa-solid fa-plus-circle text-lg group-hover:rotate-90 transition-transform"></i> 
+                <span>Laporan Baru</span>
+            </button>
         </div>
 
-        <!-- Profile Section -->
+        <!-- Profile Bottom -->
         <div>
-            <div class="flex items-center gap-3 border-t border-gray-200 pt-4 mb-3 hover:bg-blue-50 p-3 rounded-xl transition-all cursor-pointer group">
-                @if(session('user'))
-                    <div class="relative">
-                        <img src="{{ asset('images/profile-user.jpg') }}" alt="{{ session('user.name') }}" class="w-11 h-11 rounded-full object-cover ring-2 ring-blue-100 group-hover:ring-4 group-hover:ring-blue-300 transition-all">
-                        <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors">{{ session('user.name') }}</p>
-                        <p class="text-xs text-gray-500">@{{ session('user.username') }}</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all"></i>
-                @else
-                    <div class="relative">
-                        <img src="{{ asset('images/profile-user.jpg') }}" alt="User" class="w-11 h-11 rounded-full object-cover ring-2 ring-blue-100 group-hover:ring-4 group-hover:ring-blue-300 transition-all">
-                        <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors">Guest</p>
-                        <p class="text-xs text-gray-500">user@mail.com</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all"></i>
-                @endif
-            </div>
+            <a href="{{ route('profile') }}" class="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 bg-white hover:bg-blue-50 transition-all cursor-pointer mb-3 group ring-2 ring-gray-200 hover:ring-blue-400">
+                <div class="relative">
+                    <img src="{{ session('user')['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode(session('user')['name'] ?? 'User') }}" class="w-12 h-12 rounded-full object-cover ring-2 ring-white">
+                    <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></span>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors">{{ session('user')['name'] ?? 'User' }}</p>
+                    <p class="text-xs text-gray-500">@{{ session('user')['username'] ?? 'username' }}</p>
+                </div>
+            </a>
             
-            @if(session('user'))
-                <form action="{{ route('logout') }}" method="POST" class="w-full">
-                    @csrf
-                    <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-red-600 font-bold bg-white hover:bg-gradient-to-r hover:from-red-50 hover:to-rose-50 transition-all duration-300 group border-2 border-red-200 hover:border-red-400 hover:shadow-lg transform hover:scale-105">
-                        <i class="fa-solid fa-right-from-bracket group-hover:translate-x-2 transition-transform text-lg"></i>
-                        <span>Logout</span>
-                    </button>
-                </form>
-            @endif
+            <form action="{{ route('logout') }}" method="POST" class="w-full">
+                @csrf
+                <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-red-600 font-bold bg-white hover:bg-gradient-to-r hover:from-red-50 hover:to-rose-50 transition-all duration-300 group border-2 border-red-200 hover:border-red-400 hover:shadow-lg transform hover:scale-105">
+                    <i class="fa-solid fa-right-from-bracket group-hover:translate-x-2 transition-transform text-lg"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
         </div>
     </aside>
 
-    <!-- 📰 Main Content -->
+    <!-- MAIN CONTENT -->
     <main class="flex-1 flex flex-col border-r border-gray-200 bg-gradient-to-br from-white to-blue-50/20">
         <header class="sticky top-0 bg-white/95 backdrop-blur-md border-b border-gray-200 px-6 py-4 z-10 shadow-sm">
             <div class="flex justify-between items-center">
