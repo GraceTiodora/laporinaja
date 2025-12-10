@@ -121,39 +121,62 @@
                 <div class="bg-white border-b border-gray-200 p-6 rounded-t-2xl flex items-start justify-between">
                     <div class="flex-1">
                         <h2 class="text-xl font-bold text-gray-900">Update Status Laporan</h2>
-                        <p class="text-sm text-gray-500 mt-1">Perbarui status laporan dan notifikasi akan dikirim kepada pelapor.</p>
+                        <p class="text-sm text-gray-500 mt-1">Perbarui status laporan. Foto bukti wajib jika status "Selesai".</p>
                     </div>
-                    <a href="{{ route('admin.verifikasi.detail', $report->id) }}" class="text-gray-400 hover:text-gray-600 transition-colors ml-4">
+                    <a href="{{ route('admin.verifikasi') }}" class="text-gray-400 hover:text-gray-600 transition-colors ml-4">
                         <i class="fa-solid fa-times text-xl"></i>
                     </a>
                 </div>
 
                 {{-- Modal Body --}}
-                <form action="{{ route('admin.verifikasi.update_status.submit', $report->id) }}" method="POST" id="updateStatusForm">
+                <form action="{{ route('admin.verifikasi.update_status.submit', $report->id) }}" method="POST" id="updateStatusForm" enctype="multipart/form-data">
                     @csrf
-                <div class="p-6">
+                <div class="p-6 space-y-6">
 
-                    {{-- Form Field --}}
-                    <div class="mb-6">
+                    {{-- Status Select --}}
+                    <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">
                             Status Baru
                         </label>
                         <div class="relative">
-                            <select name="status_baru" id="statusBaru" class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all appearance-none text-sm bg-white cursor-pointer">
-                                <option value="">Pilih status baru</option>
-                                <option value="baru">Menunggu Verifikasi</option>
-                                <option value="diproses">Sedang Diproses</option>
-                                <option value="selesai">Selesai</option>
-                                <option value="ditolak">Ditolak</option>
+                            <select name="status" id="statusSelect" class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all appearance-none text-sm bg-white cursor-pointer">
+                                <option value="">-- Pilih Status --</option>
+                                <option value="Dalam Pengerjaan">Dalam Pengerjaan (Foto Opsional)</option>
+                                <option value="Selesai">Selesai (Foto Wajib)</option>
+                                <option value="Ditolak">Ditolak</option>
                             </select>
                             <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
                                 <i class="fa-solid fa-chevron-down text-gray-400 text-sm"></i>
                             </div>
                         </div>
-                        <p id="errorMessage" class="text-red-500 text-xs mt-2 hidden flex items-center gap-1">
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                            Pilih status baru terlebih dahulu
-                        </p>
+                    </div>
+
+                    {{-- Admin Note --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Catatan Admin (Opsional)
+                        </label>
+                        <textarea name="admin_note" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm resize-none" rows="3" placeholder="Tambahkan catatan tentang proses penanganan..."></textarea>
+                    </div>
+
+                    {{-- Solution Image (conditional) --}}
+                    <div id="solutionImageField" class="hidden">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            📸 Foto Bukti <span id="photoRequirement" class="text-gray-600">(Wajib)</span>
+                        </label>
+                        <div class="border-2 border-dashed border-green-300 rounded-lg p-6 text-center cursor-pointer hover:bg-green-50 transition-colors" id="uploadArea">
+                            <input type="file" name="solution_image" id="solutionImage" class="hidden" accept="image/*">
+                            <div class="space-y-2">
+                                <i class="fa-solid fa-cloud-arrow-up text-green-500 text-3xl"></i>
+                                <p class="text-sm font-medium text-gray-700">Klik atau drag foto bukti</p>
+                                <p class="text-xs text-gray-500">PNG, JPG, GIF (Max 2MB)</p>
+                                <p id="photoHint" class="text-xs text-green-600 font-medium mt-2">Wajib di-upload untuk menyelesaikan laporan</p>
+                            </div>
+                        </div>
+                        <div id="imagePreview" class="mt-3 hidden">
+                            <img id="previewImg" class="max-h-48 rounded-lg shadow-md" alt="Preview">
+                            <button type="button" onclick="clearImage()" class="mt-2 text-xs text-red-600 hover:text-red-800">Ubah Gambar</button>
+                        </div>
                     </div>
 
                 </div>
@@ -161,11 +184,11 @@
                 {{-- Modal Footer --}}
                 <div class="bg-gray-50 border-t border-gray-200 p-6 rounded-b-2xl">
                     <div class="flex items-center gap-3">
-                        <a href="{{ route('admin.verifikasi.detail', $report->id) }}" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all text-center">
+                        <a href="{{ route('admin.verifikasi') }}" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all text-center no-underline">
                             Batal
                         </a>
-                        <button type="button" onclick="validateAndUpdate()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-all">
-                            Konfirmasi
+                        <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-all">
+                            Perbarui Status
                         </button>
                     </div>
                 </div>
@@ -174,76 +197,102 @@
             </div>
         </div>
 
-        {{-- Success Notification --}}
-        <div id="updateNotification" class="fixed top-4 right-4 bg-white rounded-lg shadow-2xl border border-blue-200 p-4 z-[60] transform translate-x-[500px] transition-transform duration-300 ease-in-out max-w-md">
-            <div class="flex items-start gap-3">
-                <div class="flex-shrink-0">
-                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <i class="fa-solid fa-check-circle text-blue-600 text-lg"></i>
-                    </div>
-                </div>
-                <div class="flex-1">
-                    <h3 class="text-sm font-bold text-gray-900 mb-1">Status Berhasil Diperbarui</h3>
-                    <p class="text-sm text-gray-600">Status laporan telah diperbarui dan notifikasi telah dikirim.</p>
-                </div>
-                <button onclick="hideSuccessNotification()" class="text-gray-400 hover:text-gray-600 transition-colors">
-                    <i class="fa-solid fa-times"></i>
-                </button>
-            </div>
-        </div>
 
-        <script>
-            function validateAndUpdate() {
-                const statusSelect = document.getElementById('statusBaru');
-                const errorMessage = document.getElementById('errorMessage');
-                
-                if (!statusSelect.value || statusSelect.value === '') {
-                    errorMessage.classList.remove('hidden');
-                    statusSelect.classList.add('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
-                    statusSelect.classList.remove('border-gray-300', 'focus:ring-blue-500', 'focus:border-blue-500');
-                    return;
-                }
-                
-                // If validation passes, hide error and show success notification
-                errorMessage.classList.add('hidden');
-                statusSelect.classList.remove('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
-                statusSelect.classList.add('border-gray-300', 'focus:ring-blue-500', 'focus:border-blue-500');
-                
-                showSuccessNotification();
-                
-                // Submit form after delay
-                setTimeout(() => {
-                    document.getElementById('updateStatusForm').submit();
-                }, 2000);
-            }
-
-            function showSuccessNotification() {
-                const notification = document.getElementById('updateNotification');
-                notification.classList.remove('translate-x-[500px]');
-                notification.classList.add('translate-x-0');
-                
-                setTimeout(() => {
-                    hideSuccessNotification();
-                }, 5000);
-            }
-
-            function hideSuccessNotification() {
-                const notification = document.getElementById('updateNotification');
-                notification.classList.remove('translate-x-0');
-                notification.classList.add('translate-x-[500px]');
-            }
-
-            // Clear error when user selects a status
-            document.getElementById('statusBaru').addEventListener('change', function() {
-                const errorMessage = document.getElementById('errorMessage');
-                if (this.value !== '') {
-                    errorMessage.classList.add('hidden');
-                    this.classList.remove('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
-                    this.classList.add('border-gray-300', 'focus:ring-blue-500', 'focus:border-blue-500');
-                }
-            });
-        </script>
-
-    </main>
+        </main>
 </div>
+
+<script>
+    // Show/hide solution image field based on status
+    document.getElementById('statusSelect').addEventListener('change', function() {
+        const solutionField = document.getElementById('solutionImageField');
+        const photoRequirement = document.getElementById('photoRequirement');
+        const photoHint = document.getElementById('photoHint');
+        
+        if (this.value === 'Selesai') {
+            // Selesai: Foto wajib
+            solutionField.classList.remove('hidden');
+            photoRequirement.innerHTML = '(Wajib)';
+            photoRequirement.className = 'text-red-500';
+            photoHint.textContent = 'Wajib di-upload untuk menyelesaikan laporan';
+            photoHint.className = 'text-xs text-red-600 font-medium mt-2';
+        } else if (this.value === 'Dalam Pengerjaan') {
+            // Dalam Pengerjaan: Foto opsional
+            solutionField.classList.remove('hidden');
+            photoRequirement.innerHTML = '(Opsional)';
+            photoRequirement.className = 'text-gray-500';
+            photoHint.textContent = 'Foto dokumentasi pekerjaan (opsional)';
+            photoHint.className = 'text-xs text-gray-600 font-medium mt-2';
+        } else {
+            // Ditolak: Sembunyikan foto
+            solutionField.classList.add('hidden');
+            clearImage();
+        }
+    });
+
+    // Handle file upload
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('solutionImage');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+
+    if (uploadArea) {
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('bg-green-100', 'border-green-500');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('bg-green-100', 'border-green-500');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('bg-green-100', 'border-green-500');
+            fileInput.files = e.dataTransfer.files;
+            handleFileSelect();
+        });
+
+        fileInput.addEventListener('change', handleFileSelect);
+    }
+
+    function handleFileSelect() {
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImg.src = e.target.result;
+                imagePreview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+
+    function clearImage() {
+        fileInput.value = '';
+        imagePreview.classList.add('hidden');
+    }
+
+    // Form validation
+    document.getElementById('updateStatusForm').addEventListener('submit', function(e) {
+        const statusSelect = document.getElementById('statusSelect');
+        
+        if (!statusSelect.value) {
+            e.preventDefault();
+            alert('❌ Pilih status terlebih dahulu!');
+            return;
+        }
+
+        // Jika status "Selesai", image WAJIB diupload
+        if (statusSelect.value === 'Selesai') {
+            if (!fileInput.files || !fileInput.files[0]) {
+                e.preventDefault();
+                alert('❌ Foto bukti HARUS diupload untuk menyelesaikan laporan!');
+                return;
+            }
+        }
+        // Jika status "Dalam Pengerjaan" atau "Ditolak", foto opsional/tidak perlu
+    });
+</script>
+
 @endsection

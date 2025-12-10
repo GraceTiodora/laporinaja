@@ -170,17 +170,37 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <script>
+  // Prepare real data from controller
+  @php
+    $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    $trendData = $trenData ?? collect();
+    $categoryData = $categoryPerformance ?? collect();
+    
+    // Trend data untuk chart
+    $trendTotalData = [];
+    $trendSelesaiData = [];
+    for ($i = 1; $i <= 12; $i++) {
+      $monthData = $trendData->where('bulan', $i)->first();
+      $trendTotalData[] = $monthData['total'] ?? 0;
+      $trendSelesaiData[] = $monthData['selesai'] ?? 0;
+    }
+    
+    // Category data
+    $categoryLabels = $categoryData->pluck('kategori')->toArray();
+    $categoryTotalData = $categoryData->pluck('total')->toArray();
+    $categorySelesaiData = $categoryData->pluck('selesai')->toArray();
+  @endphp
+
   // Trend chart
   const trendCtx = document.getElementById('trendChart')?.getContext('2d');
   if(trendCtx) {
     new Chart(trendCtx, {
       type: 'line',
       data: {
-        labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'],
+        labels: {!! json_encode($months) !!},
         datasets: [
-          { label: 'Diproses', borderColor: '#fbbf24', backgroundColor: '#fbbf24', data: [7,7,7,8,7,7,7,7,7,7,7,7], borderWidth: 3, pointRadius: 5, pointHoverRadius: 7, tension: 0.4 },
-          { label: 'Selesai', borderColor: '#10b981', backgroundColor: '#10b981', data: [38,46,42,53,47,50,54,52,60,35,33,30], borderWidth: 3, pointRadius: 5, pointHoverRadius: 7, tension: 0.4 },
-          { label: 'Total Laporan', borderColor: '#3b82f6', backgroundColor: '#3b82f6', data: [45,52,48,61,55,58,62,59,68,42,40,38], borderWidth: 3, pointRadius: 5, pointHoverRadius: 7, tension: 0.4 },
+          { label: 'Selesai', borderColor: '#10b981', backgroundColor: '#10b981', data: {!! json_encode($trendSelesaiData) !!}, borderWidth: 3, pointRadius: 5, pointHoverRadius: 7, tension: 0.4 },
+          { label: 'Total Laporan', borderColor: '#3b82f6', backgroundColor: '#3b82f6', data: {!! json_encode($trendTotalData) !!}, borderWidth: 3, pointRadius: 5, pointHoverRadius: 7, tension: 0.4 },
         ]
       },
       options: {
@@ -193,7 +213,7 @@
           }
         },
         scales: {
-          y: { beginAtZero: true, max: 80, ticks: { stepSize: 20, font: { size: 12 } }, grid: { color: '#f1f5f9', drawBorder: false } },
+          y: { beginAtZero: true, ticks: { stepSize: 10, font: { size: 12 } }, grid: { color: '#f1f5f9', drawBorder: false } },
           x: { ticks: { font: { size: 12 } }, grid: { display: false, drawBorder: false } }
         },
         interaction: { mode: 'index', intersect: false }
@@ -207,10 +227,10 @@
     new Chart(kategoriCtx, {
       type: 'bar',
       data: {
-        labels: ['Infrastruktur','Keselamatan','Sanitasi','Taman & Ruang Publik','Aksesibilitas'],
+        labels: {!! json_encode($categoryLabels) !!},
         datasets: [
-          { label: 'Selesai', backgroundColor: '#10b981', data: [98,89,76,58,38], borderRadius: 6, barPercentage: 0.7 },
-          { label: 'Total Laporan', backgroundColor: '#93c5fd', data: [145,123,98,76,54], borderRadius: 6, barPercentage: 0.7 },
+          { label: 'Selesai', backgroundColor: '#10b981', data: {!! json_encode($categorySelesaiData) !!}, borderRadius: 6, barPercentage: 0.7 },
+          { label: 'Total Laporan', backgroundColor: '#93c5fd', data: {!! json_encode($categoryTotalData) !!}, borderRadius: 6, barPercentage: 0.7 },
         ]
       },
       options: {
@@ -220,7 +240,7 @@
           legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20, font: { size: 13, weight: '600' } } }
         },
         scales: {
-          y: { beginAtZero: true, max: 160, ticks: { stepSize: 40, font: { size: 12 } }, grid: { color: '#f1f5f9', drawBorder: false } },
+          y: { beginAtZero: true, ticks: { stepSize: 20, font: { size: 12 } }, grid: { color: '#f1f5f9', drawBorder: false } },
           x: { ticks: { font: { size: 11 } }, grid: { display: false, drawBorder: false } }
         }
       }

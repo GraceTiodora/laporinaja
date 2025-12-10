@@ -136,16 +136,16 @@
                     <div class="flex gap-2">
                         @php
                             $statusColors = [
-                                'baru' => 'bg-yellow-100 text-yellow-700',
-                                'diproses' => 'bg-gray-100 text-gray-700',
-                                'selesai' => 'bg-green-100 text-green-700',
-                                'ditolak' => 'bg-red-100 text-red-700',
+                                'Baru' => 'bg-yellow-100 text-yellow-700',
+                                'Dalam Pengerjaan' => 'bg-gray-100 text-gray-700',
+                                'Selesai' => 'bg-green-100 text-green-700',
+                                'Ditolak' => 'bg-red-100 text-red-700',
                             ];
                             $statusLabels = [
-                                'baru' => 'Menunggu Verifikasi',
-                                'diproses' => 'Valid - Diproses',
-                                'selesai' => 'Selesai',
-                                'ditolak' => 'Ditolak',
+                                'Baru' => 'Menunggu Verifikasi',
+                                'Dalam Pengerjaan' => 'Valid - Diproses',
+                                'Selesai' => 'Selesai',
+                                'Ditolak' => 'Ditolak',
                             ];
                             $categoryColors = [
                                 'Infrastruktur' => 'bg-blue-100 text-blue-700',
@@ -154,7 +154,7 @@
                             ];
                             $statusClass = $statusColors[$report->status] ?? 'bg-gray-100 text-gray-700';
                             $statusLabel = $statusLabels[$report->status] ?? ucfirst($report->status);
-                            $categoryName = $report->category->nama_category ?? 'Umum';
+                            $categoryName = $report->category->name ?? 'Umum';
                             $categoryClass = $categoryColors[$categoryName] ?? 'bg-gray-100 text-gray-700';
                         @endphp
                         <span class="inline-block px-4 py-1.5 text-sm font-medium {{ $statusClass }} rounded-full">
@@ -171,7 +171,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div class="bg-gray-50 rounded-lg p-4">
                                 <p class="text-xs text-gray-500 mb-1">Nama</p>
-                                <p class="text-sm font-semibold text-gray-900">{{ $report->user->nama ?? 'Anonymous' }}</p>
+                                <p class="text-sm font-semibold text-gray-900">{{ $report->user->name ?? 'Anonymous' }}</p>
                             </div>
                             <div class="bg-gray-50 rounded-lg p-4">
                                 <p class="text-xs text-gray-500 mb-1">Email</p>
@@ -179,7 +179,7 @@
                             </div>
                             <div class="bg-gray-50 rounded-lg p-4">
                                 <p class="text-xs text-gray-500 mb-1">Telepon</p>
-                                <p class="text-sm font-semibold text-gray-900">0812-3456-7890</p>
+                                <p class="text-sm font-semibold text-gray-900">{{ $report->user->phone ?? 'Tidak ada' }}</p>
                             </div>
                             <div class="bg-gray-50 rounded-lg p-4">
                                 <p class="text-xs text-gray-500 mb-1">Tanggal Laporan</p>
@@ -193,7 +193,7 @@
                         <h3 class="text-sm font-semibold text-blue-600 mb-3">Lokasi Kejadian</h3>
                         <div class="bg-blue-50 rounded-lg p-4 flex items-center gap-3">
                             <i class="fa-solid fa-location-dot text-blue-600 text-lg"></i>
-                            <p class="text-sm font-medium text-gray-900">{{ $report->lokasi ?? '-' }}</p>
+                            <p class="text-sm font-medium text-gray-900">{{ $report->location ?? '-' }}</p>
                         </div>
                     </div>
 
@@ -202,7 +202,7 @@
                         <h3 class="text-sm font-semibold text-blue-600 mb-3">Deskripsi Masalah</h3>
                         <div class="bg-gray-50 rounded-lg p-4">
                             <p class="text-sm text-gray-700 leading-relaxed">
-                                {{ $report->deskripsi ?? '-' }}
+                                {{ $report->description ?? '-' }}
                             </p>
                         </div>
                     </div>
@@ -213,12 +213,61 @@
                             <i class="fa-solid fa-image text-blue-600"></i>
                             Foto/Video Bukti
                         </h3>
-                        <div class="grid grid-cols-2 gap-4">
+                        @if($report->image)
                             <div class="rounded-lg overflow-hidden border border-gray-200">
-                                <img src="{{ asset('images/reports/sample1.jpg') }}" alt="Bukti 1" class="w-full h-48 object-cover">
+                                <img src="{{ asset($report->image) }}" alt="Bukti" class="w-full h-64 object-cover">
                             </div>
-                            <div class="rounded-lg overflow-hidden border border-gray-200">
-                                <img src="{{ asset('images/reports/sample2.jpg') }}" alt="Bukti 2" class="w-full h-48 object-cover">
+                        @else
+                            <div class="bg-gray-100 rounded-lg p-8 text-center">
+                                <i class="fa-solid fa-image text-gray-400 text-3xl mb-2"></i>
+                                <p class="text-sm text-gray-500">Tidak ada gambar</p>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Voting & Comments Section --}}
+                    <div class="border-t border-gray-200 pt-6">
+                        <h3 class="font-semibold text-gray-900 mb-4">Tanggapan Publik</h3>
+                        
+                        @php
+                            try {
+                                $upvotes = $report->votes()->where('is_upvote', true)->count() ?? 0;
+                                $downvotes = $report->votes()->where('is_upvote', false)->count() ?? 0;
+                            } catch (\Exception $e) {
+                                $upvotes = 0;
+                                $downvotes = 0;
+                            }
+                            $totalVotes = $upvotes + $downvotes;
+                            $upvotePercentage = $totalVotes > 0 ? round(($upvotes / $totalVotes) * 100) : 0;
+                        @endphp
+
+                        {{-- Voting --}}
+                        <div class="mb-4 p-4 bg-blue-50 rounded-lg">
+                            <p class="text-sm font-medium text-gray-700 mb-2">Tingkat Kepentingan</p>
+                            <div class="flex items-center gap-4">
+                                <div class="flex-1">
+                                    <div class="w-full bg-gray-300 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: {!! $upvotePercentage !!}%"></div>
+                                    </div>
+                                </div>
+                                <span class="text-sm font-semibold text-gray-700">{{ $upvotePercentage }}%</span>
+                            </div>
+                            <p class="text-xs text-gray-600 mt-2">{{ $upvotes }} orang pilih penting · {{ $downvotes }} orang pilih kurang penting</p>
+                        </div>
+                        
+                        {{-- Comments --}}
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="text-sm font-medium text-gray-700 mb-3">Komentar ({{ $report->comments()->count() }})</p>
+                            <div class="space-y-3 max-h-48 overflow-y-auto">
+                                @forelse($report->comments()->latest()->take(5)->get() as $comment)
+                                    <div class="bg-white p-3 rounded border border-gray-200">
+                                        <p class="text-sm font-semibold text-gray-900">{{ $comment->user->name ?? 'Anonim' }}</p>
+                                        <p class="text-sm text-gray-700 mt-1">{{ $comment->content }}</p>
+                                        <p class="text-xs text-gray-500 mt-2">{{ $comment->created_at->diffForHumans() }}</p>
+                                    </div>
+                                @empty
+                                    <p class="text-sm text-gray-500">Belum ada komentar dari publik</p>
+                                @endforelse
                             </div>
                         </div>
                     </div>
@@ -228,18 +277,31 @@
                 {{-- Modal Footer with Actions --}}
                 <div class="sticky bottom-0 bg-white border-t border-gray-200 p-6 rounded-b-2xl">
                     <div class="flex items-center gap-3">
-                        <a href="{{ route('admin.verifikasi.validasi', $report->id) }}" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 no-underline">
-                            <i class="fa-solid fa-check"></i>
-                            Valid & Proses
-                        </a>
-                        <a href="{{ route('admin.verifikasi.tolak', $report->id) }}" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 no-underline">
-                            <i class="fa-solid fa-times"></i>
-                            Tolak
-                        </a>
-                        <a href="{{ route('admin.verifikasi.update_status', $report->id) }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 no-underline">
-                            <i class="fa-solid fa-rotate"></i>
-                            Update Status
-                        </a>
+                        @if($report->status === 'Baru')
+                            <a href="{{ route('admin.verifikasi.validasi', $report->id) }}" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 no-underline">
+                                <i class="fa-solid fa-check"></i>
+                                Valid & Proses
+                            </a>
+                            <a href="{{ route('admin.verifikasi.tolak', $report->id) }}" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 no-underline">
+                                <i class="fa-solid fa-times"></i>
+                                Tolak
+                            </a>
+                        @elseif($report->status === 'Dalam Pengerjaan')
+                            <a href="{{ route('admin.verifikasi.update_status', $report->id) }}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 no-underline">
+                                <i class="fa-solid fa-rotate"></i>
+                                Update Status
+                            </a>
+                        @elseif($report->status === 'Selesai')
+                            <div class="flex-1 bg-green-100 text-green-700 font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-check-circle"></i>
+                                Laporan Selesai
+                            </div>
+                        @elseif($report->status === 'Ditolak')
+                            <div class="flex-1 bg-red-100 text-red-700 font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-ban"></i>
+                                Laporan Ditolak
+                            </div>
+                        @endif
                     </div>
                 </div>
 

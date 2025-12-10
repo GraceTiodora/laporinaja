@@ -10,12 +10,19 @@ class Vote extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'votable_id', 'votable_type', 'is_upvote'
+        'user_id', 'votable_id', 'votable_type', 'is_upvote', 'type'
     ];
 
     protected $casts = [
         'is_upvote' => 'boolean',
     ];
+
+    protected $appends = ['type'];
+
+    public function getTypeAttribute()
+    {
+        return $this->is_upvote ? 'upvote' : 'downvote';
+    }
 
     public function user()
     {

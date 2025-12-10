@@ -128,7 +128,7 @@
                         @forelse($reports ?? [] as $report)
                         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                             <td class="py-4 px-4 text-sm font-semibold text-gray-900">LP-2025-{{ str_pad($report->id, 3, '0', STR_PAD_LEFT) }}</td>
-                            <td class="py-4 px-4 text-sm text-gray-700">{{ $report->user->nama ?? 'Anonymous' }}</td>
+                            <td class="py-4 px-4 text-sm text-gray-700">{{ $report->user->name ?? 'Tidak Diketahui' }}</td>
                             <td class="py-4 px-4">
                                 @php
                                     $categoryColors = [
@@ -138,26 +138,26 @@
                                         'Taman' => 'bg-purple-100 text-purple-700',
                                         'Aksesibilitas' => 'bg-pink-100 text-pink-700',
                                     ];
-                                    $categoryName = $report->category->nama_category ?? 'Umum';
+                                    $categoryName = $report->category->name ?? 'Umum';
                                     $colorClass = $categoryColors[$categoryName] ?? 'bg-gray-100 text-gray-700';
                                 @endphp
                                 <span class="inline-block px-3 py-1 text-xs font-medium {{ $colorClass }} rounded-full">{{ $categoryName }}</span>
                             </td>
-                            <td class="py-4 px-4 text-sm text-gray-700">{{ $report->lokasi ?? '-' }}</td>
+                            <td class="py-4 px-4 text-sm text-gray-700">{{ $report->location ?? '-' }}</td>
                             <td class="py-4 px-4 text-sm text-gray-700">{{ $report->created_at ? $report->created_at->format('d/m/Y') : '-' }}</td>
                             <td class="py-4 px-4">
                                 @php
                                     $statusColors = [
-                                        'baru' => 'bg-emerald-100 text-emerald-700',
-                                        'diproses' => 'bg-gray-100 text-gray-700',
-                                        'selesai' => 'bg-green-100 text-green-700',
-                                        'ditolak' => 'bg-red-100 text-red-700',
+                                        'Baru' => 'bg-emerald-100 text-emerald-700',
+                                        'Dalam Pengerjaan' => 'bg-gray-100 text-gray-700',
+                                        'Selesai' => 'bg-green-100 text-green-700',
+                                        'Ditolak' => 'bg-red-100 text-red-700',
                                     ];
                                     $statusLabels = [
-                                        'baru' => 'Menunggu Verifikasi',
-                                        'diproses' => 'Valid - Diproses',
-                                        'selesai' => 'Selesai',
-                                        'ditolak' => 'Ditolak',
+                                        'Baru' => 'Menunggu Verifikasi',
+                                        'Dalam Pengerjaan' => 'Valid - Diproses',
+                                        'Selesai' => 'Selesai',
+                                        'Ditolak' => 'Ditolak',
                                     ];
                                     $statusClass = $statusColors[$report->status] ?? 'bg-gray-100 text-gray-700';
                                     $statusLabel = $statusLabels[$report->status] ?? ucfirst($report->status);

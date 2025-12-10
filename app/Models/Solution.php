@@ -10,7 +10,7 @@ class Solution extends Model
     use HasFactory;
 
     protected $fillable = [
-        'report_id', 'user_id', 'description', 'upvotes', 'downvotes', 'is_accepted'
+        'report_id', 'user_id', 'description', 'image', 'upvotes', 'downvotes', 'is_accepted'
     ];
 
     protected $casts = [

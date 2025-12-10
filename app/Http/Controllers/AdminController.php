@@ -15,65 +15,84 @@ class AdminController extends Controller
     public function monitoring(Request $request)
     {
         // Ambil filter dari request
-        $kategori = $request->get('kategori');
-        $status = $request->get('status');
+        $kategoriFilter = $request->get('kategori');
+        $statusFilter = $request->get('status');
 
         // Query dasar
-        $query = Report::query();
+        $query = Report::with('category');
 
         // Filter berdasarkan kategori
-        if ($kategori) {
-            $query->where('kategori', $kategori);
+        if ($kategoriFilter && $kategoriFilter !== 'all') {
+            $query->whereHas('category', function ($q) use ($kategoriFilter) {
+                $q->where('name', 'like', '%' . ucfirst($kategoriFilter) . '%');
+            });
         }
 
         // Filter berdasarkan status
-        if ($status) {
-            $query->where('status', $status);
+        if ($statusFilter && $statusFilter !== 'all') {
+            $statusMap = [
+                'open' => ['Baru', 'Dalam Pengerjaan'],
+                'progress' => 'Dalam Pengerjaan',
+                'closed' => 'Selesai'
+            ];
+            $mappedStatus = $statusMap[$statusFilter] ?? [];
+            if (is_array($mappedStatus)) {
+                $query->whereIn('status', $mappedStatus);
+            } else {
+                $query->where('status', $mappedStatus);
+            }
         }
 
-        // Data untuk statistik
-        $totalLaporan = $query->count();
-        $laporanSelesai = (clone $query)->where('status', 'selesai')->count();
-        $laporanDiproses = (clone $query)->where('status', 'diproses')->count();
+        $reports = $query->get();
 
-        // Data tren bulanan (12 bulan terakhir)
-        $trenBulanan = Report::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
+        // Data untuk statistik
+        $totalLaporan = $reports->count();
+        $laporanSelesai = $reports->where('status', 'Selesai')->count();
+        $laporanDiproses = $reports->where('status', 'Dalam Pengerjaan')->count();
+
+        // Data tren bulanan - aggregate by month
+        $trenBulanan = Report::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total, 
+                                          SUM(CASE WHEN status = "Selesai" THEN 1 ELSE 0 END) as selesai')
             ->whereYear('created_at', date('Y'))
-            ->groupBy('bulan')
+            ->groupByRaw('MONTH(created_at)')
             ->orderBy('bulan')
             ->get();
 
-        // Data per kategori
-        $dataKategori = Report::selectRaw('kategori, COUNT(*) as total, 
-                                          SUM(CASE WHEN status = "selesai" THEN 1 ELSE 0 END) as selesai')
-            ->groupBy('kategori')
-            ->get();
+        // Pastikan 12 bulan ada dengan fill 0 untuk bulan yang tidak ada
+        $trenData = collect();
+        for ($i = 1; $i <= 12; $i++) {
+            $data = $trenBulanan->where('bulan', $i)->first();
+            $trenData->push([
+                'bulan' => $i,
+                'total' => $data->total ?? 0,
+                'selesai' => $data->selesai ?? 0,
+                'diproses' => 0
+            ]);
+        }
 
-        // Hitung persentase dan rata-rata waktu penyelesaian
-        $categoryPerformance = $dataKategori->map(function ($item) {
-            $persentase = $item->total > 0 ? round(($item->selesai / $item->total) * 100) : 0;
-            
-            // Hitung rata-rata waktu penyelesaian (dalam hari)
-            $rataWaktu = Report::where('kategori', $item->kategori)
-                ->where('status', 'selesai')
-                ->whereNotNull('tanggal_selesai')
-                ->selectRaw('AVG(DATEDIFF(tanggal_selesai, created_at)) as avg_days')
-                ->value('avg_days');
-
-            return [
-                'kategori' => ucfirst($item->kategori),
-                'total' => $item->total,
-                'selesai' => $item->selesai,
-                'persentase' => $persentase,
-                'rata_waktu' => $rataWaktu ? round($rataWaktu, 1) : 0
-            ];
-        });
+        // Data per kategori dengan real data
+        $categoryPerformance = Report::with('category')
+            ->selectRaw('category_id, COUNT(*) as total, 
+                        SUM(CASE WHEN status = "Selesai" THEN 1 ELSE 0 END) as selesai')
+            ->whereNotNull('category_id')
+            ->groupBy('category_id')
+            ->get()
+            ->map(function ($item) {
+                $persentase = $item->total > 0 ? round(($item->selesai / $item->total) * 100) : 0;
+                
+                return [
+                    'kategori' => $item->category->name ?? 'Umum',
+                    'total' => $item->total,
+                    'selesai' => $item->selesai,
+                    'persentase' => $persentase,
+                ];
+            });
 
         return view('admin.monitoring', compact(
             'totalLaporan',
             'laporanSelesai',
             'laporanDiproses',
-            'trenBulanan',
+            'trenData',
             'categoryPerformance'
         ));
     }
@@ -236,7 +255,8 @@ class AdminController extends Controller
     {
         $request->validate([
             'status' => 'required|in:Baru,Dalam Pengerjaan,Selesai,Ditolak',
-            'admin_note' => 'nullable|string|max:500'
+            'admin_note' => 'nullable|string|max:500',
+            'solution_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         $report = Report::findOrFail($id);
@@ -249,6 +269,27 @@ class AdminController extends Controller
             $report->admin_note = $request->admin_note;
         }
         $report->save();
+
+        // Jika status "Selesai" dan ada image bukti, simpan ke Solution table
+        if ($newStatus === 'Selesai' && $request->hasFile('solution_image')) {
+            $filename = time() . '_' . $request->file('solution_image')->getClientOriginalName();
+            
+            if (!file_exists(public_path('images/solutions'))) {
+                mkdir(public_path('images/solutions'), 0777, true);
+            }
+
+            $request->file('solution_image')->move(public_path('images/solutions'), $filename);
+            $imagePath = 'images/solutions/' . $filename;
+
+            // Simpan ke Solution table
+            \App\Models\Solution::create([
+                'report_id' => $report->id,
+                'user_id' => session('user.id'),
+                'description' => $request->admin_note ?? 'Laporan telah diselesaikan',
+                'image' => $imagePath,
+                'is_accepted' => true
+            ]);
+        }
 
         // Kirim notifikasi ke user
         $this->sendStatusNotification($report, $oldStatus, $newStatus);

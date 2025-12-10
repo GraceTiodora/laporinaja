@@ -276,6 +276,41 @@
 
             <!-- 💬 Comments Section -->
             <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-6">
+                @if($reportModel->status === 'Selesai' && $reportModel->solutions->count() > 0)
+                <!-- 🎉 Solutions/Bukti Penyelesaian -->
+                <div class="mb-6 pb-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-5 flex items-center gap-2">
+                        <i class="fa-solid fa-check-double text-green-600"></i>
+                        <span>Bukti Penyelesaian</span>
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        @foreach($reportModel->solutions as $solution)
+                            <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                                <div class="flex items-start gap-3 mb-3">
+                                    <div class="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-check text-green-700 text-sm"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">Tim Perbaikan</p>
+                                        <p class="text-xs text-gray-500">{{ $solution->created_at->format('d M Y, H:i') }}</p>
+                                    </div>
+                                </div>
+                                
+                                @if($solution->description)
+                                    <p class="text-sm text-gray-700 mb-3">{{ $solution->description }}</p>
+                                @endif
+                                
+                                @if($solution->image)
+                                    <div class="rounded-lg overflow-hidden border border-green-200 mb-3">
+                                        <img src="{{ asset($solution->image) }}" alt="Bukti" class="w-full h-64 object-cover hover:scale-105 transition-transform">
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
                 <h3 class="text-lg font-semibold text-gray-900 mb-5 flex items-center gap-2">
                     <i class="fa-solid fa-comments text-blue-600"></i>
                     <span>Komentar ({{ $report['comments'] ?? 0 }})</span>

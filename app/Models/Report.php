@@ -10,7 +10,7 @@ class Report extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'category_id', 'title', 'description', 'location', 'image', 'status'
+        'user_id', 'category_id', 'title', 'description', 'location', 'image', 'status', 'admin_note'
     ];
 
     protected $casts = [
