@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\ExploreController;  // ← TAMBAH INI
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ExploreController;
 use App\Models\Report;
 
  
@@ -274,7 +275,7 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     })->name('admin.voting');
 
     // Pengaturan Akun
-    Route::get('/pengaturan', function () {
-        return view('admin.pengaturan');
-    })->name('admin.pengaturan');
+    Route::get('/pengaturan', [AdminController::class, 'pengaturan'])->name('admin.pengaturan');
+    Route::put('/pengaturan/profile', [AdminController::class, 'updateProfileAdmin'])->name('admin.updateProfile');
+    Route::put('/pengaturan/password', [AdminController::class, 'updatePasswordAdmin'])->name('admin.updatePassword');
 });

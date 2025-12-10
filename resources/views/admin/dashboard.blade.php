@@ -237,11 +237,11 @@
         {{-- Profile --}}
         <div class="mt-6 border-t border-gray-200 pt-4">
             <div class="flex items-center gap-3">
-                <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full">
+                <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full object-cover">
 
                 <div>
-                    <p class="text-sm font-semibold">Justin Hubner</p>
-                    <p class="text-xs text-gray-500">@adminhubner</p>
+                    <p class="text-sm font-semibold">{{ auth()->user()->name }}</p>
+                    <p class="text-xs text-gray-500">@{{ strtolower(str_replace(' ', '', auth()->user()->name)) }}</p>
                 </div>
             </div>
 

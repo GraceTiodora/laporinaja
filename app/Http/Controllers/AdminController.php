@@ -6,9 +6,89 @@ use Illuminate\Http\Request;
 use App\Models\Report;
 use App\Models\User;
 use App\Models\Notification;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
+    /**
+     * Tampilkan halaman Pengaturan Akun
+     */
+    public function pengaturan()
+    {
+        $user = auth()->user();
+        return view('admin.pengaturan', compact('user'));
+    }
+
+    /**
+     * Update profile admin
+     */
+    public function updateProfileAdmin(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|min:3|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
+            'phone' => 'nullable|string|max:20',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'Nama wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'phone.max' => 'Nomor telepon maksimal 20 karakter.',
+            'avatar.image' => 'File harus berupa gambar.',
+            'avatar.max' => 'Ukuran gambar maksimal 2MB.',
+        ]);
+
+        try {
+            $user = auth()->user();
+
+            if ($request->hasFile('avatar')) {
+                $avatarPath = $request->file('avatar')->store('avatars', 'public');
+                $validated['avatar'] = $avatarPath;
+                
+                if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                    Storage::disk('public')->delete($user->avatar);
+                }
+            }
+
+            $user->update($validated);
+
+            return response()->json(['message' => 'Profil berhasil diperbarui!', 'user' => $user], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal memperbarui profil: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Update password admin
+     */
+    public function updatePasswordAdmin(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+        ], [
+            'current_password.required' => 'Password saat ini wajib diisi.',
+            'new_password.required' => 'Password baru wajib diisi.',
+            'new_password.min' => 'Password baru minimal 8 karakter.',
+            'new_password.confirmed' => 'Konfirmasi password tidak cocok.',
+        ]);
+
+        try {
+            $user = auth()->user();
+
+            if (!Hash::check($validated['current_password'], $user->password)) {
+                return response()->json(['message' => 'Password saat ini tidak sesuai.'], 422);
+            }
+
+            $user->update(['password' => Hash::make($validated['new_password'])]);
+
+            return response()->json(['message' => 'Password berhasil diubah!'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Gagal mengubah password: ' . $e->getMessage()], 500);
+        }
+    }
+
     /**
      * Tampilkan halaman Monitoring & Statistik
      */
@@ -86,7 +166,7 @@ class AdminController extends Controller
                     'selesai' => $item->selesai,
                     'persentase' => $persentase,
                 ];
-            });
+            })->toArray();
 
         return view('admin.monitoring', compact(
             'totalLaporan',

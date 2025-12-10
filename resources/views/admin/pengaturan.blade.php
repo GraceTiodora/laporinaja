@@ -8,13 +8,7 @@
 
 @section('content')
 @php
-    $user = $user ?? (object)[
-        'name' => 'Justin Hubner',
-        'email' => 'justin.hubner@example.com',
-        'phone' => '081234567890',
-        'role' => 'Admin',
-        'avatar' => 'profile-user.jpg'
-    ]; 
+    $user = $user ?? auth()->user();
 @endphp
 
 <div class="flex h-screen max-w-[1920px] mx-auto bg-gray-50">
@@ -53,11 +47,11 @@
         {{-- Profile --}}
         <div class="mt-6 border-t border-gray-200 pt-4">
             <div class="flex items-center gap-3">
-                <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full">
+                <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full object-cover">
 
                 <div>
-                    <p class="text-sm font-semibold">Justin Hubner</p>
-                    <p class="text-xs text-gray-500">@adminhubner</p>
+                    <p class="text-sm font-semibold">{{ $user->name }}</p>
+                    <p class="text-xs text-gray-500">@{{ strtolower(str_replace(' ', '', $user->name)) }}</p>
                 </div>
             </div>
 
@@ -84,14 +78,14 @@
             <h2 class="text-base font-bold text-gray-900 mb-1">Profil Admin</h2>
             <p class="text-sm text-gray-500 mb-5">Selamat datang di sistem manajemen laporan masyarakat</p>
 
-            <form action="#" method="POST" enctype="multipart/form-data" id="profileForm">
+            <form action="{{ route('admin.updateProfile') }}" method="POST" enctype="multipart/form-data" id="profileForm">
                 @csrf
                 @method('PUT')
 
                 {{-- Avatar Upload --}}
                 <div class="flex items-center gap-3 mb-5">
                     <div class="avatar-wrapper">
-                        <img src="{{ asset('images/' . $user->avatar) }}" 
+                        <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('images/profile-user.jpg') }}" 
                              class="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
                              alt="Profile Avatar"
                              id="avatarPreview">
@@ -154,7 +148,7 @@
             <h2 class="text-base font-bold text-gray-900 mb-1">Keamanan</h2>
             <p class="text-sm text-gray-500 mb-5">Kelola password dan keamanan akun</p>
 
-            <form action="#" method="POST" id="passwordForm">
+            <form action="{{ route('admin.updatePassword') }}" method="POST" id="passwordForm">
                 @csrf
                 @method('PUT')
 
@@ -185,7 +179,7 @@
                         <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
                         <div class="password-input-wrapper">
                             <i class="fa-solid fa-lock password-icon-left"></i>
-                            <input type="password" id="password_confirmation" name="password_confirmation" 
+                            <input type="password" id="password_confirmation" name="new_password_confirmation" 
                                    class="form-input with-icons" placeholder="Konfirmasi password baru">
                             <i class="fa-solid fa-eye-slash password-icon-right toggle-password" data-target="password_confirmation"></i>
                         </div>
@@ -283,8 +277,8 @@
     const email = document.getElementById('email').value.trim();
     const phone = document.getElementById('phone').value.trim();
     
-    if (!name || !email || !phone) {
-      alert('Semua field harus diisi!');
+    if (!name || !email) {
+      alert('Nama dan Email wajib diisi!');
       return;
     }
     
@@ -295,16 +289,30 @@
       return;
     }
     
-    // Validate phone format (basic)
-    const phoneRegex = /^[0-9]{10,13}$/;
-    if (!phoneRegex.test(phone)) {
-      alert('Nomor telepon harus 10-13 digit angka!');
-      return;
-    }
-    
-    // Add your AJAX submission here
-    alert('Profil berhasil diperbarui!');
-    console.log('Profile data:', { name, email, phone });
+    // Submit form via AJAX
+    const formData = new FormData(this);
+    fetch('{{ route("admin.updateProfile") }}', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+        'Accept': 'application/json'
+      },
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message) {
+        alert(data.message);
+        if (data.user) {
+          // Reload page to show updated data
+          location.reload();
+        }
+      }
+    })
+    .catch(error => {
+      alert('Gagal menyimpan profil');
+      console.error('Error:', error);
+    });
   });
 
   document.getElementById('passwordForm')?.addEventListener('submit', function(e) {
@@ -332,20 +340,39 @@
       return;
     }
     
-    // Add your AJAX submission here
-    alert('Password berhasil diubah!');
-    console.log('Password change requested');
-    this.reset();
-    
-    // Reset all password toggles
-    document.querySelectorAll('.toggle-password').forEach(icon => {
-      const targetId = icon.dataset.target;
-      const input = document.getElementById(targetId);
-      if (input.type === 'text') {
-        input.type = 'password';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
+    // Submit form via AJAX
+    const formData = new FormData(this);
+    fetch('{{ route("admin.updatePassword") }}', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+        'Accept': 'application/json'
+      },
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message) {
+        alert(data.message);
+        if (data.success) {
+          this.reset();
+          
+          // Reset all password toggles
+          document.querySelectorAll('.toggle-password').forEach(icon => {
+            const targetId = icon.dataset.target;
+            const input = document.getElementById(targetId);
+            if (input.type === 'text') {
+              input.type = 'password';
+              icon.classList.remove('fa-eye');
+              icon.classList.add('fa-eye-slash');
+            }
+          });
+        }
       }
+    })
+    .catch(error => {
+      alert('Gagal mengubah password');
+      console.error('Error:', error);
     });
   });
 </script>

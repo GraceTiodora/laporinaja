@@ -58,10 +58,10 @@
         </div>
         <div class="mt-6 border-t border-gray-200 pt-4">
             <div class="flex items-center gap-3">
-                <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full">
+                <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full object-cover">
                 <div>
-                    <p class="text-sm font-semibold">Justin Hubner</p>
-                    <p class="text-xs text-gray-500">@adminhubner</p>
+                    <p class="text-sm font-semibold">{{ auth()->user()->name }}</p>
+                    <p class="text-xs text-gray-500">@{{ strtolower(str_replace(' ', '', auth()->user()->name)) }}</p>
                 </div>
             </div>
             <form action="#" method="POST" class="mt-4">
@@ -107,45 +107,23 @@
                                 <th class="text-center font-bold text-gray-900 py-3 px-4">Total Laporan</th>
                                 <th class="text-center font-bold text-gray-900 py-3 px-4">Selesai</th>
                                 <th class="text-center font-bold text-gray-900 py-3 px-4">Persentase Selesai</th>
-                                <th class="text-center font-bold text-gray-900 py-3 px-4">Rata-rata Waktu (hari)</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="border-b border-gray-100">
-                                <td class="py-3 px-4 font-medium text-gray-900">Infrastruktur</td>
-                                <td class="py-3 px-4 text-center text-gray-700">145</td>
-                                <td class="py-3 px-4 text-center text-gray-700">98</td>
-                                <td class="py-3 px-4 text-center text-gray-700">68%</td>
-                                <td class="py-3 px-4 text-center text-gray-700">5 Hari</td>
-                            </tr>
-                            <tr class="border-b border-gray-100">
-                                <td class="py-3 px-4 font-medium text-gray-900">Keselamatan</td>
-                                <td class="py-3 px-4 text-center text-gray-700">123</td>
-                                <td class="py-3 px-4 text-center text-gray-700">89</td>
-                                <td class="py-3 px-4 text-center text-gray-700">89%</td>
-                                <td class="py-3 px-4 text-center text-gray-700">4 Hari</td>
-                            </tr>
-                            <tr class="border-b border-gray-100">
-                                <td class="py-3 px-4 font-medium text-gray-900">Sanitasi</td>
-                                <td class="py-3 px-4 text-center text-gray-700">98</td>
-                                <td class="py-3 px-4 text-center text-gray-700">76</td>
-                                <td class="py-3 px-4 text-center text-gray-700">76%</td>
-                                <td class="py-3 px-4 text-center text-gray-700">3 Hari</td>
-                            </tr>
-                            <tr class="border-b border-gray-100">
-                                <td class="py-3 px-4 font-medium text-gray-900">Taman</td>
-                                <td class="py-3 px-4 text-center text-gray-700">76</td>
-                                <td class="py-3 px-4 text-center text-gray-700">58</td>
-                                <td class="py-3 px-4 text-center text-gray-700">76%</td>
-                                <td class="py-3 px-4 text-center text-gray-700">6 Hari</td>
-                            </tr>
+                            @if(isset($categoryPerformance) && is_array($categoryPerformance) && count($categoryPerformance) > 0)
+                                @foreach($categoryPerformance as $cat)
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-3 px-4 font-medium text-gray-900">{{ $cat['kategori'] ?? 'N/A' }}</td>
+                                    <td class="py-3 px-4 text-center text-gray-700">{{ $cat['total'] ?? 0 }}</td>
+                                    <td class="py-3 px-4 text-center text-gray-700">{{ $cat['selesai'] ?? 0 }}</td>
+                                    <td class="py-3 px-4 text-center text-gray-700">{{ $cat['persentase'] ?? 0 }}%</td>
+                                </tr>
+                                @endforeach
+                            @else
                             <tr>
-                                <td class="py-3 px-4 font-medium text-gray-900">Aksesibilitas</td>
-                                <td class="py-3 px-4 text-center text-gray-700">54</td>
-                                <td class="py-3 px-4 text-center text-gray-700">38</td>
-                                <td class="py-3 px-4 text-center text-gray-700">70%</td>
-                                <td class="py-3 px-4 text-center text-gray-700">7 Hari</td>
+                                <td colspan="4" class="py-3 px-4 text-center text-gray-500">Belum ada data</td>
                             </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
