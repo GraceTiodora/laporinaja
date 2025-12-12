@@ -96,7 +96,11 @@
                     {{ $community['active'] ? 'bg-blue-50 border-blue-300' : 'bg-white border-gray-200 hover:bg-gray-50' }}">
                     <p class="font-semibold text-gray-800">{{ $community['name'] }}</p>
                     <p class="text-sm text-gray-500 mt-1 flex items-center gap-1">
+<<<<<<< Updated upstream
                         <i class="fa-solid fa-user-group text-xs"></i>
+=======
+                        <i class="fa-solid fa-user-group text-sm"></i>
+>>>>>>> Stashed changes
                         {{ $community['members'] }}
                     </p>
                 </div>
@@ -154,12 +158,21 @@
                     </div>
 
                     <div class="flex gap-6 text-gray-500 text-sm mt-2">
+<<<<<<< Updated upstream
                         <button class="hover:text-blue-600 flex items-center gap-1">
                             <i class="fa-regular fa-comment"></i> {{ $post['comments'] }}
                         </button>
 
                         <button class="hover:text-red-500 flex items-center gap-1">
                             <i class="fa-solid fa-heart"></i> {{ $post['votes'] }}
+=======
+                        <button class="hover:text-blue-600 flex items-center gap-2">
+                            <i class="fa-regular fa-comment text-base"></i> {{ $post['comments'] }}
+                        </button>
+
+                        <button class="hover:text-red-500 flex items-center gap-2">
+                            <i class="fa-solid fa-heart text-base"></i> {{ $post['votes'] }}
+>>>>>>> Stashed changes
                         </button>
                     </div>
                 </article>

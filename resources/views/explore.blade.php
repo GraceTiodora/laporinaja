@@ -192,7 +192,11 @@
 
                             <!-- Badges -->
                             <div class="flex flex-wrap gap-2 mb-4">
+<<<<<<< Updated upstream
                                 <span class="px-3 py-1.5 text-xs font-semibold rounded-full 
+=======
+                                <span class="px-3 py-2 text-sm font-semibold rounded-full 
+>>>>>>> Stashed changes
                                     @if($report['status'] === 'Baru')
                                         bg-red-100 text-red-700
                                     @elseif($report['status'] === 'Dalam Pengerjaan')
@@ -205,7 +209,11 @@
                                 ">
                                     {{ $report['status'] ?? '' }}
                                 </span>
+<<<<<<< Updated upstream
                                 <span class="px-3 py-1.5 text-xs font-semibold bg-blue-100 text-blue-700 rounded-full">
+=======
+                                <span class="px-3 py-2 text-sm font-semibold bg-blue-100 text-blue-700 rounded-full">
+>>>>>>> Stashed changes
                                     {{ $report['category'] ?? 'Umum' }}
                                 </span>
                             </div>
@@ -214,6 +222,7 @@
                             <div class="flex justify-between items-center pt-4 border-t border-gray-100">
                                 <div class="flex gap-6 text-sm">
                                     <button class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition group">
+<<<<<<< Updated upstream
                                         <i class="fa-regular fa-comment text-gray-400 group-hover:text-blue-600"></i>
                                         <span>{{ $report['comments'] ?? 0 }}</span>
                                     </button>
@@ -225,6 +234,19 @@
                                 <a href="{{ route('reports.show', $report['id']) }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700 transition flex items-center gap-1">
                                     Lihat detail
                                     <i class="fa-solid fa-arrow-right text-xs"></i>
+=======
+                                        <i class="fa-regular fa-comment text-base text-gray-400 group-hover:text-blue-600"></i>
+                                        <span>{{ $report['comments'] ?? 0 }}</span>
+                                    </button>
+                                    <button class="flex items-center gap-2 text-gray-600 hover:text-red-500 transition group">
+                                        <i class="fa-solid fa-heart text-base text-gray-400 group-hover:text-red-500"></i>
+                                        <span>{{ $report['votes'] ?? 0 }}</span>
+                                    </button>
+                                </div>
+                                <a href="{{ route('reports.show', $report['id']) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-700 transition flex items-center gap-1">
+                                    Lihat detail
+                                    <i class="fa-solid fa-arrow-right text-sm"></i>
+>>>>>>> Stashed changes
                                 </a>
                             </div>
                         </article>

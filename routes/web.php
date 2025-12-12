@@ -1,4 +1,11 @@
+
 <?php
+
+
+// Chat page
+Route::get('/chat', function () {
+    return view('chat');
+})->name('chat');
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -156,8 +163,38 @@ Route::get('/notifications', [NotificationController::class, 'index'])->name('no
 Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
 
+use App\Models\User;
+use App\Models\Message;
 Route::get('/messages', function () {
+<<<<<<< Updated upstream
     return view('messages');
+=======
+    if (!session()->has('user')) {
+        return redirect()->route('login');
+    }
+    $userId = session('user.id');
+    // Ambil user yang pernah chat (baik sebagai pengirim atau penerima)
+    $userIds = Message::where('sender_id', $userId)
+        ->orWhere('receiver_id', $userId)
+        ->get()
+        ->flatMap(function($msg) use ($userId) {
+            return [$msg->sender_id, $msg->receiver_id];
+        })
+        ->unique()
+        ->reject(fn($id) => $id == $userId)
+        ->values();
+    $users = User::whereIn('id', $userIds)->get();
+
+    // Jika receiver_id ada di URL dan user belum pernah chat, tambahkan ke chat list
+    $receiverId = request('receiver_id');
+    if ($receiverId && !$users->contains('id', $receiverId)) {
+        $targetUser = User::find($receiverId);
+        if ($targetUser) {
+            $users->push($targetUser);
+        }
+    }
+    return view('warga.messages', ['chatUsers' => $users]);
+>>>>>>> Stashed changes
 })->name('messages');
 
 

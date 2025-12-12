@@ -87,6 +87,10 @@
                 <div>
                     <h2 class="font-semibold text-gray-800">{{ $report['user']['name'] }}</h2>
                     <p class="text-xs text-gray-500">{{ $report['created_at'] }} • {{ $report['location'] }}</p>
+<<<<<<< Updated upstream
+=======
+                    <a href="{{ url('chat?receiver_id=' . $report['user']['id']) }}" class="inline-block mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition">Kirim Pesan</a>
+>>>>>>> Stashed changes
                 </div>
             </div>
 

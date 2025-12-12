@@ -13,5 +13,15 @@
         "laravel-vite-plugin": "^2.0.0",
         "tailwindcss": "^4.0.0",
         "vite": "^7.0.7"
+<<<<<<< Updated upstream
+=======
+    },
+    "dependencies": {
+        "@tailwindcss/postcss": "^4.1.17",
+        "autoprefixer": "^10.4.22",
+        "laravel-echo": "^2.2.6",
+        "postcss": "^8.5.6",
+        "pusher-js": "^8.4.0"
+>>>>>>> Stashed changes
     }
 }

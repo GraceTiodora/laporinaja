@@ -1,4 +1,16 @@
 import './bootstrap';
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+
+window.Pusher = Pusher;
+
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: import.meta.env.VITE_PUSHER_APP_KEY || '4b0371e2eeba9830cef0',
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER || 'ap1',
+    forceTLS: true,
+    encrypted: true,
+});
 
 // ============================================
 // SMOOTH SCROLL BEHAVIOR
@@ -296,5 +308,21 @@ if ('IntersectionObserver' in window) {
         imageObserver.observe(img);
     });
 }
+
+// ============================================
+// REALTIME CHAT SUBSCRIBE
+// ============================================
+window.initRealtimeChat = function(authUserId, chatUserId) {
+    if (!authUserId || !chatUserId) return;
+    let a = parseInt(authUserId), b = parseInt(chatUserId);
+    let channelName = a < b ? `chat.${a}.${b}` : `chat.${b}.${a}`;
+    window.Echo.private(channelName)
+        .listen('MessageSent', (e) => {
+            // Panggil fungsi untuk render pesan baru ke chat
+            if (window.onRealtimeMessage) {
+                window.onRealtimeMessage(e);
+            }
+        });
+};
 
 console.log('✅ Laporin Aja - Semua fitur interaktif aktif!');

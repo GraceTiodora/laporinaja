@@ -24,6 +24,16 @@ class User extends Authenticatable
         'updated_at' => 'datetime',
     ];
 
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
     public function reports()
     {
         return $this->hasMany(Report::class, 'user_id', 'id');

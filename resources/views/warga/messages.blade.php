@@ -58,12 +58,37 @@
             </button>
         </div>
 
+<<<<<<< Updated upstream
         <div class="flex items-center gap-3 border-t border-gray-200 pt-4">
             <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full object-cover">
             <div>
                 <p class="text-sm font-medium text-gray-800">{{ session('user.name','Guest') }}</p>
                 <p class="text-xs text-gray-500">{{ session('user.email','user@mail.com') }}</p>
             </div>
+=======
+        <div class="space-y-3">
+            <a href="{{ route('profile') }}" class="block bg-gray-50 rounded-2xl p-4 border border-gray-200 hover:bg-blue-50 transition cursor-pointer">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold text-lg">
+                        {{ strtoupper(substr(session('user.name', 'U'), 0, 2)) }}
+                    </div>
+                    <div class="relative">
+                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                    </div>
+                </div>
+                <p class="font-semibold text-gray-800 text-sm">{{ session('user.name', 'User') }}</p>
+                <p class="text-xs text-gray-500">{{ session('user.username', 'username') }}</p>
+            </a>
+
+            <button onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    class="w-full flex items-center justify-center gap-2 border-2 border-red-500 text-red-500 py-3 rounded-2xl hover:bg-red-50 transition-all font-semibold">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                @csrf
+            </form>
+>>>>>>> Stashed changes
         </div>
     </aside>
 
@@ -78,6 +103,7 @@
                     class="w-full bg-gray-100 px-4 py-2.5 rounded-xl outline-none text-sm">
             </div>
 
+<<<<<<< Updated upstream
             <div class="overflow-y-auto p-2 space-y-2">
 
                 <!-- SAMPLE CHAT LIST ITEM -->
@@ -105,8 +131,31 @@
                     @if($c[4])
                         <span class="w-5 h-5 bg-blue-600 text-white text-xs flex items-center justify-center rounded-full">1</span>
                     @endif
-                </div>
+=======
+            <div class="overflow-y-auto p-2 space-y-1" id="chatList" data-receiver-id="{{ request('receiver_id') }}">
 
+                <!-- SAMPLE CHAT LIST ITEM -->
+                @foreach($chatUsers as $user)
+                <div class="chat-item flex items-center gap-2 p-2.5 rounded-lg cursor-pointer hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 border border-transparent hover:border-blue-200 group"
+                     onclick="selectChat('{{ $user->name }}', '{{ $user->is_online ? 'Online' : '' }}', '{{ $user->avatar ? asset($user->avatar) : asset('images/profile-user.jpg') }}', this)"
+                     data-name="{{ strtolower($user->name) }}" data-user-id="{{ $user->id }}">
+                    <div class="relative">
+                        <img src="{{ $user->avatar ? asset($user->avatar) : asset('images/profile-user.jpg') }}" class="w-11 h-11 rounded-full object-cover ring-2 ring-gray-200 group-hover:ring-blue-400 transition-all">
+                        @if(isset($user->is_online) && $user->is_online)
+                            <div class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white online-dot"></div>
+                        @endif
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-0.5">
+                            <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+                                {{ $user->name }}
+                            </p>
+                            <span class="text-[10px] text-gray-500 ml-2 shrink-0"></span>
+                        </div>
+                        <p class="text-xs text-gray-600 truncate group-hover:text-gray-900">{{ $user->username ?? $user->email }}</p>
+                    </div>
+>>>>>>> Stashed changes
+                </div>
                 @endforeach
 
             </div>
@@ -183,4 +232,215 @@
 
     </div>
 </div>
+<<<<<<< Updated upstream
+=======
+
+<script>
+// Auto-resize textarea
+document.getElementById('messageInput').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+});
+
+// Search conversations
+function searchChats() {
+    const input = document.getElementById('searchConversation').value.toLowerCase();
+    const chatItems = document.querySelectorAll('.chat-item');
+    
+    chatItems.forEach(item => {
+        const name = item.getAttribute('data-name');
+        if (name.includes(input)) {
+            item.style.display = 'flex';
+            item.style.animation = 'fadeIn 0.3s ease-out';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+// Select chat
+function selectChat(name, status, avatar, element) {
+    document.getElementById('chatHeaderName').textContent = name;
+    document.getElementById('chatHeaderAvatar').src = '{{ asset("") }}' + avatar;
+    
+    const onlineElement = document.getElementById('chatHeaderOnline');
+    const statusDot = document.getElementById('chatHeaderStatus');
+    
+    if (status === 'Online') {
+        onlineElement.innerHTML = '<span class="w-1.5 h-1.5 bg-green-500 rounded-full online-dot"></span> Online';
+        onlineElement.classList.remove('text-gray-400');
+        onlineElement.classList.add('text-green-500');
+        statusDot.classList.remove('hidden');
+    } else {
+        onlineElement.textContent = 'Offline';
+        onlineElement.classList.remove('text-green-500');
+        onlineElement.classList.add('text-gray-400');
+        statusDot.classList.add('hidden');
+    }
+    
+    // Remove unread badge when chat is clicked
+    const badge = element.querySelector('.unread-badge');
+    if (badge) {
+        badge.style.opacity = '0';
+        badge.style.transform = 'scale(0)';
+        setTimeout(() => {
+            badge.remove();
+        }, 300);
+    }
+    
+    // Remove active state from all chat items
+    document.querySelectorAll('.chat-item').forEach(item => {
+        item.classList.remove('bg-gradient-to-r', 'from-blue-50', 'to-indigo-50', 'border-blue-300');
+    });
+    
+    // Add active state to clicked chat
+    element.classList.add('bg-gradient-to-r', 'from-blue-50', 'to-indigo-50', 'border-blue-300');
+}
+
+// Handle photo selection
+function handlePhotoSelect(event) {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imagePreview').src = e.target.result;
+            document.getElementById('imagePreviewContainer').classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Remove image preview
+function removeImagePreview() {
+    document.getElementById('imagePreviewContainer').classList.add('hidden');
+    document.getElementById('photoInput').value = '';
+}
+
+// Handle Enter key
+function handleKeyPress(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+    }
+}
+
+// Send message
+function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const message = input.value.trim();
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const hasImage = !imagePreviewContainer.classList.contains('hidden');
+    
+    if (message || hasImage) {
+        const messagesContainer = document.getElementById('messagesContainer');
+        const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        
+        let messageHTML = `
+            <div class="flex justify-end message-right">
+                <div class="flex gap-2 max-w-[70%] flex-row-reverse">
+                    <img src="{{ asset('images/profile-user.jpg') }}" class="w-8 h-8 rounded-full object-cover ring-2 ring-blue-200 shrink-0">
+                    <div>`;
+        
+        // Add image if present
+        if (hasImage) {
+            const imgSrc = document.getElementById('imagePreview').src;
+            messageHTML += `
+                        <div class="mb-2">
+                            <img src="${imgSrc}" class="max-w-xs rounded-xl shadow-lg border-2 border-blue-200">
+                        </div>`;
+        }
+        
+        // Add text if present
+        if (message) {
+            messageHTML += `
+                        <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 py-3 rounded-2xl rounded-tr-sm shadow-lg hover:shadow-xl transition-shadow">
+                            ${message}
+                        </div>`;
+        }
+        
+        messageHTML += `
+                        <span class="text-xs text-gray-500 mr-2 mt-1 block text-right">${time}</span>
+                    </div>
+                </div>
+            </div>`;
+        
+        messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Clear input
+        input.value = '';
+        input.style.height = 'auto';
+        removeImagePreview();
+        
+        // Simulate reply (for demo)
+        setTimeout(() => {
+            const replyHTML = `
+                <div class="flex message-left">
+                    <div class="flex gap-2 max-w-[70%]">
+                        <img src="${document.getElementById('chatHeaderAvatar').src}" class="w-8 h-8 rounded-full object-cover ring-2 ring-gray-200 shrink-0">
+                        <div>
+                            <div class="bg-white text-gray-900 px-5 py-3 rounded-2xl rounded-tl-sm shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                                <i class="fa-solid fa-circle-notch fa-spin text-gray-400"></i> Sedang mengetik...
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            messagesContainer.insertAdjacentHTML('beforeend', replyHTML);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 1000);
+    }
+}
+
+// Scroll to bottom on load dan auto-select chat jika ada receiver_id
+document.addEventListener('DOMContentLoaded', function() {
+    const messagesContainer = document.getElementById('messagesContainer');
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Auto-select chat jika ada receiver_id di URL
+    const chatList = document.getElementById('chatList');
+    const receiverId = chatList.getAttribute('data-receiver-id');
+    if (receiverId) {
+        const chatItems = chatList.querySelectorAll('.chat-item');
+        chatItems.forEach(item => {
+            if (item.getAttribute('data-user-id') === receiverId) {
+                item.click();
+            }
+        });
+    }
+});
+// Inisialisasi realtime chat setelah DOM siap
+document.addEventListener('DOMContentLoaded', function() {
+    // ...existing code...
+
+    // Ambil user id dari backend (pastikan variabel ini di-passing dari controller)
+    const authUserId = {{ auth()->id() }};
+    // Ambil receiver id dari chat yang sedang dibuka
+    const chatList = document.getElementById('chatList');
+    const receiverId = chatList.getAttribute('data-receiver-id');
+    if (authUserId && receiverId) {
+        window.initRealtimeChat(authUserId, receiverId);
+    }
+});
+
+// Handler pesan baru dari realtime
+window.onRealtimeMessage = function(e) {
+    const messagesContainer = document.getElementById('messagesContainer');
+    // Render pesan baru ke chat
+    let messageHTML = `
+        <div class="flex message-left">
+            <div class="flex gap-2 max-w-[70%]">
+                <img src="{{ asset('images/profile-user.jpg') }}" class="w-8 h-8 rounded-full object-cover ring-2 ring-gray-200 shrink-0">
+                <div>
+                    <div class="bg-white text-gray-900 px-5 py-3 rounded-2xl rounded-tl-sm shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                        ${e.content}
+                    </div>
+                    <span class="text-xs text-gray-500 ml-2 mt-1 block text-left">${new Date(e.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>
+                </div>
+            </div>
+        </div>`;
+    messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+};
+</script>
+>>>>>>> Stashed changes
 @endsection

@@ -68,6 +68,7 @@
             </button>
         </div>
 
+<<<<<<< Updated upstream
         <!-- Profile Section -->
         <div class="flex items-center gap-3 border-t border-gray-200 pt-4 user-info">
             <img src="{{ asset('images/profile-user.jpg') }}" class="w-10 h-10 rounded-full object-cover">
@@ -75,6 +76,55 @@
                 <span class="text-sm font-medium text-gray-800">{{ session('user.name', 'Guest') }}</span>
                 <span class="text-xs text-gray-500">@{{ session('user.username', 'guest') }}</span>
             </div>
+=======
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            @php
+                $menuItems = [
+                    ['Beranda', 'home', 'fa-solid fa-house'],
+                    ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
+                    ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
+                    ['Pesan', 'messages', 'fa-regular fa-envelope'],
+                    ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
+                    ['Profil', 'profile', 'fa-solid fa-user'],
+                ];
+            @endphp
+
+            @foreach($menuItems as $item)
+                <a href="{{ route($item[1]) }}" 
+                   class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-bold transition-all duration-300 relative
+                          {{ request()->routeIs($item[1]) 
+                             ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg' 
+                             : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1' }}">
+                    <i class="{{ $item[2] }} text-xl w-6"></i>
+                    <span>{{ $item[0] }}</span>
+                    @if(request()->routeIs($item[1]))
+                        <span class="absolute right-3 w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                    @endif
+                </a>
+            @endforeach
+        </nav>
+
+        <div class="p-4 border-t-2 border-blue-100">
+            <a href="{{ route('profile') }}" class="flex items-center gap-3 p-3 rounded-xl border-2 border-blue-200 bg-white hover:border-blue-400 hover:ring-2 hover:ring-blue-400 transition-all cursor-pointer group">
+                <div class="relative">
+                    <img src="{{ session('user')['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode(session('user')['name'] ?? 'User') }}" 
+                         alt="Profile" 
+                         class="w-12 h-12 rounded-full ring-2 ring-blue-400 group-hover:ring-4 transition-all object-cover">
+                    <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full animate-pulse"></span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-bold text-gray-900 truncate">{{ session('user')['name'] ?? 'User' }}</p>
+                    <p class="text-sm text-gray-500 truncate">@{{ session('user')['username'] ?? 'username' }}</p>
+                </div>
+            </a>
+            <form action="{{ route('logout') }}" method="POST" class="mt-3">
+                @csrf
+                <button type="submit" class="w-full px-4 py-3 bg-white hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 text-red-600 rounded-xl font-bold border-2 border-red-200 hover:border-red-400 hover:shadow-lg transition-all flex items-center justify-center gap-2 group hover:translate-x-2">
+                    <i class="fa-solid fa-right-from-bracket group-hover:scale-110 transition-transform"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
+>>>>>>> Stashed changes
         </div>
     </aside>
 
