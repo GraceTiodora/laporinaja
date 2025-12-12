@@ -16,7 +16,7 @@
         
         <nav class="flex flex-col gap-2">
             <a href="{{ route('home') }}" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <i class="fa-solid fa-house text-xl"></i>
+                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">=ƒÅá</span>
                 <span class="nav-text leading-none">Home</span>
             </a>
             <a href="{{ route('explore') }}" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
@@ -24,7 +24,7 @@
                 <span class="nav-text leading-none">Explore</span>
             </a>
             <a href="{{ route('notifications') }}" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800 relative">
-                <i class="fa-regular fa-bell text-xl"></i>
+                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">=ƒöö</span>
                 <span class="nav-text leading-none">Notification</span>
                 
                 @php
@@ -43,23 +43,23 @@
                 @endif
             </a>
             <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <i class="fa-regular fa-envelope text-xl"></i>
+                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">=ƒÆ¼</span>
                 <span class="nav-text leading-none">Messages</span>
             </a>
-            <a href="{{ route('reports.index') }}" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <i class="fa-solid fa-clipboard-list text-xl"></i>
+            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
+                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">=ƒôï</span>
                 <span class="nav-text leading-none">My Reports</span>
             </a>
             <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <i class="fa-solid fa-users text-xl"></i>
+                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">=ƒæÑ</span>
                 <span class="nav-text leading-none">Communities</span>
             </a>
             <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <i class="fa-regular fa-user text-xl"></i>
+                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">=ƒæñ</span>
                 <span class="nav-text leading-none">Profile</span>
             </a>
             <a href="#" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg text-base font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-800">
-                <i class="fa-solid fa-ellipsis text-xl"></i>
+                <span class="w-6 h-6 flex items-center justify-center flex-shrink-0 text-xl leading-none">GÜÖn+Å</span>
                 <span class="nav-text leading-none">More</span>
             </a>
         </nav>
@@ -118,7 +118,7 @@
                             <textarea 
                                 id="description" 
                                 name="description" 
-                                rows="8" 
+                                rows="10" 
                                 required
                                 class="w-full px-0 py-2 border-0 focus:ring-0 text-base text-gray-700 placeholder-gray-400 resize-none bg-transparent"
                                 placeholder="Apa yang terjadi?"
@@ -128,64 +128,8 @@
                             @enderror
                         </div>
 
-                        <!-- Title Input -->
-                        <div>
-                            <label for="title" class="block text-base font-bold text-gray-900 mb-3">Judul Laporan :</label>
-                            <input 
-                                type="text" 
-                                id="title" 
-                                name="title" 
-                                required
-                                value="{{ old('title', '') }}"
-                                class="w-full px-4 py-2 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-b-2 focus:border-blue-500 text-base text-gray-700 placeholder-gray-400 bg-transparent transition-colors"
-                                placeholder="Ringkasan masalah Anda"
-                            >
-                            @error('title')
-                                <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Location Input -->
-                        <div>
-                            <label for="location" class="block text-base font-bold text-gray-900 mb-3">Lokasi :</label>
-                            <input 
-                                type="text" 
-                                id="location" 
-                                name="location" 
-                                required
-                                value="{{ old('location', '') }}"
-                                class="w-full px-4 py-2 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-b-2 focus:border-blue-500 text-base text-gray-700 placeholder-gray-400 bg-transparent transition-colors"
-                                placeholder="Alamat / Nama jalan"
-                            >
-                            @error('location')
-                                <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Category Select -->
-                        <div>
-                            <label for="category_id" class="block text-base font-bold text-gray-900 mb-3">Kategori :</label>
-                            <select 
-                                id="category_id" 
-                                name="category_id" 
-                                required
-                                class="w-full px-4 py-2 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-b-2 focus:border-blue-500 text-base text-gray-700 bg-transparent transition-colors"
-                            >
-                                <option value="">-- Pilih Kategori --</option>
-                                @if(isset($categories) && is_array($categories) && count($categories) > 0)
-                                    @foreach($categories as $cat)
-                                        <option value="{{ $cat['id'] ?? $cat->id }}" {{ old('category_id') == ($cat['id'] ?? $cat->id) ? 'selected' : '' }}>
-                                            {{ $cat['name'] ?? $cat->name }}
-                                        </option>
-                                    @endforeach
-                                @else
-                                    <option disabled>Kategori tidak tersedia</option>
-                                @endif
-                            </select>
-                            @error('category_id')
-                                <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        <!-- Hidden Title (auto-generated) -->
+                        <input type="hidden" name="title" id="title" value="Laporan Baru">
 
                         <!-- Image Preview -->
                         <div id="imagePreview" class="hidden">
@@ -218,7 +162,10 @@
                             class="p-3 text-blue-500 hover:bg-blue-50 rounded-lg transition"
                             title="Upload Foto"
                         >
-                            <i class="fa-solid fa-camera text-xl"></i>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 15.2c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                <path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm11 14H4V6h4.05l1.83-2h4.24l1.83 2H20v10z"/>
+                            </svg>
                         </button>
 
                         <!-- Image Icon -->
@@ -228,7 +175,9 @@
                             class="p-3 text-blue-500 hover:bg-blue-50 rounded-lg transition"
                             title="Upload Gambar"
                         >
-                            <i class="fa-regular fa-image text-xl"></i>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                            </svg>
                         </button>
 
                         <!-- Location Icon -->
@@ -237,7 +186,9 @@
                             class="p-3 text-blue-500 hover:bg-blue-50 rounded-lg transition"
                             title="Tambah Lokasi"
                         >
-                            <i class="fa-solid fa-location-dot text-xl"></i>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
                         </button>
 
                         <!-- Tag Icon -->
@@ -246,7 +197,9 @@
                             class="p-3 text-blue-500 hover:bg-blue-50 rounded-lg transition"
                             title="Tambah Tag"
                         >
-                            <i class="fa-solid fa-tag text-xl"></i>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
+                            </svg>
                         </button>
 
                         <!-- Edit Icon -->
@@ -255,7 +208,9 @@
                             class="p-3 text-blue-500 hover:bg-blue-50 rounded-lg transition"
                             title="Edit"
                         >
-                            <i class="fa-solid fa-pen text-xl"></i>
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -268,42 +223,54 @@
         <section class="mb-8">
             <h2 class="text-lg font-semibold text-gray-800 mb-4">Masalah Urgent</h2>
             <ul class="space-y-0">
-                @forelse($importantReports as $report)
-                    <li class="flex justify-between items-center py-3 border-b border-gray-100">
-                        <div>
-                            <p class="text-sm font-medium text-gray-800">{{ $report['title'] ?? 'Laporan' }}</p>
-                            <p class="text-xs text-gray-500">{{ $report['location'] ?? 'Tidak ditentukan' }}</p>
-                        </div>
-                        <span class="text-sm font-bold text-red-600">{{ $report['vote_count'] ?? 0 }} Votes</span>
-                    </li>
-                @empty
-                    <li class="py-3 text-sm text-gray-500">Belum ada laporan urgent</li>
-                @endforelse
+                <li class="flex justify-between items-center py-3 border-b border-gray-100">
+                    <div>
+                        <p class="text-sm font-medium text-gray-800">Jalan Rusak</p>
+                        <p class="text-xs text-gray-500">Jl. Melati</p>
+                    </div>
+                    <span class="text-sm font-bold text-red-600">128 Votes</span>
+                </li>
+                <li class="flex justify-between items-center py-3 border-b border-gray-100">
+                    <div>
+                        <p class="text-sm font-medium text-gray-800">Sampah Menumpuk</p>
+                        <p class="text-xs text-gray-500">Pasar Baru</p>
+                    </div>
+                    <span class="text-sm font-bold text-red-600">96 Votes</span>
+                </li>
+                <li class="flex justify-between items-center py-3 border-b border-gray-100">
+                    <div>
+                        <p class="text-sm font-medium text-gray-800">Lampu Jalan Mati</p>
+                        <p class="text-xs text-gray-500">RT 05</p>
+                    </div>
+                    <span class="text-sm font-bold text-red-600">54 Votes</span>
+                </li>
             </ul>
         </section>
 
         <section>
             <h2 class="text-lg font-semibold text-gray-800 mb-4">Masalah Trending</h2>
             <ul class="space-y-0">
-                @forelse($trendingReports as $report)
-                    <li class="flex justify-between items-center py-3 border-b border-gray-100">
-                        <div>
-                            <p class="text-sm font-medium text-gray-800">{{ $report['title'] ?? 'Laporan' }}</p>
-                            <p class="text-xs text-gray-500">{{ $report['category']['name'] ?? 'Umum' }}</p>
-                        </div>
-                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
-                            @if(($report['vote_count'] ?? 0) > 50)
-                                Urgent
-                            @elseif(($report['vote_count'] ?? 0) > 20)
-                                Medium
-                            @else
-                                Low
-                            @endif
-                        </span>
-                    </li>
-                @empty
-                    <li class="py-3 text-sm text-gray-500">Belum ada laporan trending</li>
-                @endforelse
+                <li class="flex justify-between items-center py-3 border-b border-gray-100">
+                    <div>
+                        <p class="text-sm font-medium text-gray-800">Infrastruktur Jalan</p>
+                        <p class="text-xs text-gray-500">5 laporan hari ini</p>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-700">Urgent</span>
+                </li>
+                <li class="flex justify-between items-center py-3 border-b border-gray-100">
+                    <div>
+                        <p class="text-sm font-medium text-gray-800">Sampah Menumpuk</p>
+                        <p class="text-xs text-gray-500">Pasar Baru</p>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">Medium</span>
+                </li>
+                <li class="flex justify-between items-center py-3">
+                    <div>
+                        <p class="text-sm font-medium text-gray-800">Lampu Jalan Mati</p>
+                        <p class="text-xs text-gray-500">RT 05</p>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Low</span>
+                </li>
             </ul>
         </section>
     </aside>

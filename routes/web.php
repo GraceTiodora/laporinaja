@@ -3,9 +3,48 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\ExploreController;  // ← TAMBAH INI
+use App\Http\Controllers\ExploreController;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\VoteController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\DebugController;
 use App\Models\Report;
+use App\Models\User;
 
+// ======= SIMPLE LOGIN FOR TESTING =======
+Route::get('/simple-login', function () {
+    return view('auth.simple_login');
+})->name('simple-login');
+
+Route::post('/simple-login', function (Illuminate\Http\Request $request) {
+    $request->validate([
+        'email' => 'required|email|exists:users,email',
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+    if (!$user) {
+        return back()->withErrors(['email' => 'User tidak ditemukan']);
+    }
+
+    // Set session
+    session([
+        'user' => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role ?? 'user',
+        ],
+        'authenticated' => true,
+    ]);
+
+    return redirect('/')->with('success', 'Berhasil login sebagai ' . $user->name);
+})->name('simple-login-submit');
+
+Route::post('/logout', function () {
+    session()->flush();
+    return redirect('/')->with('success', 'Berhasil logout');
+})->name('logout');
  
 Route::get('/', function () {
     // load latest reports from database and map to the frontend structure
@@ -66,58 +105,17 @@ Route::get('/', function () {
     }
 
     return session()->has('user')
-        ? view('warga.homepage', [
+        ? view('homepage_auth', [
             'dbReports' => $dbReports,
             'topReports' => $topReports,
             'trendingCategories' => $trendingCategories
         ])
-        : view('warga.homepage', [
+        : view('homepage', [
             'dbReports' => $dbReports,
             'topReports' => $topReports,
             'trendingCategories' => $trendingCategories
         ]);
 })->name('home');
-
-Route::get('/profile', function () {
-    if (!session()->has('user')) {
-        return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
-    }
-
-    $userId = session('user.id');
-    $user = App\Models\User::find($userId);
-    
-    if (!$user) {
-        return redirect()->route('login')->with('error', 'User tidak ditemukan.');
-    }
-    
-    // Get user's reports
-    $reports = App\Models\Report::where('user_id', $userId)
-        ->with('category')
-        ->latest()
-        ->get();
-    
-    // Get user's comments
-    $comments = App\Models\Comment::where('user_id', $userId)->with('report.user')->latest()->get();
-    
-    // Get user's votes
-    $votes = App\Models\Vote::where('user_id', $userId)->latest()->get();
-    
-    // Calculate stats
-    $stats = [
-        'reports_sent' => $reports->count(),
-        'issues_resolved' => $reports->where('status', 'Selesai')->count(),
-        'community_posts' => $comments->count(),
-        'vote_helps' => $votes->where('is_upvote', 1)->count(),
-    ];
-    
-    return view('warga.profile', [
-        'user' => $user,
-        'reports' => $reports,
-        'comments' => $comments,
-        'votes' => $votes,
-        'stats' => $stats,
-    ]);
-})->name('profile');
 
 // Auth Routes
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -125,21 +123,55 @@ Route::post('login', [AuthController::class, 'login'])->name('login.post');
 
 Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('register', [AuthController::class, 'register'])->name('register.post');
+Route::get('register/reset', function() {
+    session()->forget('temp_register');
+    return redirect()->route('register')->with('info', 'Silakan coba lagi dengan email yang berbeda');
+})->name('register.reset');
 
 Route::get('register/password', [AuthController::class, 'showPasswordForm'])->name('register.password.form');
 Route::post('register/password', [AuthController::class, 'storePassword'])->name('register.password');
 
+// Simple register (1 halaman, lebih mudah)
+Route::get('register-simple', [AuthController::class, 'showSimpleRegisterForm'])->name('register.simple');
+Route::post('register-simple', [AuthController::class, 'storeSimpleRegister'])->name('register.simple.store');
+
+Route::get('test-register', [AuthController::class, 'testRegisterForm'])->name('test.register.form');
+Route::post('test-register', [AuthController::class, 'testRegisterStore'])->name('test.register.store');
+
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
+// Debug routes
+Route::prefix('debug')->group(function () {
+    Route::get('register', [DebugController::class, 'testRegister'])->name('debug.register');
+    Route::post('api/register', [DebugController::class, 'apiRegisterTest'])->name('debug.api.register');
+    Route::get('health', [DebugController::class, 'checkHealth'])->name('debug.health');
+});
 
 Route::get('explore', [ExploreController::class, 'index'])->name('explore');
 
 // Reports Routes
+Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
 Route::get('reports/create', [ReportController::class, 'create'])->name('reports.create');
 Route::post('reports', [ReportController::class, 'store'])->name('reports.store');
+
+// Test Report Form (untuk debugging)
+Route::get('test-post-report', function() {
+    try {
+        $categories = \App\Models\Category::all()->map(function($cat) {
+            return [
+                'id' => $cat->id,
+                'name' => $cat->name,
+            ];
+        })->toArray();
+    } catch (\Exception $e) {
+        $categories = [];
+    }
+    return view('test-post-report', compact('categories'));
+})->name('test.post.report');
+
 Route::get('/reports/{id}', [ReportController::class, 'show'])->name('reports.show');
-Route::post('/reports/{id}/vote', [ReportController::class, 'vote'])->name('reports.vote');
-Route::post('/reports/{id}/comment', [ReportController::class, 'addComment'])->name('reports.comment');
+Route::post('/votes', [VoteController::class, 'store'])->name('reports.vote');
+Route::post('/comments', [CommentController::class, 'store'])->name('reports.comment');
 Route::get('/reports/{id}/edit', [ReportController::class, 'edit'])->name('reports.edit');
 Route::put('/reports/{id}', [ReportController::class, 'update'])->name('reports.update');
 Route::delete('/reports/{id}', [ReportController::class, 'destroy'])->name('reports.destroy');
@@ -147,8 +179,6 @@ Route::delete('/reports/{id}', [ReportController::class, 'destroy'])->name('repo
 Route::get('login/google', function () {
     return redirect()->route('login')->with('error', 'Login dengan Google belum dikonfigurasi.');
 })->name('login.google');
-
-Route::post('profile/update', [AuthController::class, 'updateProfile'])->name('profile.update');
 
 use App\Http\Controllers\NotificationController;
 
@@ -161,7 +191,7 @@ Route::get('/messages', function () {
 })->name('messages');
 
 
-Route::get('my-reports', [ReportController::class, 'myReports'])->name('my-reports');
+Route::get('my-reports', [UserDashboardController::class, 'myReports'])->name('my-reports');
 
 
 Route::get('/communities', function () {
@@ -259,3 +289,63 @@ Route::prefix('admin')->group(function () {
         return view('admin.pengaturan');
     })->name('admin.pengaturan');
 });
+
+// Test API Connection
+Route::get('/test-api', [TestController::class, 'testConnection'])->name('test.api');
+Route::get('/test', [TestController::class, 'show'])->name('test.show');
+Route::get('/test-login', [TestController::class, 'testLogin'])->name('test.login');
+Route::get('/test-register', [TestController::class, 'testRegister'])->name('test.register');
+
+// Vote Routes (authenticated)
+Route::middleware('web')->post('/votes', [VoteController::class, 'store'])->name('votes.store');
+
+// Comment Routes (authenticated)
+Route::middleware('web')->post('/comments', [CommentController::class, 'store'])->name('comments.store');
+Route::middleware('web')->get('/comments/{reportId}', [CommentController::class, 'index'])->name('comments.index');
+
+// User Dashboard Routes
+Route::middleware('web')->group(function () {
+    Route::put('/profile', [UserDashboardController::class, 'updateProfile'])->name('profile.update');
+});
+
+// Profile Route (setelah middleware web routes, agar tidak conflict)
+Route::get('/profile', function () {
+    if (!session()->has('user')) {
+        return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+    }
+
+    $userId = session('user.id');
+    $user = App\Models\User::find($userId);
+    
+    if (!$user) {
+        return redirect()->route('login')->with('error', 'User tidak ditemukan.');
+    }
+    
+    // Get user's reports
+    $reports = App\Models\Report::where('user_id', $userId)
+        ->with('category')
+        ->latest()
+        ->get();
+    
+    // Get user's comments
+    $comments = App\Models\Comment::where('user_id', $userId)->with('report.user')->latest()->get();
+    
+    // Get user's votes
+    $votes = App\Models\Vote::where('user_id', $userId)->latest()->get();
+    
+    // Calculate stats
+    $stats = [
+        'reports_sent' => $reports->count(),
+        'issues_resolved' => $reports->where('status', 'Selesai')->count(),
+        'community_posts' => $comments->count(),
+        'vote_helps' => $votes->where('is_upvote', 1)->count(),
+    ];
+    
+    return view('warga.profile', [
+        'user' => $user,
+        'reports' => $reports,
+        'comments' => $comments,
+        'votes' => $votes,
+        'stats' => $stats,
+    ]);
+})->name('profile');

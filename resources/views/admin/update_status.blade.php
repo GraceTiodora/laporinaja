@@ -123,8 +123,8 @@
                         <h2 class="text-xl font-bold text-gray-900">Update Status Laporan</h2>
                         <p class="text-sm text-gray-500 mt-1">Perbarui status laporan dan notifikasi akan dikirim kepada pelapor.</p>
                     </div>
-                    <a href="{{ route('admin.verifikasi.detail', $report->id_report) }}" class="text-gray-400 hover:text-gray-600 transition-colors ml-4">
-                        <i class="fa-solid fa-times text-xl"></i>
+                    <a href="{{ route('admin.verifikasi.detail', $report->id) }}" class="text-gray-400 hover:text-gray-600 transition-colors ml-4">
+                        <i class="fa-solid fa-eye text-lg"></i>
                     </a>
                 </div>
 
@@ -161,7 +161,7 @@
                 {{-- Modal Footer --}}
                 <div class="bg-gray-50 border-t border-gray-200 p-6 rounded-b-2xl">
                     <div class="flex items-center gap-3">
-                        <a href="{{ route('admin.verifikasi.detail', $report->id_report) }}" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all text-center">
+                        <a href="{{ route('admin.verifikasi.detail', $report->id) }}" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all text-center">
                             Batal
                         </a>
                         <button type="button" onclick="validateAndUpdate()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-all">

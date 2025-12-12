@@ -119,8 +119,8 @@
                         <h2 class="text-xl font-bold text-gray-900">Tolak Laporan</h2>
                         <p class="text-sm text-gray-500 mt-1">Laporan akan ditolak dan notifikasi beserta alasan akan dikirim kepada pelapor.</p>
                     </div>
-                    <a href="{{ route('admin.verifikasi.detail', $report->id_report) }}" class="text-gray-400 hover:text-gray-600 transition-colors ml-4">
-                        <i class="fa-solid fa-times text-xl"></i>
+                    <a href="{{ route('admin.verifikasi.detail', $report->id) }}" class="text-gray-400 hover:text-gray-600 transition-colors ml-4">
+                        <i class="fa-solid fa-eye text-lg"></i>
                     </a>
                 </div>
 
@@ -150,7 +150,7 @@
                 {{-- Modal Footer --}}
                 <div class="bg-gray-50 border-t border-gray-200 p-6 rounded-b-2xl">
                     <div class="flex items-center gap-3">
-                        <a href="{{ route('admin.verifikasi.detail', $report->id_report) }}" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all text-center no-underline">
+                        <a href="{{ route('admin.verifikasi.detail', $report->id) }}" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all text-center no-underline">
                             Batal
                         </a>
                         <button type="button" onclick="validateAndReject()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all">

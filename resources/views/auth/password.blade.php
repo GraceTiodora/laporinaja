@@ -25,6 +25,11 @@
                     {{ session('error') }}
                 </div>
             @endif
+
+            <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-lg text-xs">
+                <p><strong>Email:</strong> {{ session('temp_register.email') }}</p>
+                <a href="{{ route('register.reset') }}" class="text-blue-600 hover:underline text-xs">Gunakan email lain</a>
+            </div>
  
             <div>
                 <label for="password" class="block text-gray-800 font-semibold mb-2 text-sm">Kata Sandi</label>

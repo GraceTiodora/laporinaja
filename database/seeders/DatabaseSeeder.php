@@ -5,126 +5,165 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Report;
-use App\Models\Comment;
-use App\Models\Solution;
-use App\Models\Vote;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * MASTER SEEDER - Setup aplikasi dengan data initial yang konsisten
      */
     public function run(): void
     {
-        // Seed Users
-        $users = User::factory(5)->create();
+        // 1. Seed Users
+        $this->seedUsers();
 
-        // Seed Admin user
+        // 2. Seed Categories
+        $this->seedCategories();
+
+        // 3. Seed Reports
+        $this->seedReports();
+    }
+
+    private function seedUsers(): void
+    {
         User::create([
-            'name' => 'Administrator',
-            'email' => 'admin@laporinaja.com',
-            'password' => Hash::make('admin123'),
-            'role' => 'admin',
-            'email_verified_at' => now(),
+            'name' => 'Seprian Siagian',
+            'email' => 'seprian@test.com',
+            'password' => bcrypt('password'),
+            'role' => 'user',
+            'bio' => 'Pengguna aktif platform',
+            'phone' => '081234567890',
+            'reputation' => 45,
         ]);
 
-        // Seed Categories with fixed names
+        User::create([
+            'name' => 'Budi Santoso',
+            'email' => 'budi@test.com',
+            'password' => bcrypt('password'),
+            'role' => 'user',
+            'bio' => 'Warga yang peduli lingkungan',
+            'phone' => '081234567891',
+            'reputation' => 32,
+        ]);
+
+        User::create([
+            'name' => 'Ani Wijaya',
+            'email' => 'ani@test.com',
+            'password' => bcrypt('password'),
+            'role' => 'user',
+            'bio' => 'Aktivis sosial',
+            'phone' => '081234567892',
+            'reputation' => 28,
+        ]);
+
+        User::create([
+            'name' => 'Rini Kusuma',
+            'email' => 'rini@test.com',
+            'password' => bcrypt('password'),
+            'role' => 'admin',
+            'bio' => 'Administrator platform',
+            'phone' => '081234567893',
+            'reputation' => 100,
+        ]);
+
+        User::create([
+            'name' => 'Admin',
+            'email' => 'admin@test.com',
+            'password' => bcrypt('admin123'),
+            'role' => 'admin',
+            'bio' => 'Super Admin',
+            'reputation' => 150,
+        ]);
+    }
+
+    private function seedCategories(): void
+    {
         $categories = [
-            'Infrastruktur' => 'Masalah infrastruktur',
-            'Keamanan' => 'Masalah keamanan publik',
-            'Sanitasi' => 'Masalah sanitasi dan kebersihan',
-            'Taman' => 'Masalah taman dan ruang hijau',
-            'Aksesibilitas' => 'Masalah aksesibilitas',
+            ['name' => 'Jalan Rusak', 'description' => 'Laporan kerusakan jalan dan infrastruktur'],
+            ['name' => 'Sampah Menumpuk', 'description' => 'Laporan sampah yang tidak diangkut'],
+            ['name' => 'Air Kotor', 'description' => 'Laporan pencemaran air'],
+            ['name' => 'Kebakaran', 'description' => 'Laporan kebakaran atau potensi kebakaran'],
+            ['name' => 'Banjir', 'description' => 'Laporan banjir atau genangan air'],
+            ['name' => 'Kemacetan', 'description' => 'Laporan kemacetan lalu lintas'],
+            ['name' => 'Polusi Udara', 'description' => 'Laporan polusi udara'],
+            ['name' => 'Keamanan', 'description' => 'Laporan keamanan dan ketertiban'],
+            ['name' => 'Fasilitas Publik', 'description' => 'Laporan kerusakan fasilitas publik'],
+            ['name' => 'Lainnya', 'description' => 'Kategori lainnya'],
         ];
 
-        foreach ($categories as $name => $description) {
+        foreach ($categories as $cat) {
             Category::create([
-                'name' => $name,
-                'slug' => str()->slug($name),
-                'description' => $description,
+                'name' => $cat['name'],
+                'slug' => str()->slug($cat['name']),
+                'description' => $cat['description'],
+                'icon' => 'fa-' . str()->slug($cat['name']),
             ]);
         }
+    }
 
+    private function seedReports(): void
+    {
+        $users = User::where('role', 'user')->get();
         $categories = Category::all();
 
-        // Seed Reports with images
-        $reports = [];
-        $imageUrls = [
-            'https://via.placeholder.com/600x400?text=Infrastructure+Issue',
-            'https://via.placeholder.com/600x400?text=Health+Concern',
-            'https://via.placeholder.com/600x400?text=Education+Problem',
-            'https://via.placeholder.com/600x400?text=Environment+Issue',
-            'https://via.placeholder.com/600x400?text=Safety+Concern',
-            'https://via.placeholder.com/600x400?text=Road+Damage',
-            'https://via.placeholder.com/600x400?text=Garbage+Issue',
-            'https://via.placeholder.com/600x400?text=Water+Problem',
-            'https://via.placeholder.com/600x400?text=Power+Issue',
-            'https://via.placeholder.com/600x400?text=Public+Service',
-        ];
+        // Report 1
+        Report::create([
+            'user_id' => $users[0]->id,
+            'category_id' => $categories->where('name', 'Jalan Rusak')->first()->id,
+            'title' => 'Lubang di Jalan Utama',
+            'description' => 'Ada lubang besar di jalan utama yang membahayakan pengendara motor. Sudah ada beberapa kecelakaan kecil.',
+            'location' => 'Jl. Merdeka No. 45, Kampus Timur',
+            'status' => 'Baru',
+            'upvotes' => 5,
+            'downvotes' => 0,
+        ]);
 
-        for ($i = 0; $i < 10; $i++) {
-            $reports[] = Report::create([
-                'user_id' => $users->random()->id,
-                'category_id' => $categories->random()->id,
-                'title' => fake()->sentence(),
-                'description' => fake()->paragraphs(3, true),
-                'location' => fake()->address(),
-                'image' => $imageUrls[$i % count($imageUrls)],
-                'status' => fake()->randomElement(['pending', 'in_progress', 'resolved', 'rejected']),
-                'upvotes' => fake()->numberBetween(0, 50),
-                'downvotes' => fake()->numberBetween(0, 20),
-                'resolved_at' => fake()->optional(0.3)->dateTime(),
-            ]);
-        }
+        // Report 2
+        Report::create([
+            'user_id' => $users[1]->id,
+            'category_id' => $categories->where('name', 'Sampah Menumpuk')->first()->id,
+            'title' => 'Sampah Tidak Diangkut Seminggu',
+            'description' => 'Sampah di area sekitar sudah tidak diangkut selama seminggu. Bau yang tidak sedap dan menarik tikus.',
+            'location' => 'Jl. Diponegoro, Blok C',
+            'status' => 'Diproses',
+            'upvotes' => 8,
+            'downvotes' => 1,
+        ]);
 
-        // Seed Comments
-        foreach ($reports as $report) {
-            for ($i = 0; $i < fake()->numberBetween(1, 5); $i++) {
-                Comment::create([
-                    'report_id' => $report->id,
-                    'user_id' => $users->random()->id,
-                    'content' => fake()->sentence(20),
-                    'upvotes' => fake()->numberBetween(0, 30),
-                    'downvotes' => fake()->numberBetween(0, 10),
-                ]);
-            }
-        }
+        // Report 3
+        Report::create([
+            'user_id' => $users[2]->id,
+            'category_id' => $categories->where('name', 'Air Kotor')->first()->id,
+            'title' => 'Air Sumur Tercemar Oli',
+            'description' => 'Air sumur bor berubah warna kuning kecoklatan dan berbau. Diduga ada kebocoran dari tempat penyimpanan oli.',
+            'location' => 'Perumahan Indah Jaya, RT 05',
+            'status' => 'Baru',
+            'upvotes' => 12,
+            'downvotes' => 2,
+        ]);
 
-        // Seed Solutions
-        foreach ($reports as $report) {
-            for ($i = 0; $i < fake()->numberBetween(0, 3); $i++) {
-                Solution::create([
-                    'report_id' => $report->id,
-                    'user_id' => $users->random()->id,
-                    'description' => fake()->paragraphs(2, true),
-                    'upvotes' => fake()->numberBetween(0, 40),
-                    'downvotes' => fake()->numberBetween(0, 15),
-                    'is_accepted' => fake()->boolean(20),
-                ]);
-            }
-        }
+        // Report 4
+        Report::create([
+            'user_id' => $users[0]->id,
+            'category_id' => $categories->where('name', 'Fasilitas Publik')->first()->id,
+            'title' => 'Lampu Taman Mati Sudah Berbulan-bulan',
+            'description' => 'Semua lampu di taman kota sudah tidak menyala selama 3 bulan. Area menjadi gelap dan tidak aman malam hari.',
+            'location' => 'Taman Kota, Jl. Sudirman',
+            'status' => 'Diproses',
+            'upvotes' => 6,
+            'downvotes' => 0,
+        ]);
 
-        // Seed Votes
-        foreach ($reports as $report) {
-            $userIds = $users->pluck('id')->toArray();
-            $votedUsers = [];
-            
-            for ($i = 0; $i < fake()->numberBetween(1, min(count($userIds), 8)); $i++) {
-                do {
-                    $userId = $userIds[array_rand($userIds)];
-                } while (in_array($userId, $votedUsers));
-                
-                $votedUsers[] = $userId;
-                
-                Vote::create([
-                    'user_id' => $userId,
-                    'votable_id' => $report->id,
-                    'votable_type' => Report::class,
-                    'is_upvote' => fake()->boolean(70),
-                ]);
-            }
-        }
+        // Report 5
+        Report::create([
+            'user_id' => $users[1]->id,
+            'category_id' => $categories->where('name', 'Kemacetan')->first()->id,
+            'title' => 'Macet Parah di Simpang Empat Setiap Jam 5-6 Sore',
+            'description' => 'Setiap hari kerja dari jam 5 sampai 6 sore, simpang empat utama macet parah. Tidak ada pengatur lalu lintas.',
+            'location' => 'Simpang Empat, Jl. Ahmad Yani',
+            'status' => 'Baru',
+            'upvotes' => 3,
+            'downvotes' => 0,
+        ]);
     }
 }

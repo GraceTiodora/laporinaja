@@ -2,274 +2,277 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Report;
+use App\Services\ApiClient;
 use App\Models\Category;
+use App\Models\Report;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    /**
-     * Show create report form
-     */
-    public function create()
-    {
-        if (!session()->has('user')) {
-            session(['intended_url' => route('reports.create')]);
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu untuk membuat laporan.');
-        }
+    protected $api;
 
-        $categories = Category::all();
-        return view('warga.create_report', ['categories' => $categories]);
+    public function __construct(ApiClient $api)
+    {
+        $this->api = $api;
     }
 
-    /**
-     * Store report to database
-     */
-    public function store(Request $request)
+    public function index(Request $request)
     {
-        if (!session()->has('user')) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+        try {
+            $params = [];
+            if ($request->has('category')) {
+                $params['category'] = $request->category;
+            }
+            if ($request->has('status')) {
+                $params['status'] = $request->status;
+            }
+            if ($request->has('search')) {
+                $params['search'] = $request->search;
+            }
+
+            $response = $this->api->get('reports', $params);
+            
+            if ($response->successful()) {
+                $reports = $response->json()['data'];
+                return view('reports.index', compact('reports'));
+            }
+
+            return redirect('/')->with('error', 'Gagal memuat laporan');
+        } catch (\Exception $e) {
+            return redirect('/')->with('error', 'Koneksi gagal');
+        }
+    }
+
+    public function create()
+    {
+        if (!session('authenticated')) {
+            return redirect('/login')->with('error', 'Silakan login terlebih dahulu');
         }
 
-        $data = $request->validate([
-            'title'       => 'required|string|max:255',
+        try {
+            // Try to fetch from API first, fallback to local database
+            $categories = [];
+            $importantReports = [];
+            $trendingReports = [];
+
+            try {
+                $categoriesResponse = $this->api->get('categories');
+                if ($categoriesResponse->successful()) {
+                    $categories = $categoriesResponse->json()['data'];
+                }
+            } catch (\Exception $e) {
+                // Fallback: get from local database
+            }
+
+            // If API failed or no categories, use local database
+            if (empty($categories)) {
+                $categories = Category::all()->map(function($cat) {
+                    return [
+                        'id' => $cat->id,
+                        'name' => $cat->name,
+                    ];
+                })->toArray();
+            }
+
+            // Fetch reports for sidebar
+            try {
+                $reportsResponse = $this->api->get('reports');
+                if ($reportsResponse->successful()) {
+                    $allReports = $reportsResponse->json()['data'];
+                    $importantReports = array_slice($allReports, 0, 3);
+                    $trendingReports = array_slice($allReports, 0, 3);
+                }
+            } catch (\Exception $e) {
+                // Fallback to local database
+            }
+
+            if (empty($importantReports)) {
+                $localReports = Report::with('user', 'category')
+                    ->latest()
+                    ->take(6)
+                    ->get()
+                    ->map(function($r) {
+                        return [
+                            'id' => $r->id,
+                            'title' => $r->title,
+                            'location' => $r->location,
+                            'category' => $r->category->name ?? 'Umum',
+                            'status' => $r->status ?? 'Baru',
+                            'user' => ['name' => $r->user->name ?? 'Anonymous'],
+                        ];
+                    })->toArray();
+
+                $importantReports = array_slice($localReports, 0, 3);
+                $trendingReports = array_slice($localReports, 3, 3);
+            }
+
+            return view('create_report', compact('categories', 'importantReports', 'trendingReports'));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memuat data: ' . $e->getMessage());
+        }
+    }
+
+    public function store(Request $request)
+    {
+        if (!session('authenticated')) {
+            return redirect('/login')->with('error', 'Silakan login terlebih dahulu');
+        }
+
+        $request->validate([
+            'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'location'    => 'nullable|string|max:255',
-            'category_id' => 'nullable|exists:categories,id',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'location' => 'required|string|max:255',
+            'category_id' => 'required|integer',
+            'image' => 'nullable|max:2048'
         ]);
 
         try {
-            $userId = session('user.id');
-            
-            // Debug: check if user_id exists
-            if (!$userId) {
-                return back()->withInput()->with('error', 'User ID tidak ditemukan. Silakan login ulang.');
-            }
+            $data = [
+                'title' => $request->title,
+                'description' => $request->description,
+                'location' => $request->location,
+                'category_id' => $request->category_id,
+            ];
 
             $imagePath = null;
-
-            if ($request->hasFile('image')) {
-                $filename = time() . '_' . $request->file('image')->getClientOriginalName();
-                
-                if (!file_exists(public_path('images/reports'))) {
-                    mkdir(public_path('images/reports'), 0777, true);
+            if ($request->hasFile('image') && $request->file('image')->isValid()) {
+                try {
+                    $imagePath = $request->file('image')->store('reports', 'public');
+                    $data['image'] = $imagePath;
+                } catch (\Exception $fileError) {
+                    // Skip image if upload fails
                 }
-
-                $request->file('image')->move(public_path('images/reports'), $filename);
-                $imagePath = 'images/reports/' . $filename;
             }
 
+            // Try API first
+            try {
+                $response = $this->api->post('reports', $data);
+                if ($response->successful()) {
+                    return redirect('/')->with('success', '✅ Laporan berhasil dibuat!');
+                }
+            } catch (\Exception $apiError) {
+                // Fallback to local database
+            }
+
+            // Fallback: Save to local database
             $report = Report::create([
-                'user_id' => $userId,
-                'category_id' => $data['category_id'] ?? null,
-                'title' => $data['title'],
-                'description' => $data['description'],
-                'location' => $data['location'],
+                'user_id' => session('user.id'),
+                'category_id' => $request->category_id,
+                'title' => $request->title,
+                'description' => $request->description,
+                'location' => $request->location,
                 'image' => $imagePath,
                 'status' => 'Baru',
             ]);
 
-            return redirect()->route('home')->with('success', 'Laporan berhasil dikirim!');
+            return redirect('/')->with('success', '✅ Laporan berhasil dibuat! Lihat di beranda.');
         } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return back()->withInput()->with('error', '❌ Gagal membuat laporan: ' . $e->getMessage());
         }
     }
 
-    /**
-     * Show all reports
-     */
-    public function index()
-    {
-        $reports = Report::with('user', 'category')->latest()->paginate(10);
-        return view('explore', ['reports' => $reports]);
-    }
-
-    /**
-     * Show single report detail
-     */
     public function show($id)
     {
-        $reportModel = Report::with('user', 'category', 'comments.user', 'solutions', 'votes')->findOrFail($id);
-        
-        // Transform to array format for view compatibility
-        $report = [
-            'id' => $reportModel->id,
-            'title' => $reportModel->title,
-            'description' => $reportModel->description,
-            'location' => $reportModel->location,
-            'status' => $reportModel->status ?? 'Baru',
-            'image' => $reportModel->image,
-            'created_at' => $reportModel->created_at->diffForHumans(),
-            'votes' => $reportModel->votes()->where('is_upvote', 1)->count(),
-            'downvotes' => $reportModel->votes()->where('is_upvote', 0)->count(),
-            'comments' => $reportModel->comments->count(),
-            'user' => [
-                'id' => $reportModel->user->id,
-                'name' => $reportModel->user->name,
-                'username' => $reportModel->user->email,
-            ],
-            'category' => $reportModel->category->name ?? 'Umum',
-        ];
-        
-        return view('detail_reports', ['report' => $report, 'reportModel' => $reportModel]);
-    }
+        try {
+            $response = $this->api->get('reports/' . $id);
+            
+            if ($response->successful()) {
+                $report = $response->json()['data'];
+                
+                // Debug: Log response structure
+                \Log::info('Report Detail Response', [
+                    'response_json' => $response->json(),
+                    'report_data' => $report,
+                    'report_keys' => array_keys($report ?? []),
+                ]);
+                
+                return view('reports.show', compact('report'));
+            }
 
-    /**
-     * Show my reports
-     */
-    public function myReports()
-    {
-        if (!session()->has('user')) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+            return redirect('/reports')->with('error', 'Laporan tidak ditemukan');
+        } catch (\Exception $e) {
+            return redirect('/reports')->with('error', 'Koneksi gagal');
         }
-
-        $reports = Report::where('user_id', session('user.id'))
-                        ->with('category')
-                        ->latest()
-                        ->paginate(10);
-        
-        return view('warga.my_reports', ['reports' => $reports]);
     }
 
-    /**
-     * Edit report form
-     */
     public function edit($id)
     {
-        $report = Report::findOrFail($id);
-
-        if ($report->user_id !== session('user.id')) {
-            return redirect()->back()->with('error', 'Anda tidak bisa mengedit laporan orang lain.');
+        if (!session('authenticated')) {
+            return redirect('/login');
         }
 
-        $categories = Category::all();
-        return view('warga.edit_report', ['report' => $report, 'categories' => $categories]);
+        try {
+            $reportResponse = $this->api->get('reports/' . $id);
+            $categoriesResponse = $this->api->get('categories');
+
+            if (!$reportResponse->successful()) {
+                return redirect('/reports')->with('error', 'Laporan tidak ditemukan');
+            }
+
+            $report = $reportResponse->json()['data'];
+            $categories = $categoriesResponse->successful() ? $categoriesResponse->json()['data'] : [];
+
+            return view('reports.edit', compact('report', 'categories'));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memuat laporan');
+        }
     }
 
-    /**
-     * Update report
-     */
     public function update(Request $request, $id)
     {
-        $report = Report::findOrFail($id);
-
-        if ($report->user_id !== session('user.id')) {
-            return redirect()->back()->with('error', 'Anda tidak bisa mengedit laporan orang lain.');
-        }
-
-        $data = $request->validate([
-            'title'       => 'required|string|max:255',
-            'description' => 'required|string',
-            'location'    => 'nullable|string|max:255',
-            'category_id' => 'nullable|exists:categories,id',
-            'status'      => 'nullable|in:Baru,Dalam Pengerjaan,Selesai',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        try {
-            if ($request->hasFile('image')) {
-                // Delete old image
-                if ($report->image && file_exists(public_path($report->image))) {
-                    unlink(public_path($report->image));
-                }
-
-                $filename = time() . '_' . $request->file('image')->getClientOriginalName();
-                $request->file('image')->move(public_path('images/reports'), $filename);
-                $data['image'] = 'images/reports/' . $filename;
-            }
-
-            $report->update($data);
-
-            return redirect()->route('reports.show', $report->id)->with('success', 'Laporan berhasil diperbarui!');
-        } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Delete report
-     */
-    public function destroy($id)
-    {
-        $report = Report::findOrFail($id);
-
-        if ($report->user_id !== session('user.id')) {
-            return redirect()->back()->with('error', 'Anda tidak bisa menghapus laporan orang lain.');
-        }
-
-        try {
-            if ($report->image && file_exists(public_path($report->image))) {
-                unlink(public_path($report->image));
-            }
-
-            $report->delete();
-
-            return redirect()->route('my-reports')->with('success', 'Laporan berhasil dihapus!');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Vote on report (upvote/downvote)
-     */
-    public function vote($id, Request $request)
-    {
-        if (!session()->has('user')) {
-            return response()->json(['error' => 'Silakan login terlebih dahulu'], 401);
-        }
-
-        $report = Report::findOrFail($id);
-        $isUpvote = $request->input('upvote', true);
-
-        // Check if already voted
-        $existingVote = $report->votes()->where('user_id', session('user.id'))->first();
-
-        if ($existingVote) {
-            if ($existingVote->is_upvote == $isUpvote) {
-                // Remove vote if same
-                $existingVote->delete();
-            } else {
-                // Update vote
-                $existingVote->update(['is_upvote' => $isUpvote]);
-            }
-        } else {
-            // Create new vote
-            $report->votes()->create([
-                'user_id' => session('user.id'),
-                'votable_id' => $report->id,
-                'votable_type' => 'App\\Models\\Report',
-                'is_upvote' => $isUpvote,
-            ]);
-        }
-
-        return response()->json([
-            'upvotes' => $report->votes()->where('is_upvote', 1)->count(),
-            'downvotes' => $report->votes()->where('is_upvote', 0)->count(),
-        ]);
-    }
-
-    /**
-     * Add comment on report
-     */
-    public function addComment($id, Request $request)
-    {
-        if (!session()->has('user')) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
+        if (!session('authenticated')) {
+            return redirect('/login');
         }
 
         $request->validate([
-            'content' => 'required|min:1|max:500',
+            'title' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'location' => 'nullable|string|max:255',
+            'category_id' => 'nullable|integer',
+            'status' => 'nullable|in:open,investigating,resolved,rejected',
+            'image' => 'nullable|max:2048'
         ]);
 
-        $report = Report::findOrFail($id);
+        try {
+            $data = $request->only(['title', 'description', 'location', 'category_id', 'status']);
 
-        $report->comments()->create([
-            'user_id' => session('user.id'),
-            'content' => $request->input('content'),
-        ]);
+            if ($request->hasFile('image') && $request->file('image')->isValid()) {
+                try {
+                    $path = $request->file('image')->store('reports', 'public');
+                    $data['image'] = $path;
+                } catch (\Exception $fileError) {
+                    // Skip image if upload fails
+                }
+            }
 
-        return redirect()->route('reports.show', $id)->with('success', 'Komentar berhasil ditambahkan!');
+            $response = $this->api->put('reports/' . $id, $data);
+
+            if ($response->successful()) {
+                return redirect('/reports/' . $id)->with('success', 'Laporan berhasil diperbarui!');
+            }
+
+            return back()->with('error', 'Gagal memperbarui laporan');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Koneksi gagal');
+        }
+    }
+
+    public function destroy($id)
+    {
+        if (!session('authenticated')) {
+            return redirect('/login');
+        }
+
+        try {
+            $response = $this->api->delete('reports/' . $id);
+
+            if ($response->successful()) {
+                return redirect('/reports')->with('success', 'Laporan berhasil dihapus!');
+            }
+
+            return back()->with('error', 'Gagal menghapus laporan');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Koneksi gagal');
+        }
     }
 }

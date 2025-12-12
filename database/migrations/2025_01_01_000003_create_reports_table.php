@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('location')->nullable();
             $table->string('image')->nullable();
-            $table->enum('status', ['pending', 'in_progress', 'resolved', 'rejected'])->default('pending');
+            $table->string('status')->default('Baru')->index();
             $table->integer('upvotes')->default(0);
             $table->integer('downvotes')->default(0);
             $table->timestamp('resolved_at')->nullable();

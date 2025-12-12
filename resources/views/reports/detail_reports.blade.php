@@ -2,147 +2,178 @@
 
 @section('title', 'Detail Laporan - LaporinAja')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/detail_reports.css') }}">
-@endpush
-
 @section('content')
-<div class="container-main">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-logo">
-                <span class="brand">Laporin</span>Aja
+<div class="container mt-5 mb-5">
+    <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Kembali ke Daftar
+    </a>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <!-- Header Info -->
+                    <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
+                        <img src="{{ asset('images/profile-user.jpg') }}" class="rounded-circle" width="50" height="50" alt="Profile">
+                        <div class="ms-3">
+                            <h6 class="mb-0">{{ $report['user']['name'] ?? 'Anonymous' }}</h6>
+                            <small class="text-muted">{{ $report['created_at'] ?? 'N/A' }} • {{ $report['location'] }}</small>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <h2 class="card-title mb-3">{{ $report['title'] }}</h2>
+
+                    <!-- Image (if exists) -->
+                    @if($report['image'] ?? null)
+                        <img src="{{ asset($report['image']) }}" alt="Report Image" class="img-fluid rounded mb-4" style="max-height: 500px; object-fit: cover;">
+                    @endif
+
+                    <!-- Description -->
+                    <p class="card-text">{{ $report['description'] }}</p>
+
+                    <!-- Status & Category Badges -->
+                    <div class="mb-4">
+                        <span class="badge bg-secondary me-2">{{ $report['category']['name'] ?? 'N/A' }}</span>
+                        <span class="badge bg-info">{{ $report['location'] }}</span>
+                        <span class="badge" 
+                              style="background-color: {{ $report['status'] === 'open' ? '#28a745' : ($report['status'] === 'investigating' ? '#ffc107' : ($report['status'] === 'resolved' ? '#17a2b8' : '#dc3545')) }}">
+                            {{ ucfirst($report['status'] ?? 'unknown') }}
+                        </span>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    @if(session('authenticated') && (session('user.id') === $report['user_id'] || session('user.role') === 'admin'))
+                        <div class="d-flex gap-2 mb-4">
+                            <a href="{{ route('reports.edit', $report['id']) }}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <form action="{{ route('reports.destroy', $report['id']) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus?')">
+                                    <i class="bi bi-trash"></i> Hapus
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+
+                    <!-- Voting Section -->
+                    <div class="card mt-4 mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3">Apakah laporan ini penting?</h6>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-success flex-grow-1">
+                                    <i class="bi bi-hand-thumbs-up"></i> Penting
+                                </button>
+                                <button class="btn btn-danger flex-grow-1">
+                                    <i class="bi bi-hand-thumbs-down"></i> Tidak Penting
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3">
+                                <i class="bi bi-chat-dots"></i> Komentar
+                            </h6>
+
+                            <!-- Comment Input -->
+                            @if(session('authenticated'))
+                                <form class="mb-4">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Tambahkan komentar..." />
+                                        <button class="btn btn-primary" type="button">Kirim</button>
+                                    </div>
+                                </form>
+                            @else
+                                <div class="alert alert-info mb-4">
+                                    <small><a href="{{ route('login') }}">Login</a> untuk menambahkan komentar</small>
+                                </div>
+                            @endif
+
+                            <!-- Comments List -->
+                            <div class="comments-list">
+                                <div class="d-flex gap-3 mb-3 pb-3 border-bottom">
+                                    <img src="{{ asset('images/profile-user.jpg') }}" class="rounded-circle" width="40" height="40" alt="Profile">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            Jennie Kim 
+                                            <small class="text-muted">• 2 jam lalu</small>
+                                        </h6>
+                                        <p class="mb-0 text-muted">
+                                            Saya juga sering lewat sini setiap pagi. Lubangnya makin dalam apalagi setelah hujan kemarin.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-3 mb-3 pb-3 border-bottom">
+                                    <img src="{{ asset('images/profile-user.jpg') }}" class="rounded-circle" width="40" height="40" alt="Profile">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            Budi Santoso 
+                                            <small class="text-muted">• 1 jam lalu</small>
+                                        </h6>
+                                        <p class="mb-0 text-muted">
+                                            Sudah dilaporkan ke dinas beberapa kali tetap tidak ada tindakan.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <ul class="sidebar-menu">
-                <li><a href="#"><i class="fa-solid fa-house"></i> Home</a></li>
-                <li><a href="#"><i class="fa-solid fa-hashtag"></i> Explore</a></li>
-                <li><a href="#"><i class="fa-regular fa-bell"></i> Notification</a></li>
-                <li><a href="#"><i class="fa-regular fa-envelope"></i> Messages</a></li>
-                <li><a href="#"><i class="fa-solid fa-clipboard-list"></i> My Reports</a></li>
-                <li><a href="#"><i class="fa-solid fa-users"></i> Communities</a></li>
-                <li><a href="#"><i class="fa-regular fa-user"></i> Profile</a></li>
-                <li><a href="#"><i class="fa-solid fa-ellipsis-h"></i> More</a></li>
-            </ul>
-        </aside>
- 
-        <!-- Main Content -->
-        <main class="main-content">
-            <header class="header">
-                <a href="#" class="back-btn">
-                    <i class="fa-solid fa-arrow-left"></i> Kembali
-                </a>
-            </header>
-
-            <div class="content">
-                <!-- Report Section -->
-                <div class="report-section">
-                    <div class="report-author">
-                        <div class="author-avatar">A</div>
-                        <div class="author-info">
-                            <h4>Audrey Black</h4>
-                            <p>@audreyblack • 1 min agao</p>
-                        </div>
-                    </div>
-
-                    <p class="report-description-text">
-                        Jalan berlubang besar di Jl. Melati, sangat membahayakan kendaraan roda dua. Lubang ini sudah ada sejak 3 minggu lalu dan belum diperbaiki. Mohon segera ditangani lebih cepat sebelum menimbulkan kecelakaan yang lebih parah.
-                    </p>
-
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect fill='%23ccc' width='600' height='400'/%3E%3C/svg%3E" alt="Report Image" class="report-image">
-
-                    <div class="report-meta">
-                        <div class="meta-item">
-                            <i class="fa-solid fa-location-dot"></i>
-                            Jalan Melati
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-status-badge">Baru</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Voting Section -->
-                <div class="voting-section">
-                    <div class="voting-title">
-                        <i class="fa-solid fa-thumbs-up"></i> Apakah menurut anda ini penting?
-                    </div>
-
-                    <div class="vote-buttons">
-                        <button class="vote-btn penting">
-                            <i class="fa-solid fa-thumbs-up"></i>
-                            Penting
-                        </button>
-                        <button class="vote-btn tidak-penting">
-                            <i class="fa-solid fa-thumbs-down"></i>
-                            Tidak Penting
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Comments Section -->
-                <div class="comments-section">
-                    <h3 class="comments-title">
-                        <i class="fa-solid fa-comments"></i> Komentar (3)
-                    </h3>
-
-                    <div class="comment-form">
-                        <textarea class="comment-input" placeholder="Berikan komentar Anda..."></textarea>
-                        <button type="button">
-                            <i class="fa-solid fa-paper-plane"></i> Kirim
-                        </button>
-                    </div>
-
-                    <div class="comments-list">
-                        <div class="comment-item">
-                            <div class="comment-avatar">J</div>
-                            <div class="comment-content">
-                                <div class="comment-header">
-                                    <span class="comment-author">Jerinta Kari</span>
-                                    <span class="comment-time">3 jam</span>
-                                </div>
-                                <p class="comment-text">
-                                    Saya juga pernah lewat sini setidak raja... Lubang tersebut memang sangat besar dan sungguh membahayakan. Mohon juga segerakan proses perbaikan agar tidak terjadi kecelakaan.
-                                </p>
-                                <div class="comment-likes">
-                                    <i class="fa-solid fa-thumbs-up"></i> 1
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="comment-item">
-                            <div class="comment-avatar">J</div>
-                            <div class="comment-content">
-                                <div class="comment-header">
-                                    <span class="comment-author">Jerinta Kari</span>
-                                    <span class="comment-time">3 jam</span>
-                                </div>
-                                <p class="comment-text">
-                                    Saya juga pernah lewat sini setidak raja... Lubang tersebut memang sangat besar dan sungguh membahayakan. Mohon juga segerakan proses perbaikan agar tidak terjadi kecelakaan.
-                                </p>
-                                <div class="comment-likes">
-                                    <i class="fa-solid fa-thumbs-up"></i> 1
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="comment-item">
-                            <div class="comment-avatar">J</div>
-                            <div class="comment-content">
-                                <div class="comment-header">
-                                    <span class="comment-author">Jerinta Kari</span>
-                                    <span class="comment-time">3 jam</span>
-                                </div>
-                                <p class="comment-text">
-                                    Saya juga pernah lewat sini setidak raja... Lubang tersebut memang sangat besar dan sungguh membahayakan. Mohon juga segerakan proses perbaikan agar tidak terjadi kecelakaan.
-                                </p>
-                                <div class="comment-likes">
-                                    <i class="fa-solid fa-thumbs-up"></i> 1
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
         </div>
-    </main>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- Popular Reports -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title mb-3">
+                        <i class="bi bi-fire text-danger"></i> Laporan Populer
+                    </h6>
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action py-2">
+                            <h6 class="mb-1">Jalan Rusak</h6>
+                            <small class="text-muted">Jl. Melati • 128 Votes</small>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action py-2">
+                            <h6 class="mb-1">Sampah Menumpuk</h6>
+                            <small class="text-muted">Pasar Baru • 96 Votes</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trending -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title mb-3">
+                        <i class="bi bi-graph-up text-primary"></i> Trending
+                    </h6>
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action py-2 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Infrastruktur Jalan</h6>
+                                <small class="text-muted">5 laporan hari ini</small>
+                            </div>
+                            <span class="badge bg-danger">Penting</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action py-2 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Sampah Menumpuk</h6>
+                                <small class="text-muted">Pasar Baru</small>
+                            </div>
+                            <span class="badge bg-warning">Sedang</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
