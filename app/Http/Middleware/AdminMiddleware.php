@@ -12,13 +12,13 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // Check if user is logged in
-        if (!session()->has('user')) {
+        // Check if user is logged in & admin (pakai Auth Laravel)
+        if (!auth()->check()) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        // Check if user is admin
-        if (session('user.role') !== 'admin') {
+        // Cek role hanya jika user sudah login
+        if (auth()->user() && auth()->user()->role !== 'admin') {
             return redirect()->route('home')->with('error', 'Akses ditolak. Anda bukan admin.');
         }
 

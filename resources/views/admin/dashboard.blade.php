@@ -23,7 +23,6 @@
                         ['Dashboard', 'admin.dashboard', 'fa-solid fa-house'],
                         ['Verifikasi & Penanganan', 'admin.verifikasi', 'fa-solid fa-check-circle'],
                         ['Monitoring & Statistik', 'admin.monitoring', 'fa-solid fa-chart-line'],
-                        ['Voting Publik', 'admin.voting', 'fa-solid fa-vote-yea'],
                         ['Pengaturan Akun', 'admin.pengaturan', 'fa-solid fa-gear'],
                     ];
                 @endphp
@@ -167,8 +166,8 @@
 
                 <div class="flex items-center justify-between mb-5">
                     <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-clipboard-list text-blue-600 text-xl"></i>
-                        <h3 class="font-bold text-lg text-gray-900">Laporan Terbaru</h3>
+                        <i class="fa-solid fa-star text-yellow-500 text-xl"></i>
+                        <h3 class="font-bold text-lg text-gray-900">Laporan Penting</h3>
                     </div>
                     <span class="px-4 py-2 bg-gradient-to-r from-red-100 to-rose-100 text-red-700 text-sm font-bold rounded-full border-2 border-red-200 shadow-sm">
                         <i class="fa-solid fa-bell animate-pulse"></i> {{ $stats['new_reports'] ?? 0 }} Perlu Verifikasi
@@ -176,16 +175,21 @@
                 </div>
 
                 <div class="space-y-3">
-                    @forelse ($recentReports as $report)
+                    @php
+                        $topVoted = $recentReports->sortByDesc(function($r) {
+                            return method_exists($r, 'votes') ? $r->votes->where('is_upvote', 1)->count() : 0;
+                        })->first();
+                    @endphp
+                    @if($topVoted)
                     <article class="bg-gradient-to-br from-slate-50 to-gray-50 border-2 border-gray-200 rounded-xl shadow-sm p-5 hover:shadow-xl transition-all duration-500 hover:border-blue-400 hover:-translate-y-1 group">
                         <div class="flex items-start justify-between gap-4">
                             <div class="flex items-start gap-4 flex-1">
                                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-100 to-orange-100 flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                                    @if($report->status == 'Baru')
+                                    @if($topVoted->status == 'Baru')
                                         <i class="fa-solid fa-exclamation-triangle text-orange-600 text-xl"></i>
-                                    @elseif($report->status == 'Dalam Pengerjaan')
+                                    @elseif($topVoted->status == 'Dalam Pengerjaan')
                                         <i class="fa-solid fa-sync text-blue-600 text-xl"></i>
-                                    @elseif($report->status == 'Selesai')
+                                    @elseif($topVoted->status == 'Selesai')
                                         <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
                                     @else
                                         <i class="fa-solid fa-times-circle text-red-600 text-xl"></i>
@@ -194,39 +198,43 @@
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2 mb-2">
                                         <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full border border-blue-200">
-                                            #{{ $report->id }}
+                                            #{{ $topVoted->id }}
                                         </span>
                                         <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full border border-purple-200">
-                                            <i class="fa-solid fa-tag"></i> {{ $report->category->name ?? 'Tanpa Kategori' }}
+                                            <i class="fa-solid fa-tag"></i> {{ $topVoted->category->name ?? 'Tanpa Kategori' }}
                                         </span>
                                     </div>
                                     <p class="font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                                        {{ Str::limit($report->title, 60) }}
+                                        {{ Str::limit($topVoted->title, 60) }}
                                     </p>
                                     <div class="flex items-center gap-4 text-xs text-gray-500">
                                         <span class="flex items-center gap-1">
                                             <i class="fa-solid fa-user text-gray-400"></i> 
-                                            <span class="font-medium">{{ $report->user->name ?? 'Unknown' }}</span>
+                                            <span class="font-medium">{{ $topVoted->user->name ?? 'Unknown' }}</span>
                                         </span>
                                         <span class="flex items-center gap-1">
                                             <i class="fa-solid fa-clock text-gray-400"></i> 
-                                            <span>{{ $report->created_at->diffForHumans() }}</span>
+                                            <span>{{ $topVoted->created_at->diffForHumans() }}</span>
                                         </span>
                                         <span class="flex items-center gap-1">
                                             <i class="fa-solid fa-map-marker-alt text-gray-400"></i> 
-                                            <span>{{ Str::limit($report->location ?? 'Tidak ada lokasi', 20) }}</span>
+                                            <span>{{ Str::limit($topVoted->location ?? 'Tidak ada lokasi', 20) }}</span>
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <i class="fa-solid fa-thumbs-up text-blue-500"></i>
+                                            <span>{{ method_exists($topVoted, 'votes') ? $topVoted->votes->where('is_upvote', 1)->count() : 0 }} vote</span>
                                         </span>
                                     </div>
                                 </div>
                             </div>
-                            <a href="{{ route('admin.verifikasi.detail', $report->id) }}" 
+                            <a href="{{ route('admin.verifikasi.detail', $topVoted->id) }}" 
                                class="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-blue-500 bg-white text-blue-600 font-bold text-sm hover:bg-blue-600 hover:text-white transition-all duration-300 group-hover:scale-105 shadow-sm hover:shadow-lg whitespace-nowrap">
                                 <span>Lihat Detail</span>
                                 <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                             </a>
                         </div>
                     </article>
-                    @empty
+                    @else
                     <div class="text-center py-16 text-gray-500">
                         <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fa-solid fa-inbox text-5xl text-gray-400"></i>
@@ -234,7 +242,7 @@
                         <p class="text-lg font-semibold text-gray-600">Tidak ada laporan</p>
                         <p class="text-sm text-gray-500 mt-1">Belum ada laporan yang masuk saat ini</p>
                     </div>
-                    @endforelse
+                    @endif
                 </div>
 
             </div>

@@ -16,7 +16,7 @@
                     ['Beranda', 'home', 'fa-solid fa-house'],
                     ['Pencarian', 'explore', 'fa-solid fa-magnifying-glass'],
                     ['Notifikasi', 'notifications', 'fa-solid fa-bell'],
-                    ['Pesan', 'messages', 'fa-solid fa-envelope'],
+                    // ['Pesan', 'messages', 'fa-solid fa-envelope'], // Dihapus karena route tidak ada
                     ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
                     ['Profil', 'profile', 'fa-solid fa-user'],
                 ];
@@ -172,22 +172,71 @@
 
                     <!-- Location Input -->
                     <div>
-                        <label for="location" class="block text-sm font-bold text-gray-700 mb-2">
+                        <label for="dusun" class="block text-sm font-bold text-gray-700 mb-2">
                             <i class="fa-solid fa-location-dot text-blue-600 mr-2"></i>
-                            Lokasi
+                            Dusun
                         </label>
-                        <input 
-                            type="text" 
-                            id="location" 
-                            name="location" 
+                        <select id="dusun" name="dusun" required onchange="showAlamatLengkap()"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-all font-medium">
+                            <option value="">-- Pilih Dusun --</option>
+                            <option value="Lumban Hariara">Lumban Hariara</option>
+                            <option value="Panasala">Panasala</option>
+                            <option value="Patujulu">Patujulu</option>
+                            <option value="Puba Lubis">Puba Lubis</option>
+                            <option value="Puntu Manda">Puntu Manda</option>
+                            <option value="Silalahi">Silalahi</option>
+                            <option value="Simuring">Simuring</option>
+                        </select>
+                        @error('dusun')
+                            <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div id="alamatLengkapContainer" class="hidden mt-4">
+                        <label for="alamat_lengkap" class="block text-sm font-bold text-gray-700 mb-2">
+                            <i class="fa-solid fa-map-location-dot text-blue-600 mr-2"></i>
+                            Alamat Lengkap
+                        </label>
+                        <input type="text" id="alamat_lengkap" name="alamat_lengkap"
                             class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-all font-medium"
-                            placeholder="Alamat / Nama jalan"
-                            value="{{ old('location') }}"
-                        >
+                            placeholder="Alamat lengkap, RT/RW, patokan, dll">
+                        @error('alamat_lengkap')
+                            <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div id="mapsContainer" class="hidden mt-4">
+                        <label for="location" class="block text-sm font-bold text-gray-700 mb-2">
+                            <i class="fa-solid fa-map-pin text-blue-600 mr-2"></i>
+                            Titik Lokasi di Google Maps
+                        </label>
+                        <input type="text" id="location" name="location"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-all font-medium"
+                            placeholder="Paste link Google Maps atau koordinat">
                         @error('location')
                             <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
                         @enderror
                     </div>
+<script>
+function showAlamatLengkap() {
+    const dusun = document.getElementById('dusun').value;
+    const alamatContainer = document.getElementById('alamatLengkapContainer');
+    const mapsContainer = document.getElementById('mapsContainer');
+    if (dusun) {
+        alamatContainer.classList.remove('hidden');
+    } else {
+        alamatContainer.classList.add('hidden');
+        mapsContainer.classList.add('hidden');
+    }
+}
+document.getElementById('alamat_lengkap')?.addEventListener('input', function() {
+    const val = this.value.trim();
+    const mapsContainer = document.getElementById('mapsContainer');
+    if (val.length > 5) {
+        mapsContainer.classList.remove('hidden');
+    } else {
+        mapsContainer.classList.add('hidden');
+    }
+});
+</script>
 
                     <!-- Category Select -->
                     <div>

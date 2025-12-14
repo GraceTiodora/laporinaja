@@ -143,7 +143,7 @@
                 <div class="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-2xl transition-all duration-300 hover:border-blue-300 group">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
-                            <i class="fa-solid fa-camera text-white text-xl"></i>
+                            
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-gray-900">Foto Profil</h3>
@@ -158,7 +158,7 @@
                                  alt="Profile Preview" 
                                  class="w-32 h-32 rounded-full ring-4 ring-blue-400 group-hover/avatar:ring-6 transition-all object-cover shadow-xl">
                             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover/avatar:bg-opacity-30 rounded-full transition-all flex items-center justify-center">
-                                <i class="fa-solid fa-camera text-white text-2xl opacity-0 group-hover/avatar:opacity-100 transition-all"></i>
+                                
                             </div>
                         </div>
                         <div class="flex-1">
@@ -249,17 +249,20 @@
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">
                                 <i class="fa-solid fa-align-left text-blue-600 mr-2"></i>
-                                Bio
-                            </label>
-                            <textarea id="bio"
-                                      name="bio" 
-                                      rows="4" 
-                                      class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-all font-medium resize-none"
-                                      placeholder="Ceritakan tentang diri Anda...">{{ old('bio', session('user')['bio'] ?? '') }}</textarea>
-                        </div>
-                    </div>
-                </div>
-
+                                <div>
+                                    <a href="{{ route('profile') }}" class="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 bg-white hover:bg-blue-50 transition-all cursor-pointer mb-3 group ring-2 ring-gray-200 hover:ring-blue-400">
+                                        <div class="relative">
+                                            <img src="{{ session('user')['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode(session('user')['name'] ?? 'User') }}"
+                                                 class="w-12 h-12 rounded-full object-cover ring-2 ring-white"
+                                                 alt="Profile"
+                                                 onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(session('user')['name'] ?? 'User') }}'">
+                                            <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></span>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-bold text-gray-900 truncate">{{ session('user')['name'] ?? 'User' }}</p>
+                                            <p class="text-xs text-gray-500 truncate">@{{ session('user')['username'] ?? 'username' }}</p>
+                                        </div>
+                                    </a>
                 <!-- Action Buttons -->
                 <div class="flex gap-4">
                     <button type="submit" 

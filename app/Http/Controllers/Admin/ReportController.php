@@ -41,7 +41,24 @@ class ReportController extends Controller
             return back()->with('error', 'Status tidak valid');
         }
 
+        $oldStatus = $report->status;
         $report->update(['status' => $status]);
+
+        // Kirim notifikasi ke user jika status berubah
+        if ($status !== $oldStatus) {
+            $userId = $report->user_id;
+            $title = 'Status laporan diperbarui';
+            $message = 'Status laporan "' . $report->title . '" berubah dari "' . $oldStatus . '" menjadi "' . $status . '".';
+            \App\Models\Notification::create([
+                'user_id' => $userId,
+                'report_id' => $report->id,
+                'type' => 'status_update',
+                'title' => $title,
+                'message' => $message,
+                'data' => json_encode(['old_status' => $oldStatus, 'new_status' => $status]),
+                'read' => false,
+            ]);
+        }
 
         return back()->with('success', 'Status laporan berhasil diperbarui!');
     }

@@ -22,7 +22,7 @@
                         ['Beranda', 'home', 'fa-solid fa-house'],
                         ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
                         ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
-                        ['Pesan', 'messages', 'fa-regular fa-envelope'],
+                        // ...hapus menu Pesan...
                         ['Laporan Saya', 'reports', 'fa-solid fa-clipboard-list'],
                         ['Komunitas', 'communities', 'fa-solid fa-users'],
                         ['Profil', 'profile', 'fa-regular fa-user'],
@@ -90,7 +90,6 @@
 
                 <div class="flex justify-between px-2">
                     <div class="flex gap-3 text-gray-400">
-                        <i class="fa-solid fa-camera cursor-pointer hover:text-blue-600 transition"></i>
                         <i class="fa-solid fa-image cursor-pointer hover:text-blue-600 transition"></i>
                         <i class="fa-solid fa-location-dot cursor-pointer hover:text-blue-600 transition"></i>
                 </div>
@@ -100,39 +99,8 @@
 
             <!-- FEED LIST -->
             @php
-                $sessionReports = session('reports', []);
-
-                // Dummy reports → ID diperbesar supaya tidak bentrok
-                $dummyReports = [
-                    [
-                        'id' => 1001,
-                        'user' => ['name' => 'Audrey Stark'],
-                        'description' => 'Jalan berlubang besar dekat sekolah sangat berbahaya untuk dilewati',
-                        'location' => 'Jl. Melati',
-                        'category' => 'Infrastruktur',
-                        'status' => 'Baru',
-                        'votes' => 128,
-                        'comments' => 3,
-                        'created_at' => '2 jam',
-                        'image' => 'images/jalan_berlubang.jpg',
-                    ],
-                    [
-                        'id' => 1002,
-                        'user' => ['name' => 'David Blend'],
-                        'description' => 'Pohon besar tumbang menutupi jalan raya, menyebabkan kemacetan parah.',
-                        'location' => 'Jl. Ahmad Yani',
-                        'category' => 'Bencana Alam',
-                        'status' => 'Baru',
-                        'votes' => 54,
-                        'comments' => 1,
-                        'created_at' => '12 menit',
-                        'image' => 'images/pohon-tumbang.jpg',
-                    ],
-                ];
-
-                $allReports = array_merge($sessionReports, $dummyReports);
+                $allReports = $dbReports ?? [];
             @endphp
-
             @foreach ($allReports as $report)
             <article class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 hover:shadow-md transition-all duration-300">
 
@@ -194,20 +162,20 @@
                 <i class="fa-solid fa-fire text-red-500"></i> Masalah Penting
             </h2>
             <ul class="space-y-3">
+                @forelse($topReports ?? [] as $report)
                 <li class="flex justify-between items-center">
                     <div>
-                        <p class="font-medium text-gray-800">Jalan Rusak</p>
-                        <p class="text-xs text-gray-500">Jl. Melati</p>
+                        <p class="font-medium text-gray-800">{{ $report['title'] }}</p>
+                        <p class="text-xs text-gray-500">{{ $report['location'] ?? '-' }}</p>
                     </div>
-                    <span class="text-sm font-semibold text-red-600">128 Votes</span>
+                    <span class="text-sm font-semibold text-red-600">{{ $report['votes'] }} Votes</span>
                 </li>
-                <li class="flex justify-between items-center">
-                    <div>
-                        <p class="font-medium text-gray-800">Sampah Menumpuk</p>
-                        <p class="text-xs text-gray-500">Pasar Baru</p>
-                    </div>
-                    <span class="text-sm font-semibold text-red-600">96 Votes</span>
+                @empty
+                <li class="p-5 text-center text-gray-500 text-sm">
+                    <i class="fa-regular fa-folder-open text-3xl mb-2 block text-gray-300"></i>
+                    <p class="font-medium">Belum ada laporan prioritas</p>
                 </li>
+                @endforelse
             </ul>
         </section>
 
@@ -216,20 +184,20 @@
                 <i class="fa-solid fa-chart-line text-blue-500"></i> Masalah Trending
             </h2>
             <ul class="space-y-3">
+                @forelse($trendingCategories ?? [] as $cat)
                 <li class="flex justify-between items-center">
                     <div>
-                        <p class="font-medium text-gray-800">Infrastruktur Jalan</p>
-                        <p class="text-xs text-gray-500">5 laporan hari ini</p>
+                        <p class="font-medium text-gray-800">{{ $cat['category'] }}</p>
+                        <p class="text-xs text-gray-500">{{ $cat['total'] }} laporan minggu ini</p>
                     </div>
-                    <span class="px-3 py-1 rounded-xl text-xs bg-pink-100 text-pink-700 font-medium">Penting</span>
+                    <span class="px-3 py-1 rounded-xl text-xs bg-pink-100 text-pink-700 font-medium">Trending</span>
                 </li>
-                <li class="flex justify-between items-center">
-                    <div>
-                        <p class="font-medium text-gray-800">Sampah Menumpuk</p>
-                        <p class="text-xs text-gray-500">Pasar Baru</p>
-                    </div>
-                    <span class="px-3 py-1 rounded-xl text-xs bg-yellow-100 text-yellow-700 font-medium">Sedang</span>
+                @empty
+                <li class="p-5 text-center text-gray-500 text-sm">
+                    <i class="fa-regular fa-folder-open text-3xl mb-2 block text-gray-300"></i>
+                    <p class="font-medium">Belum ada kategori trending</p>
                 </li>
+                @endforelse
             </ul>
         </section>
     </aside>

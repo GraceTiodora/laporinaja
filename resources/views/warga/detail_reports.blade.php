@@ -71,7 +71,17 @@
                 @endphp
 
                 @foreach ($menu as [$name, $route, $icon])
-                    <a href="{{ route($route) }}"
+                    @php
+                        $href = '#';
+                        if ($route !== '#') {
+                            try {
+                                $href = \Route::has($route) ? route($route) : '#';
+                            } catch (\Exception $e) {
+                                $href = '#';
+                            }
+                        }
+                    @endphp
+                    <a href="{{ $href }}"
                        class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all duration-300 relative text-gray-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600 hover:translate-x-1 hover:shadow-sm">
                         <i class="{{ $icon }} text-lg group-hover:scale-125 transition-transform"></i>
                         <span class="font-semibold">{{ $name }}</span>
@@ -404,13 +414,17 @@
                         <div class="flex items-center justify-between p-2.5 
                             {{ $report['status'] === 'Selesai' ? 'bg-green-50 hover:bg-green-100' : 
                                ($report['status'] === 'Dalam Pengerjaan' ? 'bg-blue-50 hover:bg-blue-100' : 
-                               'bg-yellow-50 hover:bg-yellow-100') }} rounded-lg transition-colors">
+                               ($report['status'] === 'Ditolak' ? 'bg-red-50 hover:bg-red-100' : 'bg-yellow-50 hover:bg-yellow-100')) }} rounded-lg transition-colors">
                             <span class="text-xs text-gray-600">Status</span>
                             <span class="text-xs font-bold 
                                 {{ $report['status'] === 'Selesai' ? 'text-green-700' : 
                                    ($report['status'] === 'Dalam Pengerjaan' ? 'text-blue-700' : 
-                                   'text-yellow-700') }}">
-                                {{ $report['status'] ?? 'Baru' }}
+                                   ($report['status'] === 'Ditolak' ? 'text-red-700' : 'text-yellow-700')) }}">
+                                @if($report['status'] === 'Dalam Pengerjaan')
+                                    Sedang Diproses
+                                @else
+                                    {{ $report['status'] ?? 'Baru' }}
+                                @endif
                             </span>
                         </div>
                         

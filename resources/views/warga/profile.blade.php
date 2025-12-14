@@ -21,7 +21,7 @@
                         ['Beranda', 'home', 'fa-solid fa-house'],
                         ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
                         ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
-                        ['Pesan', 'messages', 'fa-regular fa-envelope'],
+                        // ...hapus menu Pesan...
                         ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
                         ['Profil', 'profile', 'fa-regular fa-user'],
                     ];
@@ -67,12 +67,12 @@
         <div>
             <a href="{{ route('profile') }}" class="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 bg-white hover:bg-blue-50 transition-all cursor-pointer mb-3 group ring-2 ring-gray-200 hover:ring-blue-400">
                 <div class="relative">
-                    <img src="{{ session('user')['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode(session('user')['name'] ?? 'User') }}" class="w-12 h-12 rounded-full object-cover ring-2 ring-white">
+                    <img src="{{ auth()->user()->avatar ? asset(auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name ?? 'User') }}" class="w-12 h-12 rounded-full object-cover ring-2 ring-white" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'User') }}'">
                     <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></span>
                 </div>
                 <div class="flex-1">
-                    <p class="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors">{{ session('user')['name'] ?? 'User' }}</p>
-                    <p class="text-xs text-gray-500">@{{ session('user')['username'] ?? 'username' }}</p>
+                    <p class="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors">{{ auth()->user()->name ?? 'User' }}</p>
+                    <p class="text-xs text-gray-500">@{{ auth()->user()->username ?? 'username' }}</p>
                 </div>
             </a>
             
@@ -105,10 +105,10 @@
             <div class="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-lg border-2 border-blue-200 p-8 mb-6 group hover:shadow-2xl transition-all duration-300">
                 <div class="flex items-start gap-6">
                     <div class="relative">
-                        <img src="{{ $user->avatar ?? '/images/default-avatar.jpg' }}" 
-                             alt="{{ $user->name ?? 'User' }}" 
-                             class="w-32 h-32 rounded-2xl object-cover ring-4 ring-blue-200 group-hover:ring-blue-400 transition-all shadow-lg"
-                             onerror="this.src='/images/default-avatar.jpg'">
+                            <img src="{{ $user->avatar ? asset($user->avatar) : asset('images/default-avatar.jpg') }}"
+                                alt="{{ $user->name ?? 'User' }}"
+                                class="w-32 h-32 rounded-2xl object-cover ring-4 ring-blue-200 group-hover:ring-blue-400 transition-all shadow-lg"
+                                onerror="this.src='{{ asset('images/default-avatar.jpg') }}'">
                         <div class="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-4 border-white flex items-center justify-center shadow-lg">
                             <i class="fa-solid fa-check text-white text-xs"></i>
                         </div>

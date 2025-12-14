@@ -125,10 +125,11 @@ class AdminController extends Controller
 
         $reports = $query->get();
 
-        // Data untuk statistik
-        $totalLaporan = $reports->count();
-        $laporanSelesai = $reports->where('status', 'Selesai')->count();
-        $laporanDiproses = $reports->where('status', 'Dalam Pengerjaan')->count();
+        // Data untuk statistik (mengikuti dashboard)
+        $totalLaporan = Report::count();
+        $laporanSelesai = Report::where('status', 'Selesai')->count();
+        $laporanDiproses = Report::where('status', 'Dalam Pengerjaan')->count();
+        $laporanPerluVerifikasi = Report::where('status', 'Baru')->count();
 
         // Data tren bulanan - aggregate by month
         $trenBulanan = Report::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total, 
@@ -172,6 +173,7 @@ class AdminController extends Controller
             'totalLaporan',
             'laporanSelesai',
             'laporanDiproses',
+            'laporanPerluVerifikasi',
             'trenData',
             'categoryPerformance'
         ));
@@ -364,7 +366,7 @@ class AdminController extends Controller
             // Simpan ke Solution table
             \App\Models\Solution::create([
                 'report_id' => $report->id,
-                'user_id' => session('user.id'),
+                'user_id' => auth()->id(),
                 'description' => $request->admin_note ?? 'Laporan telah diselesaikan',
                 'image' => $imagePath,
                 'is_accepted' => true
@@ -418,7 +420,7 @@ class AdminController extends Controller
                 'new_status' => $newStatus,
                 'icon' => $statusInfo['icon'],
                 'report_title' => $report->title,
-                'updated_by' => session('user.name')
+                'updated_by' => auth()->user() ? auth()->user()->name : null
             ],
             'read' => false
         ]);

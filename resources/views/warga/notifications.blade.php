@@ -16,21 +16,17 @@
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">
                 Laporin<span class="text-gray-900">Aja</span>
             </h2>
-
-            @php
-                $menu = [
-                    ['Beranda', 'home', 'fa-solid fa-house'],
-                    ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
-                    ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
-                    ['Pesan', 'messages', 'fa-regular fa-envelope'],
-                    ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
-                    ['Komunitas', 'communities', 'fa-solid fa-users'],
-                    ['Profil', 'profile', 'fa-regular fa-user'],
-                ];
-            @endphp
-
-
             <nav class="space-y-2">
+                @php
+                    $menu = [
+                        ['Beranda', 'home', 'fa-solid fa-house'],
+                        ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
+                        ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
+                        ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
+                        ['Profil', 'profile', 'fa-regular fa-user'],
+                    ];
+                    $unreadNotifications = $unreadNotifications ?? ($unreadCount ?? 0);
+                @endphp
                 @foreach ($menu as [$name, $route, $icon])
                     @php
                         $href = '#';
@@ -42,26 +38,33 @@
                             }
                         }
                         $isActive = request()->routeIs($route);
+                        $showBadge = $route === 'notifications' && ($unreadNotifications ?? $unreadCount ?? 0) > 0;
+                        $notifCount = $unreadNotifications ?? $unreadCount ?? 0;
                     @endphp
                     <a href="{{ $href }}"
-                       class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium
-                              transition-all duration-300 transform hover:translate-x-1
+                       class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all duration-300 relative
                               {{ $isActive 
                                   ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg' 
-                                  : 'text-gray-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-600 hover:shadow-md' }}">
-                        <i class="{{ $icon }} text-lg group-hover:scale-125 transition-all duration-300"></i>
-                        <span>{{ $name }}</span>
+                                  : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1' }}">
+                        @if($isActive)
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                        @endif
+                        <i class="{{ $icon }} text-lg group-hover:scale-125 transition-transform"></i>
+                        <span class="font-semibold">{{ $name }}</span>
+                        @if($showBadge)
+                            <span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">
+                                {{ $notifCount > 99 ? '99+' : $notifCount }}
+                            </span>
+                        @endif
                     </a>
                 @endforeach
             </nav>
-
             <button onclick="window.location.href='{{ route('reports.create') }}'"
                     class="mt-6 w-full flex items-center justify-center gap-2 
                            bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800
                            text-white py-3.5 rounded-full shadow-lg hover:shadow-xl
-                           transition-all font-bold transform hover:scale-105 relative overflow-hidden group">
-                <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
-                <i class="fa-solid fa-plus-circle group-hover:rotate-90 transition-transform duration-300"></i> 
+                           transition-all duration-300 font-bold transform hover:scale-105 group">
+                <i class="fa-solid fa-plus-circle text-lg group-hover:rotate-90 transition-transform"></i> 
                 <span>Laporan Baru</span>
             </button>
         </div>
@@ -186,165 +189,7 @@
 
     </main>
 
-    <!-- RIGHT SIDEBAR -->
-    <aside class="w-[360px] bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6 overflow-y-auto border-l border-gray-200 space-y-5 shadow-lg">
-        
-        <!-- Quick Actions -->
-        <section class="bg-white rounded-2xl p-5 border-2 border-blue-200 shadow-lg">
-            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-bolt text-white"></i>
-                </div>
-                <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Aksi Cepat</span>
-            </h2>
-            <div class="space-y-3">
-                <button class="w-full p-3 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl transition-all group border border-blue-200 hover:shadow-md">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-filter text-white"></i>
-                        </div>
-                        <div class="text-left flex-1">
-                            <p class="text-sm font-bold text-blue-700">Filter Notifikasi</p>
-                            <p class="text-xs text-gray-500">Lihat kategori tertentu</p>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-blue-400"></i>
-                    </div>
-                </button>
-                
-                <button class="w-full p-3 bg-gradient-to-r from-green-50 to-emerald-100 hover:from-green-100 hover:to-emerald-200 rounded-xl transition-all group border border-green-200 hover:shadow-md">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-archive text-white"></i>
-                        </div>
-                        <div class="text-left flex-1">
-                            <p class="text-sm font-bold text-green-700">Arsip</p>
-                            <p class="text-xs text-gray-500">Notifikasi lama</p>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-green-400"></i>
-                    </div>
-                </button>
-            </div>
-        </section>
 
-        <!-- Masalah Penting -->
-        <section class="bg-white rounded-2xl p-5 border-2 border-red-200 shadow-lg">
-            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
-                    <i class="fa-solid fa-fire text-white"></i>
-                </div>
-                <span class="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Prioritas Tinggi</span>
-            </h2>
-            <ul class="space-y-3">
-                <li class="p-3 bg-gradient-to-br from-white to-red-50 rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-red-300">
-                    <a href="#" class="block">
-                        <div class="flex items-start justify-between mb-2">
-                            <p class="font-bold text-gray-900 text-sm group-hover:text-red-700 transition line-clamp-2 flex-1">Jalan Rusak</p>
-                            <span class="ml-2 px-2.5 py-1 text-xs font-bold bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full shadow-md whitespace-nowrap">
-                                <i class="fa-solid fa-fire"></i> 128
-                            </span>
-                        </div>
-                        <p class="text-xs text-gray-500 flex items-center gap-1 mb-2">
-                            <i class="fa-solid fa-location-dot text-red-400"></i>
-                            Jl. Melati
-                        </p>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-400"><i class="fa-regular fa-clock"></i> 2 hari lalu</span>
-                            <span class="text-blue-600 font-semibold group-hover:translate-x-1 transition-transform">Lihat →</span>
-                        </div>
-                    </a>
-                </li>
-                <li class="p-3 bg-gradient-to-br from-white to-red-50 rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-red-300">
-                    <a href="#" class="block">
-                        <div class="flex items-start justify-between mb-2">
-                            <p class="font-bold text-gray-900 text-sm group-hover:text-red-700 transition line-clamp-2 flex-1">Sampah Menumpuk</p>
-                            <span class="ml-2 px-2.5 py-1 text-xs font-bold bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full shadow-md whitespace-nowrap">
-                                <i class="fa-solid fa-fire"></i> 96
-                            </span>
-                        </div>
-                        <p class="text-xs text-gray-500 flex items-center gap-1 mb-2">
-                            <i class="fa-solid fa-location-dot text-red-400"></i>
-                            Pasar Baru
-                        </p>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-400"><i class="fa-regular fa-clock"></i> 3 hari lalu</span>
-                            <span class="text-blue-600 font-semibold group-hover:translate-x-1 transition-transform">Lihat →</span>
-                        </div>
-                    </a>
-                </li>
-            </ul>
-        </section>
-
-        <!-- Trending -->
-        <section class="bg-white rounded-2xl p-5 border-2 border-purple-200 shadow-lg">
-            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-arrow-trend-up text-white"></i>
-                </div>
-                <span class="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Trending</span>
-            </h2>
-            <ul class="space-y-3">
-                <li class="p-3 bg-gradient-to-br from-white to-purple-50 rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-purple-300">
-                    <a href="#" class="block">
-                        <p class="font-bold text-gray-900 text-sm group-hover:text-purple-700 transition mb-2 line-clamp-2">Infrastruktur Jalan</p>
-                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-1">
-                            <i class="fa-solid fa-location-dot text-purple-400"></i>
-                            5 laporan hari ini
-                        </p>
-                        <div class="flex items-center gap-4 text-xs text-gray-500">
-                            <span class="flex items-center gap-1">
-                                <i class="fa-solid fa-heart text-red-400"></i>
-                                <span class="font-bold text-gray-700">85</span>
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <i class="fa-solid fa-comments text-blue-400"></i>
-                                <span class="font-bold text-gray-700">12</span>
-                            </span>
-                        </div>
-                    </a>
-                </li>
-                
-                <li class="p-3 bg-gradient-to-br from-white to-purple-50 rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-purple-300">
-                    <a href="#" class="block">
-                        <p class="font-bold text-gray-900 text-sm group-hover:text-purple-700 transition mb-2 line-clamp-2">Sampah Menumpuk</p>
-                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-1">
-                            <i class="fa-solid fa-location-dot text-purple-400"></i>
-                            Pasar Baru
-                        </p>
-                        <div class="flex items-center gap-4 text-xs text-gray-500">
-                            <span class="flex items-center gap-1">
-                                <i class="fa-solid fa-heart text-red-400"></i>
-                                <span class="font-bold text-gray-700">72</span>
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <i class="fa-solid fa-comments text-blue-400"></i>
-                                <span class="font-bold text-gray-700">8</span>
-                            </span>
-                        </div>
-                    </a>
-                </li>
-                
-                <li class="p-3 bg-gradient-to-br from-white to-purple-50 rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-purple-300">
-                    <a href="#" class="block">
-                        <p class="font-bold text-gray-900 text-sm group-hover:text-purple-700 transition mb-2 line-clamp-2">Lampu Jalan Mati</p>
-                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-1">
-                            <i class="fa-solid fa-location-dot text-purple-400"></i>
-                            Jl. Merdeka
-                        </p>
-                        <div class="flex items-center gap-4 text-xs text-gray-500">
-                            <span class="flex items-center gap-1">
-                                <i class="fa-solid fa-heart text-red-400"></i>
-                                <span class="font-bold text-gray-700">58</span>
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <i class="fa-solid fa-comments text-blue-400"></i>
-                                <span class="font-bold text-gray-700">5</span>
-                            </span>
-                        </div>
-                    </a>
-                </li>
-            </ul>
-        </section>
-    </aside>
 
 </div>
 

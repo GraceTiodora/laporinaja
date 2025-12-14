@@ -11,8 +11,9 @@ use App\Models\Report;
 Route::get('/', function () {
     // load latest reports from database and map to the frontend structure
     try {
-        $latest = Report::with('user', 'category', 'comments')->latest()->take(10)->get();
-        $dbReports = $latest->map(function ($r) {
+        // Ambil semua laporan untuk statistik sidebar kanan
+        $allReports = Report::with('user', 'category', 'comments')->latest()->get();
+        $dbReports = $allReports->map(function ($r) {
             return [
                 'id' => $r->id,
                 'user' => ['name' => $r->user->name ?? 'Anonymous'],
@@ -27,8 +28,8 @@ Route::get('/', function () {
                 'image' => $r->image ? $r->image : null,
             ];
         })->toArray();
-        
-        // Top voted reports
+
+        // Top voted reports tetap hanya 5 teratas
         $topReports = Report::with('user', 'category')
             ->withCount(['votes' => function($query) {
                 $query->where('is_upvote', 1);
@@ -44,8 +45,8 @@ Route::get('/', function () {
                     'votes' => $r->votes_count,
                 ];
             });
-            
-        // Trending by category
+
+        // Trending by category tetap 5 teratas
         $trendingCategories = Report::with('category')
             ->select('category_id', \DB::raw('count(*) as total'))
             ->whereDate('created_at', '>=', now()->subDays(7))
@@ -59,7 +60,6 @@ Route::get('/', function () {
                     'total' => $r->total,
                 ];
             });
-            
     } catch (\Exception $e) {
         $dbReports = [];
         $topReports = [];
@@ -93,30 +93,45 @@ Route::get('/profile', function () {
     
     // Get user's reports
     $reports = App\Models\Report::where('user_id', $userId)
-        ->with('category')
+        ->with(['category', 'votes'])
         ->latest()
         ->get();
-    
+
     // Get user's comments
     $comments = App\Models\Comment::where('user_id', $userId)->with('report.user')->latest()->get();
-    
+
     // Get user's votes
     $votes = App\Models\Vote::where('user_id', $userId)->latest()->get();
-    
+
+    // Calculate total likes (upvotes) received on all user's reports
+    $likes_count = $reports->sum(function($report) {
+        return $report->votes->where('is_upvote', 1)->count();
+    });
+
+    // Get all reports that the user has liked (upvoted)
+    $likedReportIds = App\Models\Vote::where('user_id', $userId)
+        ->where('is_upvote', 1)
+        ->where('votable_type', App\Models\Report::class)
+        ->pluck('votable_id');
+    $likedReports = App\Models\Report::whereIn('id', $likedReportIds)
+        ->with(['category', 'user', 'votes', 'comments'])
+        ->get();
+
     // Calculate stats
     $stats = [
         'reports_sent' => $reports->count(),
         'issues_resolved' => $reports->where('status', 'Selesai')->count(),
         'community_posts' => $comments->count(),
-        'vote_helps' => $votes->where('is_upvote', 1)->count(),
+        'likes_count' => $likes_count,
     ];
-    
+
     return view('warga.profile', [
         'user' => $user,
         'reports' => $reports,
         'comments' => $comments,
         'votes' => $votes,
         'stats' => $stats,
+        'likedReports' => $likedReports,
     ]);
 })->name('profile');
 
@@ -176,6 +191,8 @@ Route::get('my-reports', [ReportController::class, 'myReports'])->name('my-repor
 
 
 Route::prefix('admin')->middleware('admin')->group(function () {
+    // Daftar semua laporan (admin)
+    Route::get('/reports', [App\Http\Controllers\AdminController::class, 'reports'])->name('admin.reports');
 
     // Dashboard utama admin - menggunakan controller
     Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])
@@ -186,7 +203,20 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         $reports = App\Models\Report::with(['user', 'category'])
             ->orderBy('created_at', 'desc')
             ->get();
-        return view('admin.verifikasi', ['reports' => $reports]);
+
+        // Statistik sama seperti dashboard dan monitoring
+        $totalReports = App\Models\Report::count();
+        $inProgress = App\Models\Report::where('status', 'Dalam Pengerjaan')->count();
+        $completed = App\Models\Report::where('status', 'Selesai')->count();
+        $waitingVerification = App\Models\Report::where('status', 'Baru')->count();
+
+        return view('admin.verifikasi', [
+            'reports' => $reports,
+            'totalReports' => $totalReports,
+            'inProgress' => $inProgress,
+            'completed' => $completed,
+            'waitingVerification' => $waitingVerification,
+        ]);
     })->name('admin.verifikasi');
 
     // Detail Verifikasi - menampilkan detail laporan untuk diverifikasi
@@ -265,9 +295,8 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         ->name('admin.verifikasi.update_status.submit');
 
     // Monitoring & Statistik
-    Route::get('/monitoring', function () {
-        return view('admin.monitoring');
-    })->name('admin.monitoring');
+    Route::get('/monitoring', [App\Http\Controllers\AdminController::class, 'monitoring'])->name('admin.monitoring');
+    Route::get('/monitoring/pdf', [App\Http\Controllers\AdminController::class, 'exportPDF'])->name('admin.monitoring.pdf');
 
     // Voting Publik
     Route::get('/voting', function () {

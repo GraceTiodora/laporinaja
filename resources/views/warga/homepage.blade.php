@@ -22,7 +22,7 @@
                         ['Beranda', 'home', 'fa-solid fa-house'],
                         ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
                         ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
-                        ['Pesan', 'messages', 'fa-regular fa-envelope'],
+                        // ...hapus menu Pesan...
                         ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
                         ['Profil', 'profile', 'fa-regular fa-user'],
                     ];
@@ -126,9 +126,6 @@
 
                 <div class="flex justify-between items-center px-2">
                     <div class="flex gap-5 text-gray-400">
-                        <button class="hover:text-blue-600 transition-all hover:scale-125 transform hover:-rotate-12" title="Upload Foto">
-                            <i class="fa-solid fa-camera text-xl"></i>
-                        </button>
                         <button class="hover:text-purple-600 transition-all hover:scale-125 transform" title="Upload Gambar">
                             <i class="fa-solid fa-image text-xl"></i>
                         </button>
@@ -214,9 +211,6 @@
                     <div class="rounded-2xl overflow-hidden mb-4 relative group/img cursor-pointer" onclick="window.location='{{ route('reports.show', $report['id']) }}'">
                         <img src="{{ asset($report['image']) }}" class="w-full object-cover max-h-[450px] group-hover/img:scale-110 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover/img:opacity-100 transition-all duration-300"></div>
-                        <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full opacity-0 group-hover/img:opacity-100 transition-all">
-                            <span class="text-xs font-bold text-gray-800">Lihat detail</span>
-                        </div>
                     </div>
                 @endif
 

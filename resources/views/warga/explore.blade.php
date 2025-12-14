@@ -15,18 +15,18 @@
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight hover:scale-105 transition-transform cursor-pointer">
                 Laporin<span class="text-gray-900">Aja</span>
             </h2>
-
             <nav class="space-y-2">
-            @php
-    $menu = [
-        ['Beranda', 'home', 'fa-solid fa-house'],
-        ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
-        ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
-        ['Pesan', 'messages', 'fa-regular fa-envelope'],
-        ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
-        ['Profil', 'profile', 'fa-regular fa-user'],
-    ];
-@endphp                @foreach ($menu as [$name, $route, $icon])
+                @php
+                    $menu = [
+                        ['Beranda', 'home', 'fa-solid fa-house'],
+                        ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
+                        ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
+                        ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
+                        ['Profil', 'profile', 'fa-regular fa-user'],
+                    ];
+                    $unreadNotifications = $unreadNotifications ?? ($unreadCount ?? 0);
+                @endphp
+                @foreach ($menu as [$name, $route, $icon])
                     @php
                         $href = '#';
                         if ($route !== '#') {
@@ -37,6 +37,7 @@
                             }
                         }
                         $isActive = request()->routeIs($route);
+                        $showBadge = $route === 'notifications' && $unreadNotifications > 0;
                     @endphp
                     <a href="{{ $href }}"
                        class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all duration-300 relative
@@ -48,10 +49,14 @@
                         @endif
                         <i class="{{ $icon }} text-lg group-hover:scale-125 transition-transform"></i>
                         <span class="font-semibold">{{ $name }}</span>
+                        @if($showBadge)
+                            <span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">
+                                {{ $unreadNotifications > 99 ? '99+' : $unreadNotifications }}
+                            </span>
+                        @endif
                     </a>
                 @endforeach
             </nav>
-
             <button onclick="window.location.href='{{ route('reports.create') }}'"
                     class="mt-6 w-full flex items-center justify-center gap-2 
                            bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800
@@ -281,28 +286,31 @@
                 </div>
             </div>
         </div>
-    </main>
-
-    <!-- 📊 Right Sidebar -->
-    <aside class="w-[360px] bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6 overflow-y-auto border-l border-gray-200 space-y-5 shadow-lg">
-        
-        <!-- Statistik Komunitas -->
-        <section class="bg-white rounded-2xl p-5 border-2 border-blue-200 shadow-lg">
-            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-chart-pie text-white"></i>
+        <div>
+            <a href="{{ route('profile') }}" class="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 bg-white hover:bg-blue-50 transition-all cursor-pointer mb-3 group ring-2 ring-gray-200 hover:ring-blue-400">
+                <div class="relative">
+                    <img src="{{ session('user')['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode(session('user')['name'] ?? 'User') }}"
+                         class="w-12 h-12 rounded-full object-cover ring-2 ring-white"
+                         alt="Profile"
+                         onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(session('user')['name'] ?? 'User') }}'">
+                    <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></span>
                 </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-bold text-gray-900 truncate">{{ session('user')['name'] ?? 'User' }}</p>
+                    <p class="text-xs text-gray-500 truncate">@{{ session('user')['username'] ?? 'username' }}</p>
+                </div>
+            </a>
                 <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Statistik Laporan</span>
             </h2>
             
             @php
-                $totalReports = collect($reports ?? []);
+                $totalReports = collect($dbReports ?? []);
                 $baruCount = $totalReports->where('status', 'Baru')->count();
-                $diprosesCount = $totalReports->where('status', 'Diproses')->count();
+                $diprosesCount = $totalReports->where('status', 'Dalam Pengerjaan')->count();
                 $selesaiCount = $totalReports->where('status', 'Selesai')->count();
                 $ditolakCount = $totalReports->where('status', 'Ditolak')->count();
                 $total = $totalReports->count();
-                
+
                 $selesaiPercentage = $total > 0 ? round(($selesaiCount / $total) * 100) : 0;
             @endphp
             
@@ -388,7 +396,7 @@
             </div>
         </section>
         
-        <!-- Masalah Penting -->
+        <!-- Masalah Penting (Real Data) -->
         <section class="bg-white rounded-2xl p-5 border-2 border-red-200 shadow-lg">
             <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center animate-pulse">
@@ -397,46 +405,35 @@
                 <span class="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Prioritas Tinggi</span>
             </h2>
             <ul class="space-y-3">
+                @forelse($topReports ?? [] as $report)
                 <li class="p-3 bg-gradient-to-br from-white to-red-50 rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-red-300">
-                    <a href="#" class="block">
+                    <a href="{{ route('reports.show', $report['id']) }}" class="block">
                         <div class="flex items-start justify-between mb-2">
-                            <p class="font-bold text-gray-900 text-sm group-hover:text-red-700 transition line-clamp-2 flex-1">Jalan Rusak</p>
+                            <p class="font-bold text-gray-900 text-sm group-hover:text-red-700 transition line-clamp-2 flex-1">{{ Str::limit($report['title'], 35) }}</p>
                             <span class="ml-2 px-2.5 py-1 text-xs font-bold bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full shadow-md whitespace-nowrap">
-                                <i class="fa-solid fa-fire"></i> 128
+                                <i class="fa-solid fa-fire"></i> {{ $report['votes'] }}
                             </span>
                         </div>
                         <p class="text-xs text-gray-500 flex items-center gap-1 mb-2">
                             <i class="fa-solid fa-location-dot text-red-400"></i>
-                            Jl. Melati
+                            {{ Str::limit($report['location'] ?? 'Lokasi tidak diketahui', 25) }}
                         </p>
                         <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-400"><i class="fa-regular fa-clock"></i> 2 hari lalu</span>
+                            <span class="text-gray-400"><i class="fa-regular fa-clock"></i> {{ $report['created_at'] ?? 'Baru' }}</span>
                             <span class="text-blue-600 font-semibold group-hover:translate-x-1 transition-transform">Lihat →</span>
                         </div>
                     </a>
                 </li>
-                <li class="p-3 bg-gradient-to-br from-white to-red-50 rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-red-300">
-                    <a href="#" class="block">
-                        <div class="flex items-start justify-between mb-2">
-                            <p class="font-bold text-gray-900 text-sm group-hover:text-red-700 transition line-clamp-2 flex-1">Sampah Menumpuk</p>
-                            <span class="ml-2 px-2.5 py-1 text-xs font-bold bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full shadow-md whitespace-nowrap">
-                                <i class="fa-solid fa-fire"></i> 96
-                            </span>
-                        </div>
-                        <p class="text-xs text-gray-500 flex items-center gap-1 mb-2">
-                            <i class="fa-solid fa-location-dot text-red-400"></i>
-                            Pasar Baru
-                        </p>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-400"><i class="fa-regular fa-clock"></i> 3 hari lalu</span>
-                            <span class="text-blue-600 font-semibold group-hover:translate-x-1 transition-transform">Lihat →</span>
-                        </div>
-                    </a>
+                @empty
+                <li class="p-5 text-center text-gray-500 text-sm">
+                    <i class="fa-regular fa-folder-open text-3xl mb-2 block text-gray-300"></i>
+                    <p class="font-medium">Belum ada laporan prioritas</p>
                 </li>
+                @endforelse
             </ul>
         </section>
 
-        <!-- Trending -->
+        <!-- Trending (Real Data) -->
         <section class="bg-white rounded-2xl p-5 border-2 border-purple-200 shadow-lg">
             <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center">
@@ -445,63 +442,23 @@
                 <span class="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Trending</span>
             </h2>
             <ul class="space-y-3">
-                <li class="p-3 bg-gradient-to-br from-white to-purple-50 rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-purple-300">
-                    <a href="#" class="block">
-                        <p class="font-bold text-gray-900 text-sm group-hover:text-purple-700 transition mb-2 line-clamp-2">Taman Berserak</p>
-                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-1">
-                            <i class="fa-solid fa-location-dot text-purple-400"></i>
-                            LAGUBOITI
+                @forelse($trendingCategories ?? [] as $cat)
+                <li class="flex justify-between items-center p-3 bg-gradient-to-br from-white to-purple-50 rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-purple-300">
+                    <div>
+                        <p class="font-bold text-gray-900 text-sm group-hover:text-purple-700 transition mb-1 line-clamp-2">{{ $cat['category'] }}</p>
+                        <p class="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                            <i class="fa-solid fa-chart-line text-purple-400"></i>
+                            {{ $cat['total'] }} laporan minggu ini
                         </p>
-                        <div class="flex items-center gap-4 text-xs text-gray-500">
-                            <span class="flex items-center gap-1">
-                                <i class="fa-solid fa-heart text-red-400"></i>
-                                <span class="font-bold text-gray-700">2</span>
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <i class="fa-solid fa-comments text-blue-400"></i>
-                                <span class="font-bold text-gray-700">1</span>
-                            </span>
-                        </div>
-                    </a>
+                    </div>
+                    <span class="px-3 py-1 rounded-xl text-xs bg-pink-100 text-pink-700 font-medium">Trending</span>
                 </li>
-                <li class="p-3 bg-gradient-to-br from-white to-purple-50 rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-purple-300">
-                    <a href="#" class="block">
-                        <p class="font-bold text-gray-900 text-sm group-hover:text-purple-700 transition mb-2 line-clamp-2">Deserunt error totam recusandae laudanti...</p>
-                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-1">
-                            <i class="fa-solid fa-location-dot text-purple-400"></i>
-                            31672 Adela Overpass Apt...
-                        </p>
-                        <div class="flex items-center gap-4 text-xs text-gray-500">
-                            <span class="flex items-center gap-1">
-                                <i class="fa-solid fa-heart text-red-400"></i>
-                                <span class="font-bold text-gray-700">1</span>
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <i class="fa-solid fa-comments text-blue-400"></i>
-                                <span class="font-bold text-gray-700">0</span>
-                            </span>
-                        </div>
-                    </a>
+                @empty
+                <li class="p-5 text-center text-gray-500 text-sm">
+                    <i class="fa-regular fa-folder-open text-3xl mb-2 block text-gray-300"></i>
+                    <p class="font-medium">Belum ada kategori trending</p>
                 </li>
-                <li class="p-3 bg-gradient-to-br from-white to-purple-50 rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-purple-300">
-                    <a href="#" class="block">
-                        <p class="font-bold text-gray-900 text-sm group-hover:text-purple-700 transition mb-2 line-clamp-2">Est consequatur iste in aperam.</p>
-                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-1">
-                            <i class="fa-solid fa-location-dot text-purple-400"></i>
-                            165 Runolfsdottir Island...
-                        </p>
-                        <div class="flex items-center gap-4 text-xs text-gray-500">
-                            <span class="flex items-center gap-1">
-                                <i class="fa-solid fa-heart text-red-400"></i>
-                                <span class="font-bold text-gray-700">1</span>
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <i class="fa-solid fa-comments text-blue-400"></i>
-                                <span class="font-bold text-gray-700">0</span>
-                            </span>
-                        </div>
-                    </a>
-                </li>
+                @endforelse
             </ul>
         </section>
     </aside>
@@ -530,9 +487,15 @@
     }
 
     function filterByCategory(category) {
-        document.querySelectorAll('.report-card').forEach(card => {
-            card.style.display = card.dataset.category === category ? 'block' : 'none';
-        });
+        if (!category || category === 'Semua') {
+            document.querySelectorAll('.report-card').forEach(card => {
+                card.style.display = 'block';
+            });
+        } else {
+            document.querySelectorAll('.report-card').forEach(card => {
+                card.style.display = card.dataset.category === category ? 'block' : 'none';
+            });
+        }
         toggleDropdown('categoryDropdown');
     }
 

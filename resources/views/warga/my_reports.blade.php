@@ -22,7 +22,7 @@
                         ['Beranda', 'home', 'fa-solid fa-house'],
                         ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
                         ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
-                        ['Pesan', 'messages', 'fa-regular fa-envelope'],
+                        // ...hapus menu Pesan...
                         ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
                         ['Profil', 'profile', 'fa-regular fa-user'],
                     ];

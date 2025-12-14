@@ -189,7 +189,26 @@ class ReportController extends Controller
                 $data['image'] = 'images/reports/' . $filename;
             }
 
+            $oldStatus = $report->status;
             $report->update($data);
+
+            // Kirim notifikasi jika status berubah dan user bukan admin
+            if (isset($data['status']) && $data['status'] !== $oldStatus) {
+                $userId = $report->user_id;
+                $statusBaru = $data['status'];
+                $statusLama = $oldStatus;
+                $title = 'Status laporan diperbarui';
+                $message = 'Status laporan "' . $report->title . '" berubah dari "' . $statusLama . '" menjadi "' . $statusBaru . '".';
+                \App\Models\Notification::create([
+                    'user_id' => $userId,
+                    'report_id' => $report->id,
+                    'type' => 'status_update',
+                    'title' => $title,
+                    'message' => $message,
+                    'data' => json_encode(['old_status' => $statusLama, 'new_status' => $statusBaru]),
+                    'read' => false,
+                ]);
+            }
 
             return redirect()->route('reports.show', $report->id)->with('success', 'Laporan berhasil diperbarui!');
         } catch (\Exception $e) {
@@ -236,6 +255,14 @@ class ReportController extends Controller
         // Check if already voted
         $existingVote = $report->votes()->where('user_id', session('user.id'))->first();
 
+        $userId = session('user.id');
+        $voterName = session('user.name', 'Seseorang');
+        $reportOwnerId = $report->user_id;
+        $reportTitle = $report->title;
+        $voteType = $isUpvote ? 'upvote' : 'downvote';
+        $voteText = $isUpvote ? 'menyukai' : 'tidak menyukai';
+
+        $notify = false;
         if ($existingVote) {
             if ($existingVote->is_upvote == $isUpvote) {
                 // Remove vote if same
@@ -243,14 +270,31 @@ class ReportController extends Controller
             } else {
                 // Update vote
                 $existingVote->update(['is_upvote' => $isUpvote]);
+                $notify = true;
             }
         } else {
             // Create new vote
             $report->votes()->create([
-                'user_id' => session('user.id'),
+                'user_id' => $userId,
                 'votable_id' => $report->id,
                 'votable_type' => 'App\\Models\\Report',
                 'is_upvote' => $isUpvote,
+            ]);
+            $notify = true;
+        }
+
+        // Notifikasi ke pemilik laporan jika bukan dirinya sendiri
+        if ($notify && $reportOwnerId != $userId) {
+            $title = 'Laporanmu mendapat vote';
+            $message = $voterName . ' ' . $voteText . ' laporan "' . $reportTitle . '".';
+            \App\Models\Notification::create([
+                'user_id' => $reportOwnerId,
+                'report_id' => $report->id,
+                'type' => 'vote',
+                'title' => $title,
+                'message' => $message,
+                'data' => json_encode(['vote_type' => $voteType]),
+                'read' => false,
             ]);
         }
 
@@ -275,10 +319,26 @@ class ReportController extends Controller
 
         $report = Report::findOrFail($id);
 
-        $report->comments()->create([
+        $comment = $report->comments()->create([
             'user_id' => session('user.id'),
             'content' => $request->input('content'),
         ]);
+
+        // Notifikasi ke pemilik laporan jika bukan dirinya sendiri
+        if ($report->user_id != session('user.id')) {
+            $commenterName = session('user.name', 'Seseorang');
+            $title = 'Komentar baru pada laporanmu';
+            $message = $commenterName . ' mengomentari laporan "' . $report->title . '".';
+            \App\Models\Notification::create([
+                'user_id' => $report->user_id,
+                'report_id' => $report->id,
+                'type' => 'comment',
+                'title' => $title,
+                'message' => $message,
+                'data' => json_encode(['comment_id' => $comment->id]),
+                'read' => false,
+            ]);
+        }
 
         return redirect()->route('reports.show', $id)->with('success', 'Komentar berhasil ditambahkan!');
     }

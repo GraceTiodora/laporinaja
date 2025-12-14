@@ -25,7 +25,6 @@
                         ['Dashboard', 'admin.dashboard', 'fa-solid fa-house'],
                         ['Verifikasi & Penanganan', 'admin.verifikasi', 'fa-solid fa-check-circle'],
                         ['Monitoring & Statistik', 'admin.monitoring', 'fa-solid fa-chart-line'],
-                        ['Voting Publik', 'admin.voting', 'fa-solid fa-vote-yea'],
                         ['Pengaturan Akun', 'admin.pengaturan', 'fa-solid fa-gear'],
                     ];
                 @endphp
@@ -276,13 +275,11 @@
     // Form validation
     document.getElementById('updateStatusForm').addEventListener('submit', function(e) {
         const statusSelect = document.getElementById('statusSelect');
-        
         if (!statusSelect.value) {
             e.preventDefault();
             alert('❌ Pilih status terlebih dahulu!');
             return;
         }
-
         // Jika status "Selesai", image WAJIB diupload
         if (statusSelect.value === 'Selesai') {
             if (!fileInput.files || !fileInput.files[0]) {
@@ -291,7 +288,12 @@
                 return;
             }
         }
-        // Jika status "Dalam Pengerjaan" atau "Ditolak", foto opsional/tidak perlu
+        // Setelah submit sukses, kembali ke halaman sebelumnya jika ada history
+        setTimeout(function() {
+            if (window.history.length > 1) {
+                window.history.back();
+            }
+        }, 500);
     });
 </script>
 

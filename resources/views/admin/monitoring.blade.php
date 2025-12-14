@@ -41,7 +41,6 @@
                         ['Dashboard', 'admin.dashboard', 'fa-solid fa-house'],
                         ['Verifikasi & Penanganan', 'admin.verifikasi', 'fa-solid fa-check-circle'],
                         ['Monitoring & Statistik', 'admin.monitoring', 'fa-solid fa-chart-line'],
-                        ['Voting Publik', 'admin.voting', 'fa-solid fa-vote-yea'],
                         ['Pengaturan Akun', 'admin.pengaturan', 'fa-solid fa-gear'],
                     ];
                 @endphp
@@ -144,6 +143,10 @@
                                                 <i class="fa-solid fa-tag text-blue-500"></i>
                                                 {{ $cat['kategori'] ?? 'N/A' }}
                                             </span>
+                                            <div class="mt-1">
+                                                {{-- Route detail tidak tersedia, bisa diarahkan ke halaman laporan dengan filter kategori --}}
+                                                <a href="{{ route('admin.reports', ['category' => $cat['kategori'] ?? null]) }}" class="text-xs text-blue-600 hover:underline">Lihat detail laporan</a>
+                                            </div>
                                         </td>
                                         <td class="py-4 px-4 text-center">
                                             <span class="inline-flex items-center justify-center px-3 py-1 bg-blue-100 text-blue-700 font-bold rounded-full text-xs">
@@ -181,14 +184,16 @@
                     
                     {{-- Unduh PDF Button - Bottom Right of Table --}}
                     <div class="flex justify-end mt-6">
-                        <a href="#" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:animate-bounce">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                <polyline points="7 10 12 15 17 10"/>
-                                <line x1="12" y1="15" x2="12" y2="3"/>
-                            </svg>
-                            <span>Unduh PDF</span>
-                        </a>
+                        <form method="GET" action="{{ route('admin.monitoring.pdf') }}" target="_blank">
+                            <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:animate-bounce">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                <span>Unduh PDF</span>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -201,25 +206,23 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <script>
   // Prepare real data from controller
-  @php
-    $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-    $trendData = $trenData ?? collect();
-    $categoryData = $categoryPerformance ?? collect();
-    
-    // Trend data untuk chart
-    $trendTotalData = [];
-    $trendSelesaiData = [];
-    for ($i = 1; $i <= 12; $i++) {
-      $monthData = $trendData->where('bulan', $i)->first();
-      $trendTotalData[] = $monthData['total'] ?? 0;
-      $trendSelesaiData[] = $monthData['selesai'] ?? 0;
-    }
-    
-    // Category data
-    $categoryLabels = $categoryData->pluck('kategori')->toArray();
-    $categoryTotalData = $categoryData->pluck('total')->toArray();
-    $categorySelesaiData = $categoryData->pluck('selesai')->toArray();
-  @endphp
+    @php
+        $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        $trendData = collect($trenData ?? []);
+        $categoryData = collect($categoryPerformance ?? []);
+        // Trend data untuk chart
+        $trendTotalData = [];
+        $trendSelesaiData = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $monthData = $trendData->where('bulan', $i)->first();
+            $trendTotalData[] = $monthData['total'] ?? 0;
+            $trendSelesaiData[] = $monthData['selesai'] ?? 0;
+        }
+        // Category data
+        $categoryLabels = $categoryData->pluck('kategori')->toArray();
+        $categoryTotalData = $categoryData->pluck('total')->toArray();
+        $categorySelesaiData = $categoryData->pluck('selesai')->toArray();
+    @endphp
 
   // Trend chart
   const trendCtx = document.getElementById('trendChart')?.getContext('2d');
