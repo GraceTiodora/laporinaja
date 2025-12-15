@@ -25,7 +25,6 @@
                         ['Dashboard', 'admin.dashboard', 'fa-solid fa-house'],
                         ['Verifikasi & Penanganan', 'admin.verifikasi', 'fa-solid fa-check-circle'],
                         ['Monitoring & Statistik', 'admin.monitoring', 'fa-solid fa-chart-line'],
-                        ['Voting Publik', 'admin.voting', 'fa-solid fa-vote-yea'],
                         ['Pengaturan Akun', 'admin.pengaturan', 'fa-solid fa-gear'],
                     ];
                 @endphp
@@ -192,6 +191,7 @@
             </div>
         </div>
 
+<<<<<<< Updated upstream
         <script>
             function validateAndUpdate() {
                 const statusSelect = document.getElementById('statusBaru');
@@ -216,6 +216,107 @@
                     document.getElementById('updateStatusForm').submit();
                 }, 2000);
             }
+=======
+        </main>
+</div>
+
+<script>
+    // Show/hide solution image field based on status
+    document.getElementById('statusSelect').addEventListener('change', function() {
+        const solutionField = document.getElementById('solutionImageField');
+        const photoRequirement = document.getElementById('photoRequirement');
+        const photoHint = document.getElementById('photoHint');
+        
+        if (this.value === 'Selesai') {
+            // Selesai: Foto wajib
+            solutionField.classList.remove('hidden');
+            photoRequirement.innerHTML = '(Wajib)';
+            photoRequirement.className = 'text-red-500';
+            photoHint.textContent = 'Wajib di-upload untuk menyelesaikan laporan';
+            photoHint.className = 'text-xs text-red-600 font-medium mt-2';
+        } else if (this.value === 'Dalam Pengerjaan') {
+            // Dalam Pengerjaan: Foto opsional
+            solutionField.classList.remove('hidden');
+            photoRequirement.innerHTML = '(Opsional)';
+            photoRequirement.className = 'text-gray-500';
+            photoHint.textContent = 'Foto dokumentasi pekerjaan (opsional)';
+            photoHint.className = 'text-xs text-gray-600 font-medium mt-2';
+        } else {
+            // Ditolak: Sembunyikan foto
+            solutionField.classList.add('hidden');
+            clearImage();
+        }
+    });
+
+    // Handle file upload
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('solutionImage');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+
+    if (uploadArea) {
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('bg-green-100', 'border-green-500');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('bg-green-100', 'border-green-500');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('bg-green-100', 'border-green-500');
+            fileInput.files = e.dataTransfer.files;
+            handleFileSelect();
+        });
+
+        fileInput.addEventListener('change', handleFileSelect);
+    }
+
+    function handleFileSelect() {
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImg.src = e.target.result;
+                imagePreview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+
+    function clearImage() {
+        fileInput.value = '';
+        imagePreview.classList.add('hidden');
+    }
+
+    // Form validation
+    document.getElementById('updateStatusForm').addEventListener('submit', function(e) {
+        const statusSelect = document.getElementById('statusSelect');
+        if (!statusSelect.value) {
+            e.preventDefault();
+            alert('❌ Pilih status terlebih dahulu!');
+            return;
+        }
+        // Jika status "Selesai", image WAJIB diupload
+        if (statusSelect.value === 'Selesai') {
+            if (!fileInput.files || !fileInput.files[0]) {
+                e.preventDefault();
+                alert('❌ Foto bukti HARUS diupload untuk menyelesaikan laporan!');
+                return;
+            }
+        }
+        // Setelah submit sukses, kembali ke halaman sebelumnya jika ada history
+        setTimeout(function() {
+            if (window.history.length > 1) {
+                window.history.back();
+            }
+        }, 500);
+    });
+</script>
+>>>>>>> Stashed changes
 
             function showSuccessNotification() {
                 const notification = document.getElementById('updateNotification');

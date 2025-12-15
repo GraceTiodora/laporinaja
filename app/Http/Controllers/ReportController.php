@@ -220,8 +220,160 @@ class ReportController extends Controller
 
     public function update(Request $request, $id)
     {
+<<<<<<< Updated upstream
         if (!session('authenticated')) {
             return redirect('/login');
+=======
+        $report = Report::findOrFail($id);
+
+        if ($report->user_id !== session('user.id')) {
+            return redirect()->back()->with('error', 'Anda tidak bisa mengedit laporan orang lain.');
+        }
+
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
+            'description' => 'required|string',
+            'location'    => 'nullable|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
+            'status'      => 'nullable|in:Baru,Dalam Pengerjaan,Selesai',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        try {
+            if ($request->hasFile('image')) {
+                // Delete old image
+                if ($report->image && file_exists(public_path($report->image))) {
+                    unlink(public_path($report->image));
+                }
+
+                $filename = time() . '_' . $request->file('image')->getClientOriginalName();
+                $request->file('image')->move(public_path('images/reports'), $filename);
+                $data['image'] = 'images/reports/' . $filename;
+            }
+
+            $oldStatus = $report->status;
+            $report->update($data);
+
+            // Kirim notifikasi jika status berubah dan user bukan admin
+            if (isset($data['status']) && $data['status'] !== $oldStatus) {
+                $userId = $report->user_id;
+                $statusBaru = $data['status'];
+                $statusLama = $oldStatus;
+                $title = 'Status laporan diperbarui';
+                $message = 'Status laporan "' . $report->title . '" berubah dari "' . $statusLama . '" menjadi "' . $statusBaru . '".';
+                \App\Models\Notification::create([
+                    'user_id' => $userId,
+                    'report_id' => $report->id,
+                    'type' => 'status_update',
+                    'title' => $title,
+                    'message' => $message,
+                    'data' => json_encode(['old_status' => $statusLama, 'new_status' => $statusBaru]),
+                    'read' => false,
+                ]);
+            }
+
+            return redirect()->route('reports.show', $report->id)->with('success', 'Laporan berhasil diperbarui!');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Delete report
+     */
+    public function destroy($id)
+    {
+        $report = Report::findOrFail($id);
+
+        if ($report->user_id !== session('user.id')) {
+            return redirect()->back()->with('error', 'Anda tidak bisa menghapus laporan orang lain.');
+        }
+
+        try {
+            if ($report->image && file_exists(public_path($report->image))) {
+                unlink(public_path($report->image));
+            }
+
+            $report->delete();
+
+            return redirect()->route('my-reports')->with('success', 'Laporan berhasil dihapus!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Vote on report (upvote/downvote)
+     */
+    public function vote($id, Request $request)
+    {
+        if (!session()->has('user')) {
+            return response()->json(['error' => 'Silakan login terlebih dahulu'], 401);
+        }
+
+        $report = Report::findOrFail($id);
+        $isUpvote = $request->input('upvote', true);
+
+        // Check if already voted
+        $existingVote = $report->votes()->where('user_id', session('user.id'))->first();
+
+        $userId = session('user.id');
+        $voterName = session('user.name', 'Seseorang');
+        $reportOwnerId = $report->user_id;
+        $reportTitle = $report->title;
+        $voteType = $isUpvote ? 'upvote' : 'downvote';
+        $voteText = $isUpvote ? 'menyukai' : 'tidak menyukai';
+
+        $notify = false;
+        if ($existingVote) {
+            if ($existingVote->is_upvote == $isUpvote) {
+                // Remove vote if same
+                $existingVote->delete();
+            } else {
+                // Update vote
+                $existingVote->update(['is_upvote' => $isUpvote]);
+                $notify = true;
+            }
+        } else {
+            // Create new vote
+            $report->votes()->create([
+                'user_id' => $userId,
+                'votable_id' => $report->id,
+                'votable_type' => 'App\\Models\\Report',
+                'is_upvote' => $isUpvote,
+            ]);
+            $notify = true;
+        }
+
+        // Notifikasi ke pemilik laporan jika bukan dirinya sendiri
+        if ($notify && $reportOwnerId != $userId) {
+            $title = 'Laporanmu mendapat vote';
+            $message = $voterName . ' ' . $voteText . ' laporan "' . $reportTitle . '".';
+            \App\Models\Notification::create([
+                'user_id' => $reportOwnerId,
+                'report_id' => $report->id,
+                'type' => 'vote',
+                'title' => $title,
+                'message' => $message,
+                'data' => json_encode(['vote_type' => $voteType]),
+                'read' => false,
+            ]);
+        }
+
+        return response()->json([
+            'upvotes' => $report->votes()->where('is_upvote', 1)->count(),
+            'downvotes' => $report->votes()->where('is_upvote', 0)->count(),
+        ]);
+    }
+
+    /**
+     * Add comment on report
+     */
+    public function addComment($id, Request $request)
+    {
+        if (!session()->has('user')) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
+>>>>>>> Stashed changes
         }
 
         $request->validate([
@@ -236,6 +388,7 @@ class ReportController extends Controller
         try {
             $data = $request->only(['title', 'description', 'location', 'category_id', 'status']);
 
+<<<<<<< Updated upstream
             if ($request->hasFile('image') && $request->file('image')->isValid()) {
                 try {
                     $path = $request->file('image')->store('reports', 'public');
@@ -274,5 +427,29 @@ class ReportController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Koneksi gagal');
         }
+=======
+        $comment = $report->comments()->create([
+            'user_id' => session('user.id'),
+            'content' => $request->input('content'),
+        ]);
+
+        // Notifikasi ke pemilik laporan jika bukan dirinya sendiri
+        if ($report->user_id != session('user.id')) {
+            $commenterName = session('user.name', 'Seseorang');
+            $title = 'Komentar baru pada laporanmu';
+            $message = $commenterName . ' mengomentari laporan "' . $report->title . '".';
+            \App\Models\Notification::create([
+                'user_id' => $report->user_id,
+                'report_id' => $report->id,
+                'type' => 'comment',
+                'title' => $title,
+                'message' => $message,
+                'data' => json_encode(['comment_id' => $comment->id]),
+                'read' => false,
+            ]);
+        }
+
+        return redirect()->route('reports.show', $id)->with('success', 'Komentar berhasil ditambahkan!');
+>>>>>>> Stashed changes
     }
 }

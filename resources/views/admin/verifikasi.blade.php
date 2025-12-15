@@ -20,7 +20,6 @@
                         ['Dashboard', 'admin.dashboard', 'fa-solid fa-house'],
                         ['Verifikasi & Penanganan', 'admin.verifikasi', 'fa-solid fa-check-circle'],
                         ['Monitoring & Statistik', 'admin.monitoring', 'fa-solid fa-chart-line'],
-                        ['Voting Publik', 'admin.voting', 'fa-solid fa-vote-yea'],
                         ['Pengaturan Akun', 'admin.pengaturan', 'fa-solid fa-gear'],
                     ];
                 @endphp
@@ -69,11 +68,73 @@
         {{-- Top Statistic Cards --}}
         <div class="grid grid-cols-3 gap-6 mb-8">
 
+<<<<<<< Updated upstream
             <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
                 <div class="flex items-start justify-between mb-3">
                     <p class="text-sm font-semibold text-gray-700">Menunggu Verifikasi</p>
                     <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
                         <i class="fa-solid fa-file-lines text-blue-600 text-xl"></i>
+=======
+            {{-- Top Statistic Cards --}}
+            <div class="grid grid-cols-4 gap-6">
+                <div class="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-5 hover:shadow-2xl transition-all duration-500 hover:border-blue-400 hover:-translate-y-2 group cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                            <i class="fa-solid fa-inbox text-blue-600 text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-600 mb-1">Total Laporan</p>
+                            <h2 class="text-3xl font-extrabold text-gray-900">{{ $totalReports ?? 0 }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-5 hover:shadow-2xl transition-all duration-500 hover:border-yellow-400 hover:-translate-y-2 group cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-yellow-100 to-yellow-200 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                            <i class="fa-solid fa-spinner text-yellow-600 text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-600 mb-1">Sedang Diproses</p>
+                            <h2 class="text-3xl font-extrabold text-gray-900">{{ $inProgress ?? 0 }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-5 hover:shadow-2xl transition-all duration-500 hover:border-green-400 hover:-translate-y-2 group cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                            <i class="fa-solid fa-circle-check text-green-600 text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-600 mb-1">Selesai</p>
+                            <h2 class="text-3xl font-extrabold text-gray-900">{{ $completed ?? 0 }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-5 hover:shadow-2xl transition-all duration-500 hover:border-red-400 hover:-translate-y-2 group cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                            <i class="fa-solid fa-bell text-red-600 text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-600 mb-1">Perlu Verifikasi</p>
+                            <h2 class="text-3xl font-extrabold text-gray-900">{{ $waitingVerification ?? 0 }}</h2>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            {{-- Reports Table --}}
+            <div class="bg-white border-2 border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-2xl transition-all duration-300 hover:border-blue-300">
+
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-list text-blue-600"></i>
+                            Daftar Laporan Baru
+                        </h3>
+                        <p class="text-sm text-gray-600 mt-1">Kelola dan verifikasi laporan masyarakat yang masuk ke sistem</p>
+>>>>>>> Stashed changes
                     </div>
                 </div>
                 <h2 class="text-3xl font-extrabold text-gray-900 mb-1">4</h2>

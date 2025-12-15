@@ -22,9 +22,14 @@
                         ['Beranda', 'home', 'fa-solid fa-house'],
                         ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
                         ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
+<<<<<<< Updated upstream
                         ['Pesan', 'messages', 'fa-regular fa-envelope'],
                         ['Laporan Saya', 'reports', 'fa-solid fa-clipboard-list'],
                         ['Komunitas', 'communities', 'fa-solid fa-users'],
+=======
+                        // ...hapus menu Pesan...
+                        ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
+>>>>>>> Stashed changes
                         ['Profil', 'profile', 'fa-regular fa-user'],
                     ];
                 @endphp
@@ -112,12 +117,18 @@
                 </div>
 
                 <div class="flex justify-between items-center px-2">
+<<<<<<< Updated upstream
                     <div class="flex gap-4 text-gray-400">
                         <button class="hover:text-blue-600 transition-all hover:scale-110 transform" title="Upload Foto">
                             <i class="fa-solid fa-camera text-lg"></i>
                         </button>
                         <button class="hover:text-green-600 transition-all hover:scale-110 transform" title="Upload Gambar">
                             <i class="fa-solid fa-image text-lg"></i>
+=======
+                    <div class="flex gap-5 text-gray-400">
+                        <button class="hover:text-purple-600 transition-all hover:scale-125 transform" title="Upload Gambar">
+                            <i class="fa-solid fa-image text-xl"></i>
+>>>>>>> Stashed changes
                         </button>
                         <button class="hover:text-red-600 transition-all hover:scale-110 transform" title="Tambah Lokasi">
                             <i class="fa-solid fa-location-dot text-lg"></i>
@@ -165,9 +176,15 @@
                 </h3>
 
                 @if(!empty($report['image']))
+<<<<<<< Updated upstream
                     <div class="rounded-xl overflow-hidden mb-4 relative group/img">
                         <img src="{{ asset($report['image']) }}" class="w-full object-cover max-h-[450px] group-hover/img:scale-105 transition-transform duration-500">
                         <div class="absolute inset-0 bg-black/0 group-hover/img:bg-black/10 transition-all"></div>
+=======
+                    <div class="rounded-2xl overflow-hidden mb-4 relative group/img cursor-pointer" onclick="window.location='{{ route('reports.show', $report['id']) }}'">
+                        <img src="{{ asset($report['image']) }}" class="w-full object-cover max-h-[450px] group-hover/img:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover/img:opacity-100 transition-all duration-300"></div>
+>>>>>>> Stashed changes
                     </div>
                 @endif
 

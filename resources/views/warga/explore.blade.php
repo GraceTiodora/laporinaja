@@ -12,6 +12,7 @@
     <!-- 🧭 Left Sidebar -->
     <aside class="w-[270px] bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-r border-gray-200 p-6 flex flex-col justify-between shadow-lg">
         <div>
+<<<<<<< Updated upstream
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">Laporin<span class="text-gray-900">Aja</span></h2>
 
             <nav class="space-y-2">
@@ -72,6 +73,61 @@
                     <span>Laporan Baru</span>
                 </button>
             @endif
+=======
+            <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight hover:scale-105 transition-transform cursor-pointer">
+                Laporin<span class="text-gray-900">Aja</span>
+            </h2>
+            <nav class="space-y-2">
+                @php
+                    $menu = [
+                        ['Beranda', 'home', 'fa-solid fa-house'],
+                        ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
+                        ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
+                        ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
+                        ['Profil', 'profile', 'fa-regular fa-user'],
+                    ];
+                    $unreadNotifications = $unreadNotifications ?? ($unreadCount ?? 0);
+                @endphp
+                @foreach ($menu as [$name, $route, $icon])
+                    @php
+                        $href = '#';
+                        if ($route !== '#') {
+                            try {
+                                $href = route($route);
+                            } catch (\Exception $e) {
+                                $href = '#';
+                            }
+                        }
+                        $isActive = request()->routeIs($route);
+                        $showBadge = $route === 'notifications' && $unreadNotifications > 0;
+                    @endphp
+                    <a href="{{ $href }}"
+                       class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all duration-300 relative
+                              {{ $isActive 
+                                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg' 
+                                  : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1' }}">
+                        @if($isActive)
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                        @endif
+                        <i class="{{ $icon }} text-lg group-hover:scale-125 transition-transform"></i>
+                        <span class="font-semibold">{{ $name }}</span>
+                        @if($showBadge)
+                            <span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">
+                                {{ $unreadNotifications > 99 ? '99+' : $unreadNotifications }}
+                            </span>
+                        @endif
+                    </a>
+                @endforeach
+            </nav>
+            <button onclick="window.location.href='{{ route('reports.create') }}'"
+                    class="mt-6 w-full flex items-center justify-center gap-2 
+                           bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800
+                           text-white py-3.5 rounded-full shadow-lg hover:shadow-xl
+                           transition-all duration-300 font-bold transform hover:scale-105 group">
+                <i class="fa-solid fa-plus-circle text-lg group-hover:rotate-90 transition-transform"></i> 
+                <span>Laporan Baru</span>
+            </button>
+>>>>>>> Stashed changes
         </div>
 
         <!-- Profile Section -->
@@ -268,15 +324,121 @@
         </div>
     </main>
 
+<<<<<<< Updated upstream
     <!-- 📊 Right Sidebar -->
     <aside class="w-[340px] bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-6 overflow-y-auto shadow-lg border-l border-gray-200 space-y-6">
         <!-- Masalah Penting -->
         <section class="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-5 border border-red-100">
+=======
+    <!-- RIGHT SIDEBAR -->
+    <aside class="w-[320px] bg-white border-l border-gray-200 p-5 flex flex-col gap-5 overflow-y-auto shadow-lg"
+                </div>
+            </a>
+                <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Statistik Laporan</span>
+            </h2>
+            
+            @php
+                $totalReports = collect($dbReports ?? []);
+                $baruCount = $totalReports->where('status', 'Baru')->count();
+                $diprosesCount = $totalReports->where('status', 'Dalam Pengerjaan')->count();
+                $selesaiCount = $totalReports->where('status', 'Selesai')->count();
+                $ditolakCount = $totalReports->where('status', 'Ditolak')->count();
+                $total = $totalReports->count();
+
+                $selesaiPercentage = $total > 0 ? round(($selesaiCount / $total) * 100) : 0;
+            @endphp
+            
+            <!-- Total & Progress -->
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 mb-4 border border-blue-100">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-semibold text-gray-700">Total Laporan Masuk</span>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{{ $total }}</span>
+                </div>
+                <div class="bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-full transition-all duration-1000" style="width: {{ $selesaiPercentage }}%"></div>
+                </div>
+                <p class="text-xs text-gray-600 mt-1.5 text-right font-medium">{{ $selesaiPercentage }}% telah diselesaikan</p>
+            </div>
+            
+            <!-- Status Breakdown -->
+            <div class="space-y-3">
+                <!-- Baru -->
+                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl hover:shadow-md transition-all group cursor-pointer border border-blue-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-sparkles text-white"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-blue-600">Laporan Baru</p>
+                            <p class="text-sm text-gray-500 text-xs">Menunggu verifikasi</p>
+                        </div>
+                    </div>
+                    <span class="text-2xl font-bold text-blue-700">{{ $baruCount }}</span>
+                </div>
+                
+                <!-- Diproses -->
+                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-orange-100 rounded-xl hover:shadow-md transition-all group cursor-pointer border border-orange-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-spinner text-white animate-spin"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-orange-600">Sedang Diproses</p>
+                            <p class="text-sm text-gray-500 text-xs">Dalam penanganan</p>
+                        </div>
+                    </div>
+                    <span class="text-2xl font-bold text-orange-700">{{ $diprosesCount }}</span>
+                </div>
+                
+                <!-- Selesai -->
+                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-emerald-100 rounded-xl hover:shadow-md transition-all group cursor-pointer border border-green-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-check-double text-white"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-green-600">Selesai Ditangani</p>
+                            <p class="text-sm text-gray-500 text-xs">Masalah teratasi</p>
+                        </div>
+                    </div>
+                    <span class="text-2xl font-bold text-green-700">{{ $selesaiCount }}</span>
+                </div>
+                
+                <!-- Ditolak -->
+                @if($ditolakCount > 0)
+                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-red-50 to-rose-100 rounded-xl hover:shadow-md transition-all group cursor-pointer border border-red-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-red-500 to-rose-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-times text-white"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-red-600">Ditolak</p>
+                            <p class="text-sm text-gray-500 text-xs">Tidak memenuhi syarat</p>
+                        </div>
+                    </div>
+                    <span class="text-2xl font-bold text-red-700">{{ $ditolakCount }}</span>
+                </div>
+                @endif
+            </div>
+            
+            <!-- Response Time Info -->
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <div class="flex items-center gap-2 text-xs text-gray-600">
+                    <i class="fa-solid fa-clock text-blue-500"></i>
+                    <span class="font-medium">Rata-rata waktu respon: <span class="font-bold text-blue-600">2-3 hari</span></span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Masalah Penting (Real Data) -->
+        <section class="bg-white rounded-2xl p-5 border-2 border-red-200 shadow-lg">
+>>>>>>> Stashed changes
             <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <i class="fa-solid fa-fire text-red-500 animate-pulse"></i> 
                 <span class="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Masalah Penting</span>
             </h2>
             <ul class="space-y-3">
+<<<<<<< Updated upstream
                 <li class="p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border border-transparent hover:border-red-300">
                     <a href="#" class="flex items-center justify-between">
                         <div class="flex-1">
@@ -304,17 +466,49 @@
                             <span class="px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full shadow-md">96V</span>
                         </div>
                     </a>
+=======
+                @forelse($topReports ?? [] as $report)
+                <li class="p-3 bg-gradient-to-br from-white to-red-50 rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-red-300">
+                    <a href="{{ route('reports.show', $report['id']) }}" class="block">
+                        <div class="flex items-start justify-between mb-2">
+                            <p class="font-bold text-gray-900 text-sm group-hover:text-red-700 transition line-clamp-2 flex-1">{{ Str::limit($report['title'], 35) }}</p>
+                            <span class="ml-2 px-2.5 py-1 text-xs font-bold bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full shadow-md whitespace-nowrap">
+                                <i class="fa-solid fa-fire"></i> {{ $report['votes'] }}
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-500 flex items-center gap-1 mb-2">
+                            <i class="fa-solid fa-location-dot text-red-400"></i>
+                            {{ Str::limit($report['location'] ?? 'Lokasi tidak diketahui', 25) }}
+                        </p>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-gray-400"><i class="fa-regular fa-clock"></i> {{ $report['created_at'] ?? 'Baru' }}</span>
+                            <span class="text-blue-600 font-semibold group-hover:translate-x-1 transition-transform">Lihat →</span>
+                        </div>
+                    </a>
                 </li>
+                @empty
+                <li class="p-5 text-center text-gray-500 text-sm">
+                    <i class="fa-regular fa-folder-open text-3xl mb-2 block text-gray-300"></i>
+                    <p class="font-medium">Belum ada laporan prioritas</p>
+>>>>>>> Stashed changes
+                </li>
+                @endforelse
             </ul>
         </section>
 
+<<<<<<< Updated upstream
         <!-- Trending -->
         <section class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-5 border border-blue-100">
+=======
+        <!-- Trending (Real Data) -->
+        <section class="bg-white rounded-2xl p-5 border-2 border-purple-200 shadow-lg">
+>>>>>>> Stashed changes
             <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <i class="fa-solid fa-arrow-trend-up text-blue-500"></i> 
                 <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Trending</span>
             </h2>
             <ul class="space-y-3">
+<<<<<<< Updated upstream
                 <li class="p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border border-transparent hover:border-blue-300">
                     <a href="#" class="block">
                         <p class="font-bold text-gray-900 text-sm group-hover:text-blue-700 transition mb-1">Taman Berserak</p>
@@ -353,7 +547,25 @@
                             <span>1 votes</span>
                         </div>
                     </a>
+=======
+                @forelse($trendingCategories ?? [] as $cat)
+                <li class="flex justify-between items-center p-3 bg-gradient-to-br from-white to-purple-50 rounded-xl hover:shadow-lg transition-all duration-300 cursor-pointer group border-2 border-transparent hover:border-purple-300">
+                    <div>
+                        <p class="font-bold text-gray-900 text-sm group-hover:text-purple-700 transition mb-1 line-clamp-2">{{ $cat['category'] }}</p>
+                        <p class="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                            <i class="fa-solid fa-chart-line text-purple-400"></i>
+                            {{ $cat['total'] }} laporan minggu ini
+                        </p>
+                    </div>
+                    <span class="px-3 py-1 rounded-xl text-xs bg-pink-100 text-pink-700 font-medium">Trending</span>
                 </li>
+                @empty
+                <li class="p-5 text-center text-gray-500 text-sm">
+                    <i class="fa-regular fa-folder-open text-3xl mb-2 block text-gray-300"></i>
+                    <p class="font-medium">Belum ada kategori trending</p>
+>>>>>>> Stashed changes
+                </li>
+                @endforelse
             </ul>
         </section>
     </aside>
@@ -382,9 +594,15 @@
     }
 
     function filterByCategory(category) {
-        document.querySelectorAll('.report-card').forEach(card => {
-            card.style.display = card.dataset.category === category ? 'block' : 'none';
-        });
+        if (!category || category === 'Semua') {
+            document.querySelectorAll('.report-card').forEach(card => {
+                card.style.display = 'block';
+            });
+        } else {
+            document.querySelectorAll('.report-card').forEach(card => {
+                card.style.display = card.dataset.category === category ? 'block' : 'none';
+            });
+        }
         toggleDropdown('categoryDropdown');
     }
 

@@ -197,6 +197,44 @@
                         </div>
                     </div>
 
+                    {{-- Google Maps Display --}}
+                    @if($report->location)
+                        <div class="mt-4">
+                            <h3 class="text-sm font-semibold text-blue-600 mb-3">Peta Lokasi</h3>
+                            <div id="adminMapDiv" style="width: 100%; height: 350px; border: 2px solid #ddd; border-radius: 8px;"></div>
+                        </div>
+
+                        <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places"></script>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const locationStr = '{{ $report->location }}';
+                                const coords = locationStr.split(',');
+                                
+                                if (coords.length === 2) {
+                                    const lat = parseFloat(coords[0]);
+                                    const lng = parseFloat(coords[1]);
+                                    
+                                    const mapOptions = {
+                                        zoom: 17,
+                                        center: { lat: lat, lng: lng },
+                                        mapTypeControl: true,
+                                        fullscreenControl: true,
+                                        streetViewControl: true,
+                                    };
+                                    
+                                    const adminMap = new google.maps.Map(document.getElementById('adminMapDiv'), mapOptions);
+                                    
+                                    // Add marker
+                                    new google.maps.Marker({
+                                        position: { lat: lat, lng: lng },
+                                        map: adminMap,
+                                        title: 'Lokasi Laporan'
+                                    });
+                                }
+                            });
+                        </script>
+                    @endif
+
                     {{-- Deskripsi Masalah --}}
                     <div>
                         <h3 class="text-sm font-semibold text-blue-600 mb-3">Deskripsi Masalah</h3>

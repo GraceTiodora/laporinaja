@@ -21,7 +21,6 @@
                         ['Dashboard', 'admin.dashboard', 'fa-solid fa-house'],
                         ['Verifikasi & Penanganan', 'admin.verifikasi', 'fa-solid fa-check-circle'],
                         ['Monitoring & Statistik', 'admin.monitoring', 'fa-solid fa-chart-line'],
-                        ['Voting Publik', 'admin.voting', 'fa-solid fa-vote-yea'],
                         ['Pengaturan Akun', 'admin.pengaturan', 'fa-solid fa-gear'],
                     ];
                 @endphp

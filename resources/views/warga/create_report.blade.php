@@ -68,6 +68,7 @@
             </button>
         </div>
 
+<<<<<<< Updated upstream
         <!-- Profile Section -->
         <div>
             <div class="flex items-center gap-3 border-t border-gray-200 pt-4 user-info mb-3">
@@ -75,6 +76,42 @@
                 <div class="flex flex-col leading-tight">
                     <span class="text-sm font-medium text-gray-800">{{ session('user.name', 'Guest') }}</span>
                     <span class="text-xs text-gray-500">@{{ session('user.username', 'guest') }}</span>
+=======
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            @php
+                $menuItems = [
+                    ['Beranda', 'home', 'fa-solid fa-house'],
+                    ['Pencarian', 'explore', 'fa-solid fa-magnifying-glass'],
+                    ['Notifikasi', 'notifications', 'fa-solid fa-bell'],
+                    // ['Pesan', 'messages', 'fa-solid fa-envelope'], // Dihapus karena route tidak ada
+                    ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
+                    ['Profil', 'profile', 'fa-solid fa-user'],
+                ];
+            @endphp
+
+            @foreach($menuItems as $item)
+                <a href="{{ route($item[1]) }}" 
+                   class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-bold transition-all duration-300 relative
+                          {{ request()->routeIs($item[1]) 
+                             ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg' 
+                             : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1' }}">
+                    <i class="{{ $item[2] }} text-xl w-6"></i>
+                    <span>{{ $item[0] }}</span>
+                    @if(request()->routeIs($item[1]))
+                        <span class="absolute right-3 w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                    @endif
+                </a>
+            @endforeach
+        </nav>
+
+        <div class="p-4 border-t-2 border-blue-100">
+            <a href="{{ route('profile') }}" class="flex items-center gap-3 p-3 rounded-xl border-2 border-blue-200 bg-white hover:border-blue-400 hover:ring-2 hover:ring-blue-400 transition-all cursor-pointer group">
+                <div class="relative">
+                    <img src="{{ session('user')['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode(session('user')['name'] ?? 'User') }}" 
+                         alt="Profile" 
+                         class="w-12 h-12 rounded-full ring-2 ring-blue-400 group-hover:ring-4 transition-all object-cover">
+                    <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full animate-pulse"></span>
+>>>>>>> Stashed changes
                 </div>
             </div>
             
@@ -126,8 +163,127 @@
                         </div>
                     @endif
 
+<<<<<<< Updated upstream
                     <form id="reportForm" action="{{ route('reports.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
                         @csrf
+=======
+                    <!-- Title Input -->
+                    <div>
+                        <label for="title" class="block text-sm font-bold text-gray-700 mb-2">
+                            <i class="fa-solid fa-heading text-blue-600 mr-2"></i>
+                            Judul Laporan
+                        </label>
+                        <input 
+                            type="text" 
+                            id="title" 
+                            name="title" 
+                            required
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-all font-medium"
+                            placeholder="Ringkasan singkat masalah Anda"
+                            value="{{ old('title') }}"
+                        >
+                        @error('title')
+                            <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Description Textarea -->
+                    <div>
+                        <label for="description" class="block text-sm font-bold text-gray-700 mb-2">
+                            <i class="fa-solid fa-align-left text-blue-600 mr-2"></i>
+                            Deskripsi
+                        </label>
+                        <textarea 
+                            id="description" 
+                            name="description" 
+                            rows="6" 
+                            required
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-all font-medium resize-none"
+                            placeholder="Jelaskan detail masalah yang Anda laporkan..."
+                        >{{ old('description') }}</textarea>
+                        @error('description')
+                            <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Location Input -->
+                    <div>
+                        <label for="dusun" class="block text-sm font-bold text-gray-700 mb-2">
+                            <i class="fa-solid fa-location-dot text-blue-600 mr-2"></i>
+                            Dusun
+                        </label>
+                        <select id="dusun" name="dusun" required onchange="showAlamatLengkap()"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-all font-medium">
+                            <option value="">-- Pilih Dusun --</option>
+                            <option value="Lumban Hariara">Lumban Hariara</option>
+                            <option value="Panasala">Panasala</option>
+                            <option value="Patujulu">Patujulu</option>
+                            <option value="Puba Lubis">Puba Lubis</option>
+                            <option value="Puntu Manda">Puntu Manda</option>
+                            <option value="Silalahi">Silalahi</option>
+                            <option value="Simuring">Simuring</option>
+                        </select>
+                        @error('dusun')
+                            <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div id="alamatLengkapContainer" class="hidden mt-4">
+                        <label for="alamat_lengkap" class="block text-sm font-bold text-gray-700 mb-2">
+                            <i class="fa-solid fa-map-location-dot text-blue-600 mr-2"></i>
+                            Alamat Lengkap
+                        </label>
+                        <input type="text" id="alamat_lengkap" name="alamat_lengkap"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-all font-medium"
+                            placeholder="Alamat lengkap, RT/RW, patokan, dll">
+                        @error('alamat_lengkap')
+                            <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <script>
+                        function showAlamatLengkap() {
+                            const dusun = document.getElementById('dusun').value;
+                            const alamatContainer = document.getElementById('alamatLengkapContainer');
+                            if (dusun) {
+                                alamatContainer.classList.remove('hidden');
+                            } else {
+                                alamatContainer.classList.add('hidden');
+                            }
+                        }
+                    </script>
+
+                    @include('components.google-maps-picker')
+
+                    <!-- Category Select -->
+                    <div>
+                        <label for="category_id" class="block text-sm font-bold text-gray-700 mb-2">
+                            <i class="fa-solid fa-layer-group text-blue-600 mr-2"></i>
+                            Kategori
+                        </label>
+                        <select 
+                            id="category_id" 
+                            name="category_id"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-all font-medium"
+                        >
+                            <option value="">-- Pilih Kategori --</option>
+                            <option value="1">Infrastruktur</option>
+                            <option value="2">Keamanan</option>
+                            <option value="3">Sanitasi</option>
+                            <option value="4">Taman</option>
+                            <option value="5">Aksesibilitas</option>
+                        </select>
+                        @error('category_id')
+                            <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">
+                            <i class="fa-solid fa-image text-blue-600 mr-2"></i>
+                            Foto Laporan
+                        </label>
+>>>>>>> Stashed changes
                         
                         <!-- User Info -->
                         <div class="flex items-center gap-3">

@@ -16,21 +16,17 @@
             <h2 class="text-2xl font-extrabold text-blue-600 mb-8 tracking-tight">
                 Laporin<span class="text-gray-900">Aja</span>
             </h2>
-
-            @php
-                $menu = [
-                    ['Beranda', 'home', 'fa-solid fa-house'],
-                    ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
-                    ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
-                    ['Pesan', 'messages', 'fa-regular fa-envelope'],
-                    ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
-                    ['Komunitas', 'communities', 'fa-solid fa-users'],
-                    ['Profil', 'profile', 'fa-regular fa-user'],
-                ];
-            @endphp
-
-
             <nav class="space-y-2">
+                @php
+                    $menu = [
+                        ['Beranda', 'home', 'fa-solid fa-house'],
+                        ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
+                        ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
+                        ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
+                        ['Profil', 'profile', 'fa-regular fa-user'],
+                    ];
+                    $unreadNotifications = $unreadNotifications ?? ($unreadCount ?? 0);
+                @endphp
                 @foreach ($menu as [$name, $route, $icon])
                     @php
                         $href = '#';
@@ -41,6 +37,7 @@
                                 $href = '#';
                             }
                         }
+<<<<<<< Updated upstream
                     @endphp
                     <a href="{{ $href }}"
                        class="group flex items-center gap-4 px-4 py-3 rounded-xl text-gray-600 font-medium
@@ -48,17 +45,36 @@
                               hover:shadow-md hover:scale-105 transform">
                         <i class="{{ $icon }} text-lg group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
                         <span class="group-hover:translate-x-1 transition-transform">{{ $name }}</span>
+=======
+                        $isActive = request()->routeIs($route);
+                        $showBadge = $route === 'notifications' && ($unreadNotifications ?? $unreadCount ?? 0) > 0;
+                        $notifCount = $unreadNotifications ?? $unreadCount ?? 0;
+                    @endphp
+                    <a href="{{ $href }}"
+                       class="group flex items-center gap-4 px-4 py-3 rounded-xl font-medium transition-all duration-300 relative
+                              {{ $isActive 
+                                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg' 
+                                  : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1' }}">
+                        @if($isActive)
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                        @endif
+                        <i class="{{ $icon }} text-lg group-hover:scale-125 transition-transform"></i>
+                        <span class="font-semibold">{{ $name }}</span>
+                        @if($showBadge)
+                            <span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">
+                                {{ $notifCount > 99 ? '99+' : $notifCount }}
+                            </span>
+                        @endif
+>>>>>>> Stashed changes
                     </a>
                 @endforeach
             </nav>
-
             <button onclick="window.location.href='{{ route('reports.create') }}'"
                     class="mt-6 w-full flex items-center justify-center gap-2 
                            bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800
                            text-white py-3.5 rounded-full shadow-lg hover:shadow-xl
-                           transition-all font-bold transform hover:scale-105 relative overflow-hidden group">
-                <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
-                <i class="fa-solid fa-plus-circle group-hover:rotate-90 transition-transform duration-300"></i> 
+                           transition-all duration-300 font-bold transform hover:scale-105 group">
+                <i class="fa-solid fa-plus-circle text-lg group-hover:rotate-90 transition-transform"></i> 
                 <span>Laporan Baru</span>
             </button>
         </div>
@@ -162,6 +178,7 @@
 
     </main>
 
+<<<<<<< Updated upstream
     <!-- RIGHT SIDEBAR -->
     <aside class="w-[340px] bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-6 overflow-y-auto shadow-lg">
 
@@ -243,6 +260,9 @@
             </ul>
         </section>
     </aside>
+=======
+
+>>>>>>> Stashed changes
 
 </div>
 

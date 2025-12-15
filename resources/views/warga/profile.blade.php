@@ -19,9 +19,14 @@
                         ['Beranda', 'home', 'fa-solid fa-house'],
                         ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
                         ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
+<<<<<<< Updated upstream
                         ['Pesan', 'messages', 'fa-regular fa-envelope'],
                         ['Laporan Saya', 'reports', 'fa-solid fa-clipboard-list'],
                         ['Komunitas', 'communities', 'fa-solid fa-users'],
+=======
+                        // ...hapus menu Pesan...
+                        ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
+>>>>>>> Stashed changes
                         ['Profil', 'profile', 'fa-regular fa-user'],
                     ];
                 @endphp
@@ -53,6 +58,7 @@
 
         <!-- Profile Section -->
         <div>
+<<<<<<< Updated upstream
             <div class="flex items-center gap-3 border-t border-gray-200 pt-4 mb-3">
                 <img src="{{ $user->avatar ?? '/images/default-avatar.jpg' }}" class="w-10 h-10 rounded-full object-cover" onerror="this.src='/images/default-avatar.jpg'">
                 <div class="flex flex-col leading-tight">
@@ -60,6 +66,18 @@
                     <span class="text-xs text-gray-500">@{{ $user->username ?? 'username' }}</span>
                 </div>
             </div>
+=======
+            <a href="{{ route('profile') }}" class="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-200 hover:border-blue-400 bg-white hover:bg-blue-50 transition-all cursor-pointer mb-3 group ring-2 ring-gray-200 hover:ring-blue-400">
+                <div class="relative">
+                    <img src="{{ auth()->user()->avatar ? asset(auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name ?? 'User') }}" class="w-12 h-12 rounded-full object-cover ring-2 ring-white" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'User') }}'">
+                    <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse"></span>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors">{{ auth()->user()->name ?? 'User' }}</p>
+                    <p class="text-xs text-gray-500">@{{ auth()->user()->username ?? 'username' }}</p>
+                </div>
+            </a>
+>>>>>>> Stashed changes
             
             <form action="{{ route('logout') }}" method="POST" class="w-full">
                 @csrf
@@ -81,10 +99,22 @@
             <!-- Profile Header -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
                 <div class="flex items-start gap-6">
+<<<<<<< Updated upstream
                     <img src="{{ $user->avatar ?? '/images/default-avatar.jpg' }}" 
                          alt="{{ $user->name ?? 'User' }}" 
                          class="w-24 h-24 rounded-full object-cover"
                          onerror="this.src='/images/default-avatar.jpg'">
+=======
+                    <div class="relative">
+                            <img src="{{ $user->avatar ? asset($user->avatar) : asset('images/default-avatar.jpg') }}"
+                                alt="{{ $user->name ?? 'User' }}"
+                                class="w-32 h-32 rounded-2xl object-cover ring-4 ring-blue-200 group-hover:ring-blue-400 transition-all shadow-lg"
+                                onerror="this.src='{{ asset('images/default-avatar.jpg') }}'">
+                        <div class="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-4 border-white flex items-center justify-center shadow-lg">
+                            <i class="fa-solid fa-check text-white text-xs"></i>
+                        </div>
+                    </div>
+>>>>>>> Stashed changes
                     <div class="flex-1">
                         <h2 class="text-2xl font-bold text-gray-900">{{ $user->name ?? 'User' }}</h2>
                         <p class="text-gray-600 mt-2">{{ $user->bio ?? 'Community advocate passionate about making our neighborhood safer and cleaner.' }}</p>
@@ -101,6 +131,7 @@
                         <p class="text-3xl font-bold text-green-600">{{ $stats['issues_resolved'] ?? 18 }}</p>
                         <p class="text-sm text-gray-600 mt-1">Masalah Terselesaikan</p>
                     </div>
+<<<<<<< Updated upstream
                     <div class="text-center">
                         <p class="text-3xl font-bold text-orange-600">{{ $stats['community_posts'] ?? 25 }}</p>
                         <p class="text-sm text-gray-600 mt-1">Komunitas Post</p>
@@ -108,6 +139,14 @@
                     <div class="text-center">
                         <p class="text-3xl font-bold text-purple-600">{{ $stats['vote_helps'] ?? 89 }}</p>
                         <p class="text-sm text-gray-600 mt-1">Bantuan Vote</p>
+=======
+                    <div class="text-center p-4 rounded-xl bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-100 transition-all cursor-pointer group/stat border-2 border-transparent hover:border-blue-300 shadow-sm hover:shadow-lg">
+                        <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 mb-3 group-hover/stat:scale-110 transition-transform shadow-lg">
+                            <i class="fa-solid fa-heart text-white text-xl"></i>
+                        </div>
+                        <p class="text-3xl font-extrabold text-blue-600">{{ $stats['vote_helps'] ?? 5 }}</p>
+                        <p class="text-sm font-semibold text-gray-600 mt-1">Jumlah Vote</p>
+>>>>>>> Stashed changes
                     </div>
                 </div>
             </div>

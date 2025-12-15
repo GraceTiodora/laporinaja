@@ -16,6 +16,7 @@
                 Laporin<span class="text-gray-900">Aja</span>
             </h2>
 
+<<<<<<< Updated upstream
             @php
                 $menu = [
                     ['Beranda', 'home', 'fa-solid fa-house'],
@@ -38,6 +39,19 @@
         <span>{{ $name }}</span>
     </a>
 @endforeach
+=======
+            <nav class="space-y-2">
+                @php
+                    $menu = [
+                        ['Beranda', 'home', 'fa-solid fa-house'],
+                        ['Pencarian', 'explore', 'fa-solid fa-hashtag'],
+                        ['Notifikasi', 'notifications', 'fa-regular fa-bell'],
+                        // ...hapus menu Pesan...
+                        ['Laporan Saya', 'my-reports', 'fa-solid fa-clipboard-list'],
+                        ['Profil', 'profile', 'fa-regular fa-user'],
+                    ];
+                @endphp
+>>>>>>> Stashed changes
 
             </nav>
 
